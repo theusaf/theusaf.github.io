@@ -1,4 +1,4 @@
-//website js
+//website js (doesnt work:p)
 //alert("test");
 window.onload = function(){
     var color = "";
