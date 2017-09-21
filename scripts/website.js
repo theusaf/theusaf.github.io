@@ -23,11 +23,10 @@ window.onload = function(){
                 if(g >= 1 && r === 0){
                     g -= 1;
                     b += 1;
-                    }else{
-                        if(b === 255){
-                            b = 0;
-                            g = 0;
-                            r = 0;
+                    }else{ //purple
+                        if(g === 0 && b >= 1){
+                            b -= 1;
+                            r += 1;
                         }
                     }
                 }
