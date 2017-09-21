@@ -32,9 +32,6 @@ window.onload = function(){
                 }
             }
         }
-        console.log(r);
-        console.log(g);
-        console.log(b);
         color = "rgb(" + r + "," + g + "," + b + ")";
         bo.style.background = color;
     },10);
