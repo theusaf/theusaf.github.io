@@ -8,5 +8,14 @@ var config = {
     messagingSenderId: "1028184834674"
 };
 firebase.initializeApp(config);
-
-var chatData = firebase.database().ref();
+//Data
+var key;
+window.onmousedown = function(e){
+    if(e.key === "Enter"){
+        key = "enter";
+    }
+}
+var start = function(){
+    var gameData = firebase.database().ref();
+    var key = 0;
+};
