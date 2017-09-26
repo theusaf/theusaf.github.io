@@ -9,14 +9,15 @@
             <canvas style="border: solid blue 10px; margin-left: 50%; background: white; width: 600px; height: 600px; float: left"></canvas>
         </div>
         <div style="float: left; z-index: 123; position: fixed">
-          <input type=text placeholder="Username" style="float:left"/>
+          <input type=text placeholder="Username" id="user" style="float:left"/>
           <h4 style="float: left; position: fixed">Select Server</h4>
-          <select id="server" name="server" style="float: left; position: fixed; margin-top: 22px">
+          <select id="server" name="server" style="float: left; position: fixed; margin-top: 40px; margin-left: -170px">
             <option>Choose</option>
             <option>Game1</option>
             <option>Game2</option>
             <option>Game3</option>
           </select>
+          <button id=submit style="width: 70px; height: 30px; float: left; position: absolute; margin-top: 70px; margin-left: -170px">Submit</button>
         </div>
         <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
         <script src="main.js"></script>
