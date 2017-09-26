@@ -16,18 +16,49 @@ function start(){
             key = "enter";
         }
     };
-
     var rootData = firebase.database().ref();
-    var key = 0;
+    key = 0;
     //confirm("this works?");
     
     var submitButton = document.getElementById("submit");
     var userNameInput = document.getElementById("user");
     var serverInput = document.getElementById("server");
     
-    var gameID;
-    submitButton.onclick = function(){
-        gameID = serverInput.value;
+    function loadGame(int){
+        var game = rootData.child("Game" + int);
+        var pD = "";
+        game.once("value",function(s){
+            pD = s.val().Players;
+            if(pD === "none"){
+                console.log("FIRST PLAYER!");
+                pD = "";
+                n = 0;
+                game.child("Players").set(gameName);
+            }else{
+                //WIP
+                game.child("Players").set(pD + "," + gameName);
+            }
+        });
     }
+    
+    //setup
+    var n = 0;
+    var gameID;
+    var inGame = false;
+    var gameName;
+    submitButton.onclick = function(){
+        if(inGame === false){
+            inGame = true;
+            gameID = serverInput.value;
+            gameName = userNameInput.value;
+            if(gameID === "Game1"){
+                loadGame(1);
+            }else if(gameID === "Game2"){
+                loadGame(2);
+            }else if(gameID === "Game3"){
+                loadGame(3);
+            }
+        }
+    };
 }
 window.onload = start;
