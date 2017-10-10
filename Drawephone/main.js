@@ -24,19 +24,23 @@ function start(){
     var userNameInput = document.getElementById("user");
     var serverInput = document.getElementById("server");
     
+    //connects to game?
     function loadGame(int){
         var game = rootData.child("Game" + int);
         var pD = "";
         game.once("value",function(s){
-            pD = s.val().Players;
-            if(pD === "none"){
-                console.log("FIRST PLAYER!");
-                pD = "";
-                n = 0;
-                game.child("Players").set(gameName);
-            }else{
-                //WIP
-                game.child("Players").set(pD + "," + gameName);
+            if(s.val().Misc.Started === false){
+                pD = s.val().Players;
+                if(pD === "none"){
+                    console.log("FIRST PLAYER!");
+                    pD = "";
+                    n = 0;
+                    game.child("Players").set(gameName);
+                }else{
+                    //WIP
+                    game.child("Players").set(pD + "," + gameName);
+                    n = pD.split(",").length + 1;
+                }
             }
         });
     }
@@ -47,7 +51,7 @@ function start(){
     var inGame = false;
     var gameName;
     submitButton.onclick = function(){
-        if(inGame === false){
+        if(inGame === false && userNameInput.value !== "" && userNameInput.value.search(",") === -1){
             inGame = true;
             gameID = serverInput.value;
             gameName = userNameInput.value;
