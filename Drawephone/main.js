@@ -26,6 +26,7 @@ function start(){
     
     //connects to game?
     function loadGame(int){
+        awayD1 = ("Game" + int);
         var game = rootData.child("Game" + int);
         var pD = "";
         game.once("value",function(s){
@@ -42,6 +43,18 @@ function start(){
                     n = pD.split(",").length + 1;
                 }
             }
+        });
+        game.child("Players").on("value",function(t){
+            setTimeout(function(){ //Prevent player "None" from appearing in game?
+                var plD = t.val();
+                var plDli = plD.split(",");
+                var tab = document.getElementById("list");
+                var nu = plD.split(",").length;
+                tab.innerHTML = "";
+                for(var i = 0; i < nu; i++){
+                    tab.innerHTML += "<td>" + (i+1) + ". " + plDli[i] + "</td>\n";
+                }
+            },1000);
         });
     }
     
@@ -64,5 +77,13 @@ function start(){
             }
         }
     };
+    
+    //read only data
+    var awayD1 = -1;
+    
+    //remove player on unload. currently removes all players, causing loads of issues :p
+    window.onbeforeunload = function(){
+        rootData.child(awayD1).child("Players").set("none");
+    }
 }
 window.onload = start;
