@@ -1,4 +1,4 @@
-//version WIP
+//version 0.0.0.13
 
 function start(){
     // Initialize Firebase
@@ -65,11 +65,18 @@ function start(){
                 }
             },1000);
         });
+        
+        
+        //tests if the game is started by player one
+        var mes = document.getElementById("them");
         game.on("value",function(s){
             if(s.child("Misc").child("Started").val() === true){
-                alert("ok");
+                mes.innerText = "Game Started! Draw " + s.child("Misc").child("Theme").val();
+                mes.style.display = "block";
             }
         });
+        
+        //start button scripts
         sbu.onmousedown = function(){
             game.child("Misc").child("Theme").set(sinfo.value);
             if(plD.split(",").length >= 3){
