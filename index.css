@@ -1,1 +1,10 @@
-
+#top > a {
+    text-decoration: none;
+}
+#top > a > span{
+    font-size: 25px;
+    font-family: 'Spectral SC', serif;
+}
+#test {
+    display: none;
+}
