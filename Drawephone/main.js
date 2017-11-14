@@ -1,3 +1,5 @@
+//version WIP
+
 function start(){
     // Initialize Firebase
     var config = {
@@ -53,7 +55,7 @@ function start(){
         var plD = ""; //stores active player data
         game.child("Players").on("value",function(t){
             setTimeout(function(){ //Prevent player "None" from appearing in game?
-                plD = t.val();
+                plD = t.val(); //player data
                 var plDli = plD.split(",");
                 var tab = document.getElementById("list");
                 var nu = plD.split(",").length;
@@ -62,6 +64,11 @@ function start(){
                     tab.innerHTML += "<td style='display: block'>" + (i+1) + ". " + plDli[i] + "</td>\n";
                 }
             },1000);
+        });
+        game.on("value",function(s){
+            if(s.child("Misc").child("Started").val() === true){
+                alert("ok");
+            }
         });
         sbu.onmousedown = function(){
             game.child("Misc").child("Theme").set(sinfo.value);
