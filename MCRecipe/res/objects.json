@@ -1,0 +1,149 @@
+[
+    /*dirt*/
+    {
+        "obj": "dirt",
+        "img": "dirt"
+    },
+    {
+        "obj": "grass",
+        "img": "dirt_grass"
+    },
+    {
+        "obj": "podzol",
+        "img": "dirt_poop"
+    },
+    {
+        "obj": "mycelium",
+        "img": "dirt_mushroom"
+    },
+    /*wool*/
+    {
+        "obj": "wool",
+        "img": "wool"
+    },
+    {
+        "obj": "red wool",
+        "img": "wool_red"
+    },
+    {
+        "obj": "green wool",
+        "img": "wool_green"
+    },
+    {
+        "obj": "lime wool",
+        "img": "wool_lime"
+    },
+    {
+        "obj": "orange wool",
+        "img": "wool_orange"
+    },
+    {
+        "obj": "cyan wool",
+        "img": "wool_cyan"
+    },
+    {
+        "obj": "yellow wool",
+        "img": "wool_gold"
+    },
+    {
+        "obj": "pink wool",
+        "img": "wool_pink"
+    },
+    {
+        "obj": "magenta wool",
+        "img": "wool_magenta"
+    },
+    {
+        "obj": "gray wool",
+        "img": "wool_gray"
+    },
+    {
+        "obj": "light gray wool",
+        "img": "wool_light_grey"
+    },
+    {
+        "obj": "blue wool",
+        "img": "wool_blue"
+    },
+    {
+        "obj": "brown wool",
+        "img": "wool_brown"
+    },
+    {
+        "obj": "purple wool",
+        "img": "wool_purple"
+    },
+    {
+        "obj": "light blue wool",
+        "img": "wool_light_blue"
+    },
+    {
+        "obj": "black wool",
+        "img": "wool_black"
+    },
+    /*beds*/
+    {
+        "obj": "white bed",
+        "img": "bed_white"
+    },
+    {
+        "obj": "red bed",
+        "img": "bed"
+    },
+    {
+        "obj": "orange bed",
+        "img": "bed_orange"
+    },
+    {
+        "obj": "magenta bed",
+        "img": "bed_magenta"
+    },
+    {
+        "obj": "light blue bed",
+        "img": "bed_light_blue"
+    },
+    {
+        "obj": "yellow bed",
+        "img": "bed_gold"
+    },
+    {
+        "obj": "pink bed",
+        "img": "bed_pink"
+    },
+    {
+        "obj": "gray bed",
+        "img": "bed_gray"
+    },
+    {
+        "obj": "light gray bed",
+        "img": "bed_light_gray"
+    },
+    {
+        "obj": "cyan bed",
+        "img": "bed_cyan"
+    },
+    {
+        "obj": "purple bed",
+        "img": "bed_purple"
+    },
+    {
+        "obj": "blue bed",
+        "img": "bed_blue"
+    },
+    {
+        "obj": "brown bed",
+        "img": "bed_brown"
+    },
+    {
+        "obj": "green bed",
+        "img": "bed_green"
+    },
+    {
+        "obj": "lime bed",
+        "img": "bed_lime"
+    },
+    {
+        "obj": "black bed",
+        "img": "bed_black"
+    }
+]
