@@ -1,5 +1,5 @@
 /*imports*/
-@import url('https://fonts.googleapis.com/css?family=Roboto|Quicksand');
+@import url('https://fonts.googleapis.com/css?family=Roboto|Quicksand|Source+Code+Pro');
 
 
 /*styling*/
@@ -40,6 +40,7 @@ a{
 p{
     font-family: 'Quicksand', sans-serif;
     float: left;
+    font-size: 20px;
 }
 .adsl{
     width: calc(50% - 351px);
@@ -50,4 +51,9 @@ p{
     width: calc(50% - 351px);
     height: 100%;
     float: right;
+}
+warn{
+    float: left;
+    font-family: 'Source Code Pro', sans-serif;
+    color: red;
 }
