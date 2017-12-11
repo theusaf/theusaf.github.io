@@ -1,0 +1,102 @@
+<html>
+<head>
+    <title>🔎Chemistry in Apple Macbooks💻</title>
+    <link rel="shortcut icon" href="http://userscontent2.emaze.com/images/3f402222-c0fa-4b81-885c-2d4439917ef6/d551a257-91e5-4b22-a97e-a1c6d717259d.png">
+    <link href="index.css" rel="stylesheet" type="text/css"></link>
+</head>
+<body style="float: left; width: 100%; height:100%; background: url('https://cdn1.iconfinder.com/data/icons/brains-and-circuits/512/circuit_v6-512.png')">
+    <div style="background-color: lime; display: block; border-left: 50px; width: 80%; transform: translateX(15%);" data="title">
+        <h1 style="color: blue; text-align: center;">Chemistry in Apple Laptops!</h1>
+    </div>
+    <div id="dis" data="display area" style="width: 1000px; height: 550px; background-color: white;">
+        <!-- This is where we put all our slides in a JS file! -->
+    </div>
+    <script>
+        var n = 0;
+        var clist = ["blue","red","green","gold","magenta"];
+        var borderObj = document.getElementById("dis");
+        var doStuff = setInterval(function(){
+            n ++;
+            if(n > 4){
+                n = 0;
+            }
+            borderObj.style.border = "solid 5px " + clist[n];
+        },2000);
+    </script>
+    
+    <script type="text/javascript">
+        var displayarea = document.getElementById("dis");
+        var slide = 0; //slide 0 is slide 1?
+        var moused = false;
+        var key;
+        window.onmouseup = window.onmouseup = function(e){
+            if(e.type === "mouseup"){
+                moused = false;
+            }else{
+                moused = true;
+            }
+        }
+        window.onkeyup = window.onkeydown = function(e){
+            if(e.type === 'keydown'){
+                key = e.key;
+                console.log("Success! Key: " + key);
+            }else if(e.type === 'keyup'){
+                //key = null; removed because of move to other area
+            }
+            if(key==="`"){
+                //displayarea.style.transform = "translateX(0%);";
+                setTimeout(function(){displayarea.webkitRequestFullScreen();},1000);
+            }
+            if(key==="Escape"){
+                displayarea.style.transform = "translateX(20%);";
+            }
+        }
+        /*DATA ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        */
+        //runs scripts using eval() to do slides
+        var evalList = {
+            0:["displayarea.innerHTML = '';"],
+            1:["alert('hi')"]
+        };
+        function openSlide(){
+            //renders the slides
+            for(var i in evalList[slide]){
+                eval(evalList[slide][i]); 
+            }
+        }
+        var doSlides = function(){
+            //add switch statements here
+            if(key !== null && key === "ArrowRight"){
+                slide += 1;
+                //load slide
+                openSlide(slide);
+            }else if(key !== null && key === "ArrowLeft" && slide > 0){
+                slide -= 1;
+                //load slide
+                openSlide(slide);
+            }else if(slide === 0){
+                //load 1st slide
+                openSlide(0);
+            }else{
+                //do nothing
+            }
+            key = null;
+        }
+        //runs the slide stuff every 3 seconds to update it.
+        var currentSlide = 0;
+        var run = setInterval(doSlides,1000);
+    </script>
+    </body>
+</html>

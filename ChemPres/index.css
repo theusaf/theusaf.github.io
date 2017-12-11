@@ -1,0 +1,7 @@
+#dis:-webkit-full-screen{
+    transform: translateX(0%) scale(1.35,1.35);
+    background-color: blue;
+}
+#dis{
+    transform: translateX(20%);
+}
