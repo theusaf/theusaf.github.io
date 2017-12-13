@@ -1,7 +1,10 @@
 #dis:-webkit-full-screen{
-    transform: translateX(0%) scale(1.35,1.35);
-    background-color: blue;
+    /*works on chromebooks?*/
+    transform: translateX(0%)/*;*/ scale(1.25,1.35);
+    /*zoom: 1.25;*/
 }
 #dis{
     transform: translateX(20%);
 }
+/*width: 1000px; 
+  height: 550px;*/

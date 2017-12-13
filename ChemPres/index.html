@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>🔎Chemistry in Apple Macbooks💻</title>
+    <title id='t'>🔎Chemistry in Apple Macbooks💻</title>
     <link rel="shortcut icon" href="http://userscontent2.emaze.com/images/3f402222-c0fa-4b81-885c-2d4439917ef6/d551a257-91e5-4b22-a97e-a1c6d717259d.png">
     <link href="index.css" rel="stylesheet" type="text/css"></link>
 </head>
@@ -8,12 +8,17 @@
     <div style="background-color: lime; display: block; border-left: 50px; width: 80%; transform: translateX(15%);" data="title">
         <h1 style="color: blue; text-align: center;">Chemistry in Apple Laptops!</h1>
     </div>
-    <div id="dis" data="display area" style="width: 1000px; height: 550px; background-color: white;">
+    <div id="lol">
+        <div id="dis" data="display area" style="width: 1000px; height: 550px; background-color: white;">
         <!-- This is where we put all our slides in a JS file! -->
     </div>
+    </div>
     <script>
+        window.onload = function(){
+            document.getElementById('t').innerText = "\ud83d\udd0eChemistry in Apple Macbooks\ud83d\udcbb";
+        };
         var n = 0;
-        var clist = ["blue","red","green","gold","magenta"];
+        var clist = ["rgba(0,0,255,0.2)","rgba(255,0,0,0.2)","rgba(0,255,0,0.2)","rgba(255,255,0,0.2)","rgba(255,0,255,0.2)"];
         var borderObj = document.getElementById("dis");
         var doStuff = setInterval(function(){
             n ++;
@@ -23,8 +28,9 @@
             borderObj.style.border = "solid 5px " + clist[n];
         },2000);
     </script>
-    
+    <!-- JavaScript For Actual Presentation -->
     <script type="text/javascript">
+        var ev = eval;
         var displayarea = document.getElementById("dis");
         var slide = 0; //slide 0 is slide 1?
         var moused = false;
@@ -35,7 +41,7 @@
             }else{
                 moused = true;
             }
-        }
+        };
         window.onkeyup = window.onkeydown = function(e){
             if(e.type === 'keydown'){
                 key = e.key;
@@ -48,9 +54,9 @@
                 setTimeout(function(){displayarea.webkitRequestFullScreen();},1000);
             }
             if(key==="Escape"){
-                displayarea.style.transform = "translateX(20%);";
+                //displayarea.style.transform = "translateX(20%);";
             }
-        }
+        };
         /*DATA ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         
         
@@ -68,23 +74,23 @@
         //runs scripts using eval() to do slides
         var evalList = {
             0:["displayarea.innerHTML = '';"],
-            1:["alert('hi')"]
+            1:[""]
         };
         function openSlide(){
             //renders the slides
             for(var i in evalList[slide]){
-                eval(evalList[slide][i]); 
+                ev(evalList[slide][i]); 
             }
         }
         var doSlides = function(){
             //add switch statements here
             if(key !== null && key === "ArrowRight"){
                 slide += 1;
-                //load slide
+                //load next slide
                 openSlide(slide);
             }else if(key !== null && key === "ArrowLeft" && slide > 0){
                 slide -= 1;
-                //load slide
+                //load previous slide
                 openSlide(slide);
             }else if(slide === 0){
                 //load 1st slide
@@ -93,10 +99,10 @@
                 //do nothing
             }
             key = null;
-        }
-        //runs the slide stuff every 3 seconds to update it.
+        };
+        //runs the slide stuff every 1/2 seconds to update it.
         var currentSlide = 0;
-        var run = setInterval(doSlides,1000);
+        var run = setInterval(doSlides,500);
     </script>
     </body>
 </html>

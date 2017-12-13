@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css?family=Anton');
+
+
+h1{
+    color: gold;
+    text-align: center;
+    background-image: url('https://wallpaperbrowse.com/media/images/math_background.png');
+    background-position: center;    
+    background-repeat: no-repeat;
+    background-size: 1000px 583px
+}
+body{
+    background: url('https://media.giphy.com/media/d1Gvd3wrtBcaMkhO/giphy.gif');
+    background-size: 100% 100%;
+}
+#mm{
+    background: white;
+}
+#main{
+    text-align: center;
+}
+#desc{
+    text-align: center;
+    margin-bottom: 10px;
+}
+.inl{
+    transform: translateY(5px);
+}
+select{
+    margin-top: 10px;
+}
+#result{
+    width: 400px;
+    height: 100px;
+    font-family: 'Anton', sans-serif;
+    text-align: center;
+}

@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <title>TI-30X Calculator Tricks</title>
+        <link rel="stylesheet" href="index.css" type="text/css" />
+        <link rel="icon" href="https://img.clipartxtras.com/59992289586fe0e3a70bc572eadc54bd_math-symbols-clipart-black-and-white-clipart-panda-free-math-clipart-black-and-white-png_743-800.png"/>
+    </head>
+    <body>
+        <h1>Texas Instruments 30X IIS Random Calculator Number Hacks</h1>
+        <div id="mm">
+            <div id="main">
+                <select id="type">
+                    <option>Find Next Percents from Number</option>
+                    <option>Generate Number from Percent</option>
+                </select>
+                <hr></hr>
+                <div id=opt1 style='display:block'>
+                    <p>Rand Variable.</p>
+                    <p style='display: inline-block'>You can find this by doing&#8194;</p><img class=inl src="sto.png" style='display: inline-block'/><p style='display: inline-block'>&#8194;and going to rand</p>
+                    <br/>
+                    <input type='number' value=1 id='rn' max=9999999999 min=1/>
+                    <br/>
+                    <p>Amount of nums in the future.</p>
+                    <input type='number' value=2 id='re' min=1>
+                    <br/>
+                    <p>Result:</p>
+                    <textarea id="result" readonly></textarea>
+                </div>
+                <div id=opt2 style='display: none'>
+                    
+                </div>
+            </div>
+            <hr/>
+            <div id="desc">
+                <p>This tool calculates numbers for the TI 30X IIS's random fuctions</p>
+            </div>
+        </div>
+        <script type="text/javascript" src="calc.js"></script>
+    </body>
+</html>
