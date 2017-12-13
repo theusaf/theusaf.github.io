@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Anton');
+@import url('https://fonts.googleapis.com/css?family=Anton|Roboto');
 
 
 h1{
@@ -34,4 +34,10 @@ select{
     height: 100px;
     font-family: 'Anton', sans-serif;
     text-align: center;
+}
+p{
+    font-family: 'Roboto', sans-serif;
+}
+.sm{
+    width: 70px;
 }
