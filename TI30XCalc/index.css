@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Anton|Roboto');
+@import url('https://fonts.googleapis.com/css?family=Anton|Roboto+Mono');
 
 
 h1{
@@ -36,7 +36,7 @@ select{
     text-align: center;
 }
 p{
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto Mono', sans-serif;
 }
 .sm{
     width: 70px;
