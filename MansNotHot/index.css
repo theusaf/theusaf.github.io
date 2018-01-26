@@ -1,0 +1,7 @@
+#game{
+    border: solid blue 3px;
+    background: url('res/back-game.png');
+}
+.center{
+    text-align: center;
+}
