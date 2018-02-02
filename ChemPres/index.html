@@ -73,7 +73,10 @@
         */
         //runs scripts using eval() to do slides
         var evalList = {
-            0:["displayarea.innerHTML = '';"],
+            0:["displayarea.innerHTML = '<div class=cen>\
+                <h1>The Chemistry and Science behind Apple Macbook Pros</h1>\
+                <img src=res/mcpro.png/>\
+            </div><h4 id=downcenter>Daniel Lau</h4>';","displayarea.style.background = 'gray'"],
             1:[""]
         };
         function openSlide(){
@@ -86,22 +89,30 @@
             //add switch statements here
             if(key !== null && key === "ArrowRight"){
                 slide += 1;
+                currentSlide = slide;
                 //load next slide
                 openSlide(slide);
             }else if(key !== null && key === "ArrowLeft" && slide > 0){
                 slide -= 1;
+                currentSlide = slide;
+                if(slide === 0){
+                    currentSlide = -1;
+                }
                 //load previous slide
                 openSlide(slide);
             }else if(slide === 0){
                 //load 1st slide
-                openSlide(0);
+                if(currentSlide == -1){
+                    openSlide(0);
+                    currentSlide = 0;
+                }
             }else{
                 //do nothing
             }
             key = null;
         };
         //runs the slide stuff every 1/2 seconds to update it.
-        var currentSlide = 0;
+        var currentSlide = -1;
         var run = setInterval(doSlides,500);
     </script>
     </body>

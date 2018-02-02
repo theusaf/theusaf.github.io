@@ -8,3 +8,10 @@
 }
 /*width: 1000px; 
   height: 550px;*/
+.cen{
+    text-align: center;
+}
+#downcenter{
+    transform: translate(0px,400px);
+    text-align: center;
+}
