@@ -12,6 +12,18 @@
     text-align: center;
 }
 #downcenter{
-    transform: translate(0px,400px);
+    transform: translate(0px,20px);
     text-align: center;
+}
+.fullsc{
+    width: 100%;
+    height: 100%;
+    float: left;
+    position: absolute;
+    z-index: 0;
+}
+#gameheader{
+    float: left;
+    position: absolute;
+    z-index: 1;
 }
