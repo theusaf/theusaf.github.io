@@ -1,3 +1,6 @@
+/*imports*/
+@import url('https://fonts.googleapis.com/css?family=Rammetto+One|Roboto|Open+Sans+Condensed:300');
+
 #dis:-webkit-full-screen{
     /*works on chromebooks?*/
     transform: translateX(0%)/*;*/ scale(1.25,1.35);
@@ -26,4 +29,66 @@
     float: left;
     position: absolute;
     z-index: 1;
+}
+li{
+    margin-top: 15px;
+    font-family: 'Rammetto One', cursive; 
+}
+.licont1{
+    float:left;
+    position: absolute;
+    z-index: 1;
+}
+.licont1 > h2{
+    font-size: 30px;
+}
+#bday{
+    text-align: center;
+}
+.licont2{
+    float:left;
+    position: absolute;
+    z-index: 0
+}
+img[im=keyb]{
+    transform: translate(500px,0px);
+}
+img[im=batt]{
+    transform: translate(10px,150px);
+}
+img[im=lg]{
+    transform: translate(10px,150px);
+    width: 200;
+    height: 100;
+}
+img[im=ssd]{
+    transform: translate(600px,250px);
+    width: 200;
+    height: 100;
+}
+.url{
+    color: blue;
+    text-decoration: underline;
+}
+img[im=cake]{
+    width: 25%;
+    height: 40%;
+}
+.bl{
+    margin-left: 40px;
+}
+[font=zero]{
+    font-family: 'Roboto', sans-serif;
+}
+.ble{
+    margin-left: 20px;
+}
+[font=one]{
+    font-family: 'Open Sans Condensed', sans-serif;
+}
+h1.bl{
+    font-size: larger;
+}
+.bigger{
+    font-size: larger;
 }

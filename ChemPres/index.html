@@ -46,6 +46,7 @@
             if(e.type === 'keydown'){
                 key = e.key;
                 console.log("Success! Key: " + key);
+                console.log(slide);
             }else if(e.type === 'keyup'){
                 //key = null; removed because of move to other area
             }
@@ -72,16 +73,124 @@
         
         */
         //runs scripts using eval() to do slides
+        var date = new Date();
+        var admin = date.getMonth();
+        var da = date.getDate();
         var evalList = {
             //start screen
             0:["displayarea.innerHTML = '<div class=cen>\
-                <h1>The Chemistry and Science behind Apple Macbook Pros</h1>\
+                <h1>The Chemistry and Science behind Computers (Macbook Pro)</h1>\
                 <img src=res/mcpro.png />\
             </div><h4 id=downcenter>Daniel Lau</h4>';","displayarea.style.background = 'gray'"],
             //what is in the computer?
-            1:[],
+            1:["displayarea.innerHTML = '<ul>\
+                <div class=licont1>\
+                    <h2>What is in a Macbook?</h2>\
+                    <li>Led display</li>\
+                    <li>Trackpad</li>\
+                    <li>Lithium Polymer Batteries</li>\
+                    <li>Logic Board</li>\
+                    <li>Flash SSD</li>\
+                    <li>Speakers</li>\
+                    <li>Camera (iSight)</li>\
+                </div>\
+                <div class=licont2>\
+                    <img im=keyb src=res/keybd.png width=320 height=160>\
+                    <img im=batt src=res/battery.png>\
+                    <img im=lg src=res/lg.png>\
+                    <img im=ssd src=res/ssd.png>\
+                </div>\
+            <ul>'"],
+            //common chemicals/molecules in these parts.
+            2:["displayarea.innerHTML = '<h1 class=\"bl\" font=zero>Important Metals and Elements in MacBook computers:</h1>\
+            <h4 class=\"ble bigger\">Aluminum</h4>\
+            <p font=one class=\"bl bigger\">Aluminum is used as a lightweight, sturdy metal that also conducts heat very well, which will then send the heat into the surrounding area, keeping the computer cool.<p>'"],
+            //how memory is stored
+            3:[],
+            //difference between n-type and p-type
+            4:[],
+            //something
+            5:[],
+            //another thing
+            6:["if(typeof(goup) !== 'undefined'){clearInterval(ups);}"],
+            //sources
+            7:["if(typeof(no) !== 'undefined'){clearInterval(no);}",
+            "displayarea.innerHTML = '<div id=upward>\
+                <h1 style=text-align:center>Sources</h1>\
+                <ul class=url>\
+                    <li>https://beetstech.com/store/apple-part/apple-macbook-air-parts/macbook-air-parts-13-a1237/early-200</li>\
+                    <li>http://www.powerbookmedic.com/MacBook-Air-11-Early-2015-p-1-c-835.html</li>\
+                    <li>http://appleinsider.com/articles/08/10/14/apple_details_new_macbook_manufacturing_process</li>\
+                    <li>https://www.extremetech.com/extreme/210492-extremetech-explains-how-do-ssds-work</li>\
+                    <li>https://arstechnica.com/information-technology/2012/06/inside-the-ssd-revolution-how-solid-state-disks-really-work/2/</li>\
+                    <li>http://www.explainthatstuff.com/flashmemory.html</li>\
+                    <li>https://www.youtube.com/watch?v=spiw1hQrW-w</li>\
+                    <li>https://www.youtube.com/watch?v=hjl5boYJOZI</li>\
+                    <li>https://en.wikipedia.org/wiki/Extrinsic_semiconductor</li>\
+                    <li>https://www.reddit.com/r/apple/comments/1ung1q/why_apples_macbook_are_made_of_aluminium/</li>\
+                </ul>\
+            </div>'","var ups = document.getElementById('upward');","ups.style.transform = 'translateY(560px)';","var nm = 560;",
+            "var goup = setInterval(function(){\
+                nm --;\
+                ups.style.transform = 'translateY(' + nm + 'px)';\
+            },30);"],
+            //birthday! :)
+            8:["clearInterval(goup);","displayarea.style.background = 'gray'","var bD = {M:2,D:12};","var cD;","displayarea.innerHTML = '<div id=bday><h1>My birthday countdown!</h1><div id=stats></div></div>'",
+            "var no = setInterval(\
+                function(){\
+                    cD = new Date();\
+                    cD.setMonth(admin);\
+                    cD.setDate(da);\
+                    var l = Number(cD.getFullYear() % 4 == 0);\
+                    var months = [31,28 + l,31,30,31,30,31,31,30,31,30,31];\
+                    \
+                    days = months[cD.getMonth()] - cD.getDate();\
+                    var cont=true;\
+                    var ori = cD.getMonth();\
+                    var i = cD.getMonth() + 1;\
+                    while(cont === true){\
+                        if(i !== 12 && i !== 1){\
+                            days = days + months[i];\
+                        }\
+                        if(i == 2 && cD.getDate() <= 11){\
+                            days = 11 - cD.getDate();\
+                            break;\
+                        }\
+                        if(i == 1 && ori == 0){\
+                            days = days + 11;\
+                            cont=false;\
+                        }\
+                        i++;\
+                        if(i > 11){\
+                            i = 0;\
+                        }\
+                        if(i == 1){\
+                            days = days + 11;\
+                            cont = false;\
+                        }\
+                    }\
+                    minutes = 60 - cD.getMinutes();\
+                    hours = 24 - cD.getHours();\
+                    seconds = 60 - cD.getSeconds();\
+                    milliseconds = 1000 - cD.getMilliseconds();\
+                    if(milliseconds > 0){\
+                        seconds --;\
+                        minutes --;\
+                        hours --;\
+                    }\
+                }\
+                );"
+            ,"var stat = document.getElementById('stats');\
+            setInterval(function(){stat.innerHTML = '<p>(' + days + ' days / 1)(24 hours / 1 day)(60 minutes / 1 hour)(60 seconds / 1 minute)(1000 milliseconds / 1 second) = ' + (days * 24 * 60 * 60 * 1000) + ' milliseconds</p>\
+            <p>(' + hours + ' hours / 1)(60 minutes / 1 hour)(60 seconds / 1 minute)(1000 milliseconds / 1 second) = ' + (hours * 60 * 60 * 1000) + ' milliseconds</p>\
+            <p>(' + minutes + ' minutes / 1)(60 seconds / 1 minute)(1000 milliseconds / 1 second) = ' + (minutes * 60 * 1000) + ' milliseconds</p>\
+            <p>(' + seconds + ' seconds / 1)(1000 milliseconds / 1 second) = ' + (seconds * 1000) + ' milliseconds</p>\
+            <p>Milliseconds: ' + milliseconds + '</p>\
+            <h1>' +((days * 24 * 60 * 60 * 1000)+(hours * 60 * 60 * 1000)+(minutes * 60 * 1000)+(seconds * 1000)+milliseconds)+ ' milliseconds until my birthday!</h1>\
+            <img im=cake src=res/cake.png></img>';});\
+            "],
             //yay! kahoot game
-            2:["displayarea.style.background='white'","displayarea.innerHTML = '<h1 id=gameheader style=\"margin-left: 15px\">Kahoot!!!</h1><iframe class=fullsc src=https://play.kahoot.it/#/?quizId=3dc75cde-6580-439c-aa54-10ccaf1b05ed />'"]
+            9:["clearInterval(no);","displayarea.style.background='white'","displayarea.innerHTML = '<h1 id=gameheader style=\"margin-left: 15px\">Kahoot!!!</h1><iframe class=fullsc src=https://play.kahoot.it/#/?quizId=3dc75cde-6580-439c-aa54-10ccaf1b05ed />'"]
         };
         function openSlide(){
             //renders the slides
@@ -117,7 +226,7 @@
         };
         //runs the slide stuff every 1/2 seconds to update it.
         var currentSlide = -1;
-        var run = setInterval(doSlides,500);
+        var run = setInterval(doSlides,10);
     </script>
     </body>
 </html>
