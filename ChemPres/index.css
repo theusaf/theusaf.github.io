@@ -1,5 +1,5 @@
 /*imports*/
-@import url('https://fonts.googleapis.com/css?family=Rammetto+One|Roboto|Open+Sans+Condensed:300');
+@import url('https://fonts.googleapis.com/css?family=Rammetto+One|Roboto|Open+Sans+Condensed:300|Ubuntu');
 
 #dis:-webkit-full-screen{
     /*works on chromebooks?*/
@@ -91,4 +91,30 @@ h1.bl{
 }
 .bigger{
     font-size: larger;
+}
+.ce{
+    text-align: center;
+}
+[font=two]{
+    font-family: 'Ubuntu', sans-serif;
+}
+.five{
+    width: 500px;
+}
+img[im=nt]{
+    width: 350px;
+    height: 300px;
+}
+img[im=pt]{
+    width: 350px;
+    height: 350px;
+}
+.doub{
+    line-height: 50px;
+}
+img[im=lit]{
+    transform: translateX(calc(500px - (244px / 2)));
+}
+.par{
+    text-indent: 30px;
 }

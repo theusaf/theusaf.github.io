@@ -6,7 +6,7 @@
 </head>
 <body style="float: left; width: 100%; height:100%; background: url('https://cdn1.iconfinder.com/data/icons/brains-and-circuits/512/circuit_v6-512.png')">
     <div style="background-color: lime; display: block; border-left: 50px; width: 80%; transform: translateX(15%);" data="title">
-        <h1 style="color: blue; text-align: center;">Chemistry in Apple Laptops!</h1>
+        <h1 style="color: blue; text-align: center;">Science in Apple Laptops!</h1>
     </div>
     <div id="lol">
         <div id="dis" data="display area" style="width: 1000px; height: 550px; background-color: white;">
@@ -15,7 +15,7 @@
     </div>
     <script>
         window.onload = function(){
-            document.getElementById('t').innerText = "\ud83d\udd0eChemistry in Apple Macbooks\ud83d\udcbb";
+            document.getElementById('t').innerText = "\ud83d\udd0eScience in Apple Macbooks\ud83d\udcbb";
         };
         var n = 0;
         var clist = ["rgba(0,0,255,0.2)","rgba(255,0,0,0.2)","rgba(0,255,0,0.2)","rgba(255,255,0,0.2)","rgba(255,0,255,0.2)"];
@@ -73,9 +73,9 @@
         
         */
         //runs scripts using eval() to do slides
-        var date = new Date();
+        /*var date = new Date();
         var admin = date.getMonth();
-        var da = date.getDate();
+        var da = date.getDate();*/
         var evalList = {
             //start screen
             0:["displayarea.innerHTML = '<div class=cen>\
@@ -102,18 +102,38 @@
                 </div>\
             <ul>'"],
             //common chemicals/molecules in these parts.
-            2:["displayarea.innerHTML = '<h1 class=\"bl\" font=zero>Important Metals and Elements in MacBook computers:</h1>\
+            2:["displayarea.innerHTML = '<h1 class=\"bl\" font=zero>Important Metals and Elements in (MacBook) computers:</h1>\
             <h4 class=\"ble bigger\">Aluminum</h4>\
-            <p font=one class=\"bl bigger\">Aluminum is used as a lightweight, sturdy metal that also conducts heat very well, which will then send the heat into the surrounding area, keeping the computer cool.<p>'"],
-            //how memory is stored
-            3:[],
+            <p font=one class=\"bl bigger\">Aluminum is used as a lightweight, sturdy metal that also conducts heat very well, which will then send the heat into the surrounding area, keeping the computer cool.<p>\
+            <h4 class=\"ble bigger\">Silicon</h4>\
+            <p font=one class=\"bl bigger\">Silicon is a very important element used in most computers. It is used in computer chips and transitors because it is a good semiconductor.</p>\
+            <h4 class=\"ble bigger\">Copper</h4>\
+            <p class=\"bl bigger\" font=one>Copper is used in wiring and computer chips. It is cheap, and it conducts electricity very well. Sometimes, silver might be used.</p>'"],
+            //how memory is stored videos
+            3:["displayarea.innerHTML = '<div class=ce><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/hjl5boYJOZI?rel=0&amp;showinfo=0&amp;start=113;end=156\" frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe></div>\
+            <p class=\"bl bigger\">- Electrons stored in the n type source and drain are trapped and cannot flow from source to drain due to the p type material between them.</p>\
+            <p class=\"bl bigger\">- By applying a positive electrical current to the drain and the control gate, electrons can pass through and some will be brought through the silicon dioxide layer and stored in the floating gate, storing a \"1\"</p>\
+            <p class=\"bl bigger\">- To flip the value to a zero, a negative charge is sent to the control gate to push the electron out.</p>'"],
             //difference between n-type and p-type
-            4:[],
-            //something
-            5:[],
-            //another thing
-            6:["if(typeof(goup) !== 'undefined'){clearInterval(ups);}"],
-            //sources
+            4:["displayarea.innerHTML = '<div class=\"licont2 five\"><h1 font=two class=\"bigger\">N TYPE SEMICONDUCTOR</h1>\
+            <p class=\"bl bigger\">- A silicon material with added impurities such as Phosphorus or Bismuth</p>\
+            <p class=\"bl bigger\">- The impurity has <strong>5 valence electrons</strong>, which gives an excess free electron</p>\
+            <p class=\"bl bigger\">- This extra electron gives it a negative charge, hence the &apos;N&apos;</p>\
+            <img src=res/ntype.png im=nt></img></div>\
+            <div style=\"border: solid black 3px; width:0px; height: 100%; transform: translateX(500px); float: lef; position: absolute\"></div><div style=\"transform: translateX(510px); width: 500px\"><h1 class=\"bigger\" font=two>P TYPE SEMICONDUCTOR</h1>\
+            <p class=\"bl bigger\">- A silicon material with added impurities such as Boron or Gallium</p>\
+            <p class=\"bl bigger\">- This impurity has <strong>3 valence electrons</strong>, which create a hole</p>\
+            <p class=\"bl bigger\">- The hole, or an absence of an electron is considered to give a positive charge, hence the &apos;P&apos;</p>\
+            <img src=res/psem2.gif im=nt></img></div>';"],
+            //lithium batteries
+            5:["displayarea.innerHTML = '<h2 class=ble>How do Lithium Ion batteries work?</h2>\
+            <p class=\"bl bigger doub par\">Lithium Ion batteries have a negative anode, made of Carbon and a positive cathode, made of Cobalt Oxide (CoO2). When the battery is &apos;charged&apos;, Lithium is bonded with the Carbon. Then when the circuit is completed, chemical reactions occur within the Carbon-Lithium mix and realease the electrons. The chemical energy in the electrons is used in your device. Then the electrons and positively charged lithium ions are bonded to the cathode as LiCoO2, ready to be recharged. To recharge the battery, energy is applied to the battery to try and reverse the process.<p>\
+            <img src=res/lithb.jpg im=lit />';"],
+            //conclusion
+            //󠀠zero width space
+            6:["if(typeof(goup) !== 'undefined'){clearInterval(ups);}","displayarea.innerHTML = '<h1 class=ble>Conclusion</h1>\
+            <p class=\"ble bigger par doub\">Computers are very complicated. On the outside, it looks like an Aluminum shell. However, on the inside are loads of complex, chemical and physical things that program the device. The computer&apos;s storage is millions upon millions of tiny transistors, storing data as electrons trapped in a floating gate. These electron are put there through quantum mechanics and removed with a negative charge. The battery of the computer is also very complicated chemistry. Ions and electrons are moved from a positive to a negative side to charge and discharge it.</p>';"],
+            //sources​ &#9;//tab
             7:["if(typeof(no) !== 'undefined'){clearInterval(no);}",
             "displayarea.innerHTML = '<div id=upward>\
                 <h1 style=text-align:center>Sources</h1>\
@@ -128,6 +148,13 @@
                     <li>https://www.youtube.com/watch?v=hjl5boYJOZI</li>\
                     <li>https://en.wikipedia.org/wiki/Extrinsic_semiconductor</li>\
                     <li>https://www.reddit.com/r/apple/comments/1ung1q/why_apples_macbook_are_made_of_aluminium/</li>\
+                    <li>http://www.chipsetc.com/valuable-metals-used-in-computers.html</li>\
+                    <li><strong><i>https://shortr.github.io/?A</i></strong></li>\
+                    <li>https://photon.libretexts.org/The_Science_of_Solar/Solar_Basics/D._P-N_Junction_Diodes/I._P-Type%2C_N-Type_Semiconductors</li>\
+                    <li>http://www.explainthatstuff.com/how-lithium-ion-batteries-work.html</li>\
+                    <li>https://www.extremetech.com/extreme/184236-how-does-a-lithium-ion-battery-work-and-why-are-lithium-ion-batteries-so-popular</li>\
+                    <li>http://sustainable-nano.com/2013/10/15/how-do-lithium-ion-batteries-work/</li>\
+                    <li>http://www.explainthatstuff.com/how-battery-chargers-work.html</li>\
                 </ul>\
             </div>'","var ups = document.getElementById('upward');","ups.style.transform = 'translateY(560px)';","var nm = 560;",
             "var goup = setInterval(function(){\
@@ -139,8 +166,6 @@
             "var no = setInterval(\
                 function(){\
                     cD = new Date();\
-                    cD.setMonth(admin);\
-                    cD.setDate(da);\
                     var l = Number(cD.getFullYear() % 4 == 0);\
                     var months = [31,28 + l,31,30,31,30,31,31,30,31,30,31];\
                     \
