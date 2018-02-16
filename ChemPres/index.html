@@ -162,7 +162,7 @@
                 ups.style.transform = 'translateY(' + nm + 'px)';\
             },30);"],
             //birthday! :)
-            8:["clearInterval(goup);","displayarea.style.background = 'gray'","var bD = {M:2,D:12};","var cD;","displayarea.innerHTML = '<div id=bday><h1>My birthday countdown!</h1><div id=stats></div></div>'",
+            9:["clearInterval(goup);","displayarea.style.background = 'gray'","var bD = {M:2,D:12};","var cD;","displayarea.innerHTML = '<div id=bday><h1>My birthday countdown!</h1><div id=stats></div></div>'",
             "var no = setInterval(\
                 function(){\
                     cD = new Date();\
@@ -203,6 +203,9 @@
                         minutes --;\
                         hours --;\
                     }\
+                    if(cD.getDate() == 12 && cD.getMonth() == 1){\
+                        milliseconds = 0; seconds = 0; hours = 0;\
+                    }\
                 }\
                 );"
             ,"var stat = document.getElementById('stats');\
@@ -215,7 +218,7 @@
             <img im=cake src=res/cake.png></img>';});\
             "],
             //yay! kahoot game
-            9:["clearInterval(no);","displayarea.style.background='white'","displayarea.innerHTML = '<h1 id=gameheader style=\"margin-left: 15px\">Kahoot!!!</h1><iframe class=fullsc src=https://play.kahoot.it/#/?quizId=3dc75cde-6580-439c-aa54-10ccaf1b05ed />'"]
+            8:["clearInterval(no);","displayarea.style.background='white'","displayarea.innerHTML = '<h1 id=gameheader style=\"margin-left: 15px\">Kahoot!!!</h1><iframe class=fullsc src=https://play.kahoot.it/#/?quizId=3dc75cde-6580-439c-aa54-10ccaf1b05ed />'"]
         };
         function openSlide(){
             //renders the slides
