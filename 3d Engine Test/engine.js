@@ -150,7 +150,14 @@ var km = {
 
 window.onkeydown = window.onkeyup = function(e){
     km[e.keyCode] = e.type == 'keydown';
-}
+};
+
+//when leaving stuff?
+window.onblur = function(){
+    for(var r in km){
+        km[r] = false;
+    }
+};
 
 var sens = 0.5;
 
