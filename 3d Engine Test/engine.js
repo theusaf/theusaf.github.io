@@ -254,3 +254,31 @@ var run = setInterval(
     }
 );
 c.translate(width/2,height/2);
+
+//update stats on html
+var stats = {
+    x: document.getElementById('x'),
+    y: document.getElementById('y'),
+    z: document.getElementById('z'),
+    rx: document.getElementById('xa'),
+    ry: document.getElementById('ya')
+};
+
+setInterval(function(){
+    stats.x.innerText = "X: " + x;
+    stats.y.innerText = "Y: " + y;
+    stats.z.innerText = "Z: " + z;
+    stats.rx.innerText = "Rotation X: " + angleX;
+    stats.ry.innerText = "Rotation Y: " + angleY; 
+    
+    var sen = document.getElementById('sens');
+    sens = Number(sen.value);
+},1)
+
+function reset(){
+    x = 0;
+    y = 0;
+    z = -40;
+    angleX = 0;
+    angleY = 0;
+}

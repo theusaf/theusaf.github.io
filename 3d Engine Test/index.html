@@ -7,6 +7,16 @@
         <div id=s>
             <canvas id=engine width=700 height=500></canvas>
         </div>
+        <div id=stats>
+            <p id=x>X</p>
+            <p id=y>Y</p>
+            <p id=z>Z</p>
+            <p id=xa>Rotation X</p>
+            <p id=ya>Rotation Y</p>
+            <a href="javascript:reset()">Reset Position</a>
+            <p>User Settings</p>
+            <input type=range max=3 min=0.01 value=0.5 id=sens step=0.01 />
+        </div>
         <script src=engine.js></script>
     </body>
 </html>
