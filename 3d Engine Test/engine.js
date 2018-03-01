@@ -252,7 +252,7 @@ var run = setInterval(
        drawLine(0,40,0,0,40,40,2,"blue");
        drawLine(40,40,0,40,40,40,2,"blue");
     }
-);
+,1);
 c.translate(width/2,height/2);
 
 //update stats on html
