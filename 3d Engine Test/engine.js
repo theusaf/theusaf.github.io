@@ -128,6 +128,22 @@ function setUpAngles(){
     angleYCos = cos(angleY);
     angleZSin = sin(angleZ);
     angleZCos = cos(angleZ);
+    
+    //cap angles at -180 to 180
+    var n = angleY;
+    var n2 = 0;
+    while(n > 180 || n < -180){
+        if(n > 180){
+            n2 = n - 180;
+            n = -180 + n2;
+        }else if(n < -180){
+            n2 = n + 180;
+            n = 180 - n;
+        }
+    }
+    if(n2 != 0){
+        angleY = n;
+    }
 }
 //add 'controls' or game engine, aka velocity and stuff
 var velocityY = 0;
@@ -228,12 +244,30 @@ function controls(){
 }
 
 //add draw or setinterval running drawline
+var fps = 0;
+var lastTime = Date.now();
+var currentTime = Date.now();
+var last40Frames = 0;
+var framesSinceLastUpdate = 0;
 
 var run = setInterval(
     function(){
        if(false){
            clearInterval(run);
        }
+       //fps
+       
+       if(framesSinceLastUpdate > 40){
+           framesSinceLastUpdate = 0;
+           fps = last40Frames;
+           last40Frames = 0;
+       }
+       currentTime = Date.now();
+       framesSinceLastUpdate ++;
+       last40Frames += 1000 / (currentTime - lastTime) / framesSinceLastUpdate;
+       lastTime = currentTime;
+       
+       //setup
        setUpAngles();
        controls();
        c.clearRect(0 - width / 2,0 - height / 2,width,height);
@@ -252,7 +286,7 @@ var run = setInterval(
        drawLine(0,40,0,0,40,40,2,"blue");
        drawLine(40,40,0,40,40,40,2,"blue");
     }
-,1);
+,10);
 c.translate(width/2,height/2);
 
 //update stats on html
@@ -261,7 +295,8 @@ var stats = {
     y: document.getElementById('y'),
     z: document.getElementById('z'),
     rx: document.getElementById('xa'),
-    ry: document.getElementById('ya')
+    ry: document.getElementById('ya'),
+    fps: document.getElementById('fps')
 };
 
 setInterval(function(){
@@ -270,10 +305,11 @@ setInterval(function(){
     stats.z.innerText = "Z: " + z;
     stats.rx.innerText = "Rotation X: " + angleX;
     stats.ry.innerText = "Rotation Y: " + angleY; 
+    stats.fps.innerText = "FPS: " + fps.toFixed(0);
     
     var sen = document.getElementById('sens');
     sens = Number(sen.value);
-},1)
+},10);
 
 function reset(){
     x = 0;

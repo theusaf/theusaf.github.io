@@ -13,3 +13,6 @@
     margin-left: 30px;
     transform: translateX(1000px);
 }
+#fps{
+    color:red;
+}
