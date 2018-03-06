@@ -1,3 +1,6 @@
+//MC COMMAND UPDATER
+//VERSION 0.1.1
+
 //vars
 var out = document.getElementById('output');
 var justincase = console.log;
@@ -130,7 +133,7 @@ function parse(typ,version,version2,te){
             var ar = te.split(" ");
             console.log(ar);
             var s = checkDamage(ar[4],ar[2]);
-            var altS;
+            var altS = "";
             if(s.safe == null){
                 s = checkRename(ar[2]);
             }
@@ -140,6 +143,14 @@ function parse(typ,version,version2,te){
             }
             var se = checkSelector(ar[1]);
             var nbt = checkNBT(ar[5]);
+            if(altS !== ""){
+                if(typeof(nbt) != 'undefined' && nbt != ""){
+                    nbt = nbt.substring(0,nbt.length - 1);
+                    nbt = nbt + "," + altS + "}";
+                }else{
+                    nbt = "{" + altS + "}";
+                }
+            }
             //if statement :p
             if(ar[3] === undefined){
                 ar.push("");
