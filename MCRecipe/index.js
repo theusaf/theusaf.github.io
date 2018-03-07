@@ -1,5 +1,5 @@
 //MC COMMAND UPDATER
-//VERSION 0.1.3
+//VERSION 0.1.4
 
 //vars
 var out = document.getElementById('output');
@@ -458,6 +458,66 @@ function checkSelector(sel){
                 onlyEvens[indexMax] = ".." + max;
             }
         }
+        //if i contains rx
+        if(maxs[k] == 'rx'){
+            includesRM = false;
+            //if rxm is used
+            if(mins.includes('rxm')){
+                includesRM = true;
+                min = onlyEvens[onlyOdds.indexOf('rxm')];
+                indexMin = onlyOdds.indexOf('rxm');
+                max = onlyEvens[onlyOdds.indexOf('rx')];
+                indexMax = onlyOdds.indexOf('rx');
+                //removes the min
+                onlyOdds.splice(indexMin,1);
+                onlyEvens.splice(indexMin,1);
+                
+                if(indexMax > indexMin){
+                    indexMax -= 1;
+                }
+                //renames the max to correct thing
+                onlyOdds[indexMax] = "x_rotation";
+                onlyEvens[indexMax] = min + ".." + max;
+            }
+            //if rxm was not used
+            if(includesRM == false){
+                indexMax = onlyOdds.indexOf('rx');
+                max = onlyEvens[onlyOdds.indexOf('rx')];
+                //renames
+                onlyOdds[indexMax] = "x_rotation";
+                onlyEvens[indexMax] = ".." + max;
+            }
+        }
+        //if ry is used
+        if(maxs[k] == 'ry'){
+            includesRM = false;
+            //if rym is used
+            if(mins.includes('rym')){
+                includesRM = true;
+                min = onlyEvens[onlyOdds.indexOf('rym')];
+                indexMin = onlyOdds.indexOf('rym');
+                max = onlyEvens[onlyOdds.indexOf('ry')];
+                indexMax = onlyOdds.indexOf('ry');
+                //removes the min
+                onlyOdds.splice(indexMin,1);
+                onlyEvens.splice(indexMin,1);
+                
+                if(indexMax > indexMin){
+                    indexMax -= 1;
+                }
+                //renames the max to correct thing
+                onlyOdds[indexMax] = "y_rotation";
+                onlyEvens[indexMax] = min + ".." + max;
+            }
+            //if rxm was not used
+            if(includesRM == false){
+                indexMax = onlyOdds.indexOf('ry');
+                max = onlyEvens[onlyOdds.indexOf('ry')];
+                //renames
+                onlyOdds[indexMax] = "y_rotation";
+                onlyEvens[indexMax] = ".." + max;
+            }
+        }
     }
     //loop thru mins. If the min still exists, then the max doesnt as all the maxs remove the mins above
     for(var l in mins){
@@ -469,6 +529,16 @@ function checkSelector(sel){
         //level min
         if(mins[l] == 'lm'){
             onlyOdds[l] = "level";
+            onlyEvens[l] = onlyEvens[l] + "..";
+        }
+        //rotation x
+        if(mins[l] == 'rxm'){
+            onlyOdds[l] = "x_rotation";
+            onlyEvens[l] = onlyEvens[l] + "..";
+        }
+        //rotation y
+        if(mins[l] == 'rym'){
+            onlyOdds[l] = "y_rotation";
             onlyEvens[l] = onlyEvens[l] + "..";
         }
     }
