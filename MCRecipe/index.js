@@ -1,5 +1,5 @@
 //MC COMMAND UPDATER
-//VERSION 0.1.5
+//VERSION 0.1.6
 
 //vars
 var out = document.getElementById('output');
@@ -411,6 +411,7 @@ function checkSelector(sel){
                 //removes the min
                 onlyOdds.splice(indexMin,1);
                 onlyEvens.splice(indexMin,1);
+                mins.splice(mins.indexOf('rm'),1);
                 
                 if(indexMax > indexMin){
                     indexMax -= 1;
@@ -420,7 +421,7 @@ function checkSelector(sel){
                 onlyEvens[indexMax] = min + ".." + max;
                 //if rm is equal to r
                 if(min == max){
-                    onlyEvens[indexMax] = max;
+                    onlyEvens[indexMax] = String(max);
                 }
             }
             //if rm was not used
@@ -434,10 +435,10 @@ function checkSelector(sel){
         }
         //if it contains 'l'
         if(maxs[k] == 'l'){
-            includesRM = false;
+            var includesLM = false;
             //if lm is used
             if(mins.includes('lm')){
-                includesRM = true;
+                includesLM = true;
                 min = onlyEvens[onlyOdds.indexOf('lm')];
                 indexMin = onlyOdds.indexOf('lm');
                 max = onlyEvens[onlyOdds.indexOf('l')];
@@ -445,6 +446,7 @@ function checkSelector(sel){
                 //removes the min
                 onlyOdds.splice(indexMin,1);
                 onlyEvens.splice(indexMin,1);
+                mins.splice(mins.indexOf('lm'),1);
                 
                 if(indexMax > indexMin){
                     indexMax -= 1;
@@ -454,11 +456,11 @@ function checkSelector(sel){
                 onlyEvens[indexMax] = min + ".." + max;
                 //if lm = l
                 if(min == max){
-                    onlyEvens[indexMax] = max;
+                    onlyEvens[indexMax] = String(max);
                 }
             }
             //if lm was not used
-            if(includesRM == false){
+            if(includesLM == false){
                 indexMax = onlyOdds.indexOf('l');
                 max = onlyEvens[onlyOdds.indexOf('l')];
                 //renames
@@ -468,10 +470,10 @@ function checkSelector(sel){
         }
         //if i contains rx
         if(maxs[k] == 'rx'){
-            includesRM = false;
+            var includesRX = false;
             //if rxm is used
             if(mins.includes('rxm')){
-                includesRM = true;
+                includesRX = true;
                 min = onlyEvens[onlyOdds.indexOf('rxm')];
                 indexMin = onlyOdds.indexOf('rxm');
                 max = onlyEvens[onlyOdds.indexOf('rx')];
@@ -479,6 +481,7 @@ function checkSelector(sel){
                 //removes the min
                 onlyOdds.splice(indexMin,1);
                 onlyEvens.splice(indexMin,1);
+                mins.splice(mins.indexOf('rxm'),1);
                 
                 if(indexMax > indexMin){
                     indexMax -= 1;
@@ -488,11 +491,11 @@ function checkSelector(sel){
                 onlyEvens[indexMax] = min + ".." + max;
                 //if rx =rxm
                 if(min == max){
-                    onlyEvens[indexMax] = max;
+                    onlyEvens[indexMax] = String(max);
                 }
             }
             //if rxm was not used
-            if(includesRM == false){
+            if(includesRX == false){
                 indexMax = onlyOdds.indexOf('rx');
                 max = onlyEvens[onlyOdds.indexOf('rx')];
                 //renames
@@ -502,10 +505,10 @@ function checkSelector(sel){
         }
         //if ry is used
         if(maxs[k] == 'ry'){
-            includesRM = false;
+            var includesRY = false;
             //if rym is used
             if(mins.includes('rym')){
-                includesRM = true;
+                includesRY = true;
                 min = onlyEvens[onlyOdds.indexOf('rym')];
                 indexMin = onlyOdds.indexOf('rym');
                 max = onlyEvens[onlyOdds.indexOf('ry')];
@@ -513,6 +516,7 @@ function checkSelector(sel){
                 //removes the min
                 onlyOdds.splice(indexMin,1);
                 onlyEvens.splice(indexMin,1);
+                mins.splice(mins.indexOf('rym'),1);
                 
                 if(indexMax > indexMin){
                     indexMax -= 1;
@@ -522,11 +526,11 @@ function checkSelector(sel){
                 onlyEvens[indexMax] = min + ".." + max;
                 //if ry = rym
                 if(min == max){
-                    onlyEvens[indexMax] = max;
+                    onlyEvens[indexMax] = String(max);
                 }
             }
             //if rxm was not used
-            if(includesRM == false){
+            if(includesRY == false){
                 indexMax = onlyOdds.indexOf('ry');
                 max = onlyEvens[onlyOdds.indexOf('ry')];
                 //renames
@@ -536,6 +540,8 @@ function checkSelector(sel){
         }
     }
     //loop thru mins. If the min still exists, then the max doesnt as all the maxs remove the mins above
+    console.log(mins);
+    console.log(maxs);
     for(var l in mins){
         //radius min
         if(mins[l] == 'rm'){
