@@ -1,5 +1,5 @@
 //MC COMMAND UPDATER
-//VERSION 0.1.4
+//VERSION 0.1.5
 
 //vars
 var out = document.getElementById('output');
@@ -418,6 +418,10 @@ function checkSelector(sel){
                 //renames the max to correct thing
                 onlyOdds[indexMax] = "distance";
                 onlyEvens[indexMax] = min + ".." + max;
+                //if rm is equal to r
+                if(min == max){
+                    onlyEvens[indexMax] = max;
+                }
             }
             //if rm was not used
             if(includesRM == false){
@@ -448,6 +452,10 @@ function checkSelector(sel){
                 //renames the max to correct thing
                 onlyOdds[indexMax] = "level";
                 onlyEvens[indexMax] = min + ".." + max;
+                //if lm = l
+                if(min == max){
+                    onlyEvens[indexMax] = max;
+                }
             }
             //if lm was not used
             if(includesRM == false){
@@ -478,6 +486,10 @@ function checkSelector(sel){
                 //renames the max to correct thing
                 onlyOdds[indexMax] = "x_rotation";
                 onlyEvens[indexMax] = min + ".." + max;
+                //if rx =rxm
+                if(min == max){
+                    onlyEvens[indexMax] = max;
+                }
             }
             //if rxm was not used
             if(includesRM == false){
@@ -508,6 +520,10 @@ function checkSelector(sel){
                 //renames the max to correct thing
                 onlyOdds[indexMax] = "y_rotation";
                 onlyEvens[indexMax] = min + ".." + max;
+                //if ry = rym
+                if(min == max){
+                    onlyEvens[indexMax] = max;
+                }
             }
             //if rxm was not used
             if(includesRM == false){
