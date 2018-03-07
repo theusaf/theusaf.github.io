@@ -3,7 +3,7 @@
 
 //vars
 var out = document.getElementById('output');
-var justincase = console.log;
+var justincase = {con: console.log, clear: console.clear};
 console.log = function(m){
     var consol = document.getElementById('console');
     if(typeof(m) == 'string' || typeof(m) == 'number'){
@@ -12,6 +12,10 @@ console.log = function(m){
         consol.innerText += str(m) + "\n";
     }
 };
+console.clear = function(){
+    var consol = document.getElementById('console');
+    consol.innerText = "";
+}
 
 var damageList = {
     wool: ["white_wool","orange_wool","magenta_wool","light_blue_wool","yellow_wool","lime_wool","pink_wool","gray_wool","light_gray_wool","cyan_wool","purple_wool","blue_wool","brown_wool","green_wool","red_wool","black_wool"],
@@ -142,6 +146,11 @@ function parse(typ,version,version2,te){
                 s.data = ar[2];
             }
             var se = checkSelector(ar[1]);
+            //if there was a selector
+            if(se !== ""){
+                ar[1] = ar[1].substring(0,3);
+            }
+            
             var nbt = checkNBT(ar[5]);
             if(altS !== ""){
                 if(typeof(nbt) != 'undefined' && nbt != ""){
@@ -155,7 +164,7 @@ function parse(typ,version,version2,te){
             if(ar[3] === undefined){
                 ar.push("");
             }
-            fin = ar[0] + p + ar[1] + p + s.data + nbt + p + ar[3];
+            fin = ar[0] + p + ar[1] + se + p + s.data + nbt + p + ar[3];
             break;
         
         default:
@@ -165,6 +174,7 @@ function parse(typ,version,version2,te){
     return fin;
 }
 function checkDamage(n,obj){
+    obj = obj.toLowerCase();
     if(typeof(n) != 'undefined'){
         n = Number(n);
     }else{
@@ -202,6 +212,7 @@ function checkDamage(n,obj){
     }
 }
 function checkRename(obj){
+    obj = obj.toLowerCase();
     for(var i in renameList){
         if(i == obj || i == obj.replace("minecraft:","")){
             console.log("Item has a rename id: " + renameList[i]);
@@ -291,5 +302,173 @@ function updateDisplay(dats){
     }
 }
 function checkSelector(sel){
+    sel = sel.substring(3);
+    sel = sel.substring(0,sel.length - 1);
+    console.log(sel);
+    //hopefully, all odds should be the actual selector thing
+    sel = sel.split(/=|,/img);
+    console.log(sel);
+    var onlyOdds = [];
+    var onlyEvens = [];
+    for(var h in sel){
+        if(h % 2 != 0){
+            onlyEvens.push(sel[h]);
+        }
+    }
+    for(var i in sel){
+        if(i % 2 == 0){
+            onlyOdds.push(sel[i]);
+        }
+    }
+    var ok = false;
+    var mins = [];
+    var maxs = [];
+    var add = [];
+    for(var j in onlyOdds){
+        switch (onlyOdds[j]) {
+            case 'm':
+                onlyOdds[j] = "gamemode";
+                onlyEvens[j] = checkGamemode(onlyEvens[j]);
+                ok = true;
+                break;
+            case 'r':
+                maxs.push("r");
+                ok = true;
+                break;
+            case 'l':
+                maxs.push("l");
+                ok = true;
+                break;
+            case 'c':
+                onlyOdds[j] = "limit";
+                if(Number(onlyEvens[j]) > 0){
+                    add.push("sort=nearest");
+                }
+                if(Number(onlyEvens[j]) < 0){
+                    console.log("limit is lower than 0, attemping to update it to a positive number: " + onlyEvens[j] + " at index " + j);
+                    onlyEvens[j] = String(Math.abs(Number(onlyEvens[j])));
+                    add.push("sort=furthest");
+                }
+                ok = true;
+                break;
+            case 'lm':
+                mins.push("lm");
+                ok = true;
+                break;
+            case 'rm':
+                mins.push("rm");
+                ok = true;
+                break;
+            case 'rx':
+                maxs.push("rx");
+                ok = true;
+                break;
+            case 'ry':
+                maxs.push("ry");
+                ok = true;
+                break;
+            case "rxm":
+                mins.push("rxm");
+                ok = true;
+                break;
+            case "rym":
+                mins.push("rym");
+                ok = true;
+                break;
+            default:
+                //no selector!
+                console.log("No selector found");
+                if(ok == false){
+                    return "";
+                }
+        }
+    }
+    console.log(onlyEvens);
+    console.log(onlyOdds);
+    console.log(sel);
     
+    console.log("minimum selectors found: " + mins);
+    console.log("maximum selectors found: " + maxs);
+    //determines what to delete and stuff :p
+    for(var k in maxs){
+        var min;
+        var max;
+        var indexMax;
+        var indexMin;
+        //if r was found
+        if(maxs[k] == 'r'){
+            var includesRM = false;
+            //if rm was also used
+            if(mins.includes('rm')){
+                includesRM = true;
+                min = onlyEvens[onlyOdds.indexOf('rm')];
+                indexMin = onlyOdds.indexOf('rm');
+                max = onlyEvens[onlyOdds.indexOf('r')];
+                indexMax = onlyOdds.indexOf('r');
+                //removes the min
+                onlyOdds.splice(indexMin,1);
+                onlyEvens.splice(indexMin,1);
+                
+                if(indexMax > indexMin){
+                    indexMax -= 1;
+                }
+                //renames the max to correct thing
+                onlyOdds[indexMax] = "distance";
+                onlyEvens[indexMax] = min + ".." + max;
+            }
+            //if rm was not used
+            if(includesRM == false){
+                indexMax = onlyOdds.indexOf('r');
+                max = onlyEvens[onlyOdds.indexOf('r')];
+                //renames
+                onlyOdds[indexMax] = "distance";
+                onlyEvens[indexMax] = ".." + max;
+            }
+        }
+    }
+    //loop thru mins. If the min still exists, then the max doesnt as all the maxs remove the mins above
+    for(var l in mins){
+        if(mins[l] == 'rm'){
+            onlyOdds[l] = "distance";
+            onlyEvens[l] = onlyEvens[l] + "..";
+        }
+    }
+    sel = [];
+    for(var l in onlyOdds){
+        sel.push(onlyOdds[l]);
+        sel.push(onlyEvens[l]);
+    }
+    console.log(sel);
+    return filter(sel.join("=")) + "]";
+}
+function filter(str){
+    str = str.split("");
+    var skip = 0;
+    for(var i in str){
+        if(str[i] == "="){
+            skip += 1;
+            if(skip % 2 == 0){
+                str[i] = ",";
+                skip = 0;
+            }
+        }
+    }
+    return str.join("");
+}
+function checkGamemode(mode){
+    mode = mode.toLowerCase();
+    if(mode == 1 || mode.substring(0,1) == 'c'){
+        return "creative";
+    }
+    if(mode == 0 || mode.substring(0,2) == 'su'){
+        return "survival";
+    }
+    if(mode == 2 || mode.substring(0,1) == 'a'){
+        return "adventure";
+    }
+    if(mode == 3 || mode.substring(0,2) == 'sp'){
+        return "spectator";
+    }
+    console.log("undefined gamemode " + mode);
+    return "error";
 }
