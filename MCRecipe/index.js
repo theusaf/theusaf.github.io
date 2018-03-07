@@ -1,5 +1,5 @@
 //MC COMMAND UPDATER
-//VERSION 0.1.2
+//VERSION 0.1.3
 
 //vars
 var out = document.getElementById('output');
@@ -342,12 +342,14 @@ function checkSelector(sel){
             case 'c':
                 onlyOdds[j] = "limit";
                 if(Number(onlyEvens[j]) > 0){
-                    add.push("sort=nearest");
+                    add.push("sort");
+                    add.push("nearest");
                 }
                 if(Number(onlyEvens[j]) < 0){
                     console.log("limit is lower than 0, attemping to update it to a positive number: " + onlyEvens[j] + " at index " + j);
                     onlyEvens[j] = String(Math.abs(Number(onlyEvens[j])));
-                    add.push("sort=furthest");
+                    add.push("sort");
+                    add.push("furthest");
                 }
                 ok = true;
                 break;
@@ -397,6 +399,7 @@ function checkSelector(sel){
         var indexMin;
         //if r was found
         if(maxs[k] == 'r'){
+            //using this for all maxs and mins btw
             var includesRM = false;
             //if rm was also used
             if(mins.includes('rm')){
@@ -425,18 +428,61 @@ function checkSelector(sel){
                 onlyEvens[indexMax] = ".." + max;
             }
         }
+        //if it contains 'l'
+        if(maxs[k] == 'l'){
+            includesRM = false;
+            //if lm is used
+            if(mins.includes('lm')){
+                includesRM = true;
+                min = onlyEvens[onlyOdds.indexOf('lm')];
+                indexMin = onlyOdds.indexOf('lm');
+                max = onlyEvens[onlyOdds.indexOf('l')];
+                indexMax = onlyOdds.indexOf('l');
+                //removes the min
+                onlyOdds.splice(indexMin,1);
+                onlyEvens.splice(indexMin,1);
+                
+                if(indexMax > indexMin){
+                    indexMax -= 1;
+                }
+                //renames the max to correct thing
+                onlyOdds[indexMax] = "level";
+                onlyEvens[indexMax] = min + ".." + max;
+            }
+            //if lm was not used
+            if(includesRM == false){
+                indexMax = onlyOdds.indexOf('l');
+                max = onlyEvens[onlyOdds.indexOf('l')];
+                //renames
+                onlyOdds[indexMax] = "level";
+                onlyEvens[indexMax] = ".." + max;
+            }
+        }
     }
     //loop thru mins. If the min still exists, then the max doesnt as all the maxs remove the mins above
     for(var l in mins){
+        //radius min
         if(mins[l] == 'rm'){
             onlyOdds[l] = "distance";
             onlyEvens[l] = onlyEvens[l] + "..";
         }
+        //level min
+        if(mins[l] == 'lm'){
+            onlyOdds[l] = "level";
+            onlyEvens[l] = onlyEvens[l] + "..";
+        }
     }
     sel = [];
-    for(var l in onlyOdds){
-        sel.push(onlyOdds[l]);
-        sel.push(onlyEvens[l]);
+    for(var m in onlyOdds){
+        sel.push(onlyOdds[m]);
+        sel.push(onlyEvens[m]);
+    }
+    for(var p in add){
+        if(p % 2 == 0){
+            p = Number(p);
+            sel.push(add[p]);
+            sel.push(add[p+1]);
+        }
     }
     console.log(sel);
     return filter(sel.join("=")) + "]";
