@@ -1,5 +1,5 @@
 //MC COMMAND UPDATER
-//VERSION 0.1.1
+//VERSION 0.1.2
 
 //vars
 var out = document.getElementById('output');
