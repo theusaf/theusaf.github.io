@@ -14,6 +14,7 @@ Wednesday 03/07/2018
 0.1.6: small bug fix
 0.1.7: nbt supports spaces
 0.1.8: begin support for scoreboards (rip my brain lol)
+0.1.9: fix score bug #1
 */
 
 //vars
@@ -373,6 +374,10 @@ function checkSelector(sel){
     console.log(onlyOdds);
     console.log(onlyEvens);
     
+    //needs fix (V 0.1.8) fix version: V 0.1.9
+    if(JSON.stringify(scores) != "{}"){
+        ok = true;
+    }
     for(var j in onlyOdds){
         switch (onlyOdds[j]) {
             case 'm':
