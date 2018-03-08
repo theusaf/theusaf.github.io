@@ -1,5 +1,5 @@
 //MC COMMAND UPDATER
-//VERSION 0.1.6
+//VERSION 0.1.7
 
 //vars
 var out = document.getElementById('output');
@@ -135,6 +135,15 @@ function parse(typ,version,version2,te){
     switch (typ) {
         case 'give':
             var ar = te.split(" ");
+            //rejoin nbt data
+            if(ar.length > 6){
+                for(var q in ar){
+                    if(q > 5){
+                        ar[5] = ar[5] + ar[q];
+                    }
+                }
+            }
+            
             console.log(ar);
             var s = checkDamage(ar[4],ar[2]);
             var altS = "";
