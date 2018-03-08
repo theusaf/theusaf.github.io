@@ -1,5 +1,20 @@
 //MC COMMAND UPDATER
-//VERSION 0.1.7
+//VERSION 0.1.8
+/*Update log:
+*Dates may be off
+Monday 03/05/2018
+0.1.0: Basic give support + nbt
+0.1.1: Add damage and rename values
+Tuesday 03/06/2018
+0.1.2: basic selectors
+0.1.3: nearest to furthest compensation
+Wednesday 03/07/2018
+0.1.4: almost full selector support
+0.1.5: less wasteful selectors
+0.1.6: small bug fix
+0.1.7: nbt supports spaces
+0.1.8: begin support for scoreboards (rip my brain lol)
+*/
 
 //vars
 var out = document.getElementById('output');
@@ -316,6 +331,7 @@ function checkSelector(sel){
     console.log(sel);
     //hopefully, all odds should be the actual selector thing
     sel = sel.split(/=|,/img);
+    console.log("'sel' after split");
     console.log(sel);
     var onlyOdds = [];
     var onlyEvens = [];
@@ -324,15 +340,39 @@ function checkSelector(sel){
             onlyEvens.push(sel[h]);
         }
     }
+    console.log(onlyEvens);
     for(var i in sel){
         if(i % 2 == 0){
             onlyOdds.push(sel[i]);
         }
     }
+    console.log(onlyOdds);
     var ok = false;
     var mins = [];
     var maxs = [];
     var add = [];
+    var scores = {};
+    var deleted = [];
+    
+    //removing all scoreboard tings from onlyEvens and onlyOdds
+    for(var z = 0; z < onlyOdds.length + 1; z++){
+        console.log(z - down(deleted,2));
+        if(onlyOdds[z - down(deleted,z)].substring(0,5) == "score"){
+            scores[onlyOdds[z - down(deleted,z)]] = onlyEvens[z - down(deleted,z)];
+            
+            //delete
+            onlyOdds.splice(z - down(deleted,z),1);
+            onlyEvens.splice(z - down(deleted,z),1);
+            deleted.push(z - down(deleted,z));
+            console.log("successfully removed score object");
+        }
+    }
+    console.log("results after removing scores: ");
+    console.log(deleted);
+    console.log(scores);
+    console.log(onlyOdds);
+    console.log(onlyEvens);
+    
     for(var j in onlyOdds){
         switch (onlyOdds[j]) {
             case 'm':
@@ -394,9 +434,16 @@ function checkSelector(sel){
                 }
         }
     }
-    console.log(onlyEvens);
-    console.log(onlyOdds);
-    console.log(sel);
+    
+    function down(arg,num){
+        var g = 0;
+        for(var i in arg){
+            if(num > arg[i]){
+                g ++;
+            }
+        }
+        return g;
+    }
     
     console.log("minimum selectors found: " + mins);
     console.log("maximum selectors found: " + maxs);
@@ -585,6 +632,7 @@ function checkSelector(sel){
             sel.push(add[p+1]);
         }
     }
+    console.log("final res");
     console.log(sel);
     return filter(sel.join("=")) + "]";
 }
