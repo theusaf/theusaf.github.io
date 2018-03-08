@@ -15,6 +15,7 @@ Wednesday 03/07/2018
 0.1.7: nbt supports spaces
 0.1.8: begin support for scoreboards (rip my brain lol)
 0.1.9: fix score bug #1
+0.1.10: fix score bug #2 (probably final for this category)
 */
 
 //vars
@@ -358,14 +359,17 @@ function checkSelector(sel){
     //removing all scoreboard tings from onlyEvens and onlyOdds
     for(var z = 0; z < onlyOdds.length + 1; z++){
         console.log(z - down(deleted,2));
-        if(onlyOdds[z - down(deleted,z)].substring(0,5) == "score"){
-            scores[onlyOdds[z - down(deleted,z)]] = onlyEvens[z - down(deleted,z)];
-            
-            //delete
-            onlyOdds.splice(z - down(deleted,z),1);
-            onlyEvens.splice(z - down(deleted,z),1);
-            deleted.push(z - down(deleted,z));
-            console.log("successfully removed score object");
+        //make sure no darn TypeError occurs :p
+        if(typeof(onlyOdds[z - down(deleted,z)]) != 'undefined'){
+            if(onlyOdds[z - down(deleted,z)].substring(0,5) == "score"){
+                scores[onlyOdds[z - down(deleted,z)]] = onlyEvens[z - down(deleted,z)];
+                
+                //delete
+                onlyOdds.splice(z - down(deleted,z),1);
+                onlyEvens.splice(z - down(deleted,z),1);
+                deleted.push(z - down(deleted,z));
+                console.log("successfully removed score object");
+            }
         }
     }
     console.log("results after removing scores: ");
