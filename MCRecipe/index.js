@@ -16,6 +16,8 @@ Wednesday 03/07/2018
 0.1.8: begin support for scoreboards (rip my brain lol)
 0.1.9: fix score bug #1
 0.1.10: fix score bug #2 (probably final for this category)
+0.1.11: fix filter funct
+0.1.12: fix scoreboard
 */
 
 //vars
@@ -174,13 +176,13 @@ function parse(typ,version,version2,te){
             var se = checkSelector(ar[1]);
             //if there was a selector
             if(se !== ""){
-                ar[1] = ar[1].substring(0,3);
+                ar[1] = ar[1].substr(0,3);
             }
             
             var nbt = checkNBT(ar[5]);
             if(altS !== ""){
                 if(typeof(nbt) != 'undefined' && nbt != ""){
-                    nbt = nbt.substring(0,nbt.length - 1);
+                    nbt = nbt.substr(0,nbt.length - 1);
                     nbt = nbt + "," + altS + "}";
                 }else{
                     nbt = "{" + altS + "}";
@@ -328,8 +330,8 @@ function updateDisplay(dats){
     }
 }
 function checkSelector(sel){
-    sel = sel.substring(3);
-    sel = sel.substring(0,sel.length - 1);
+    sel = sel.substr(3);
+    sel = sel.substr(0,sel.length - 1);
     console.log(sel);
     //hopefully, all odds should be the actual selector thing
     sel = sel.split(/=|,/img);
@@ -357,11 +359,12 @@ function checkSelector(sel){
     var deleted = [];
     
     //removing all scoreboard tings from onlyEvens and onlyOdds
+    //requires fix V 0.1.10
     for(var z = 0; z < onlyOdds.length + 1; z++){
         console.log(z - down(deleted,2));
         //make sure no darn TypeError occurs :p
         if(typeof(onlyOdds[z - down(deleted,z)]) != 'undefined'){
-            if(onlyOdds[z - down(deleted,z)].substring(0,5) == "score"){
+            if(onlyOdds[z - down(deleted,z)].substr(0,5) == "score"){
                 scores[onlyOdds[z - down(deleted,z)]] = onlyEvens[z - down(deleted,z)];
                 
                 //delete
@@ -629,6 +632,56 @@ function checkSelector(sel){
             onlyEvens[l] = onlyEvens[l] + "..";
         }
     }
+    
+    //scoreboard stuffs
+    //requires fix 0.1.10 Fix version: 0.1.12
+    if(JSON.stringify(scores) != "{}"){
+        mins = [];
+        maxs = [];
+        max = 0;
+        min = 0;
+        console.log("old scores:");
+        console.log(scores);
+        for(var w in scores){
+            //if the var is not a min
+            if(w.substr(w.length - 4,4) !== "_min"){
+                max = scores[w];
+                //if a min version does exist
+                if(typeof(scores[w + "_min"]) != 'undefined'){
+                    //if the numbers are the same
+                    if(Number(scores[w]) == Number(scores[w + "_min"])){
+                        delete scores[w + "_min"];
+                        delete scores[w];
+                        scores[w.substr(6,w.length - 6)] = max;
+                    }else{
+                        scores[w.substr(6,w.length - 6)] = scores[w + "_min"] + ".." + max;
+                        delete scores[w];
+                        delete scores[w + "_min"];
+                    }
+                //if min version doesn't exist
+                }else{
+                    delete scores[w];
+                    scores[w.substr(6,w.length - 6)] = ".." + max;
+                }
+            }
+        }
+        //new loop thru to see if there are any stray mins
+        console.log("scores after first loop");
+        console.log(scores);
+        for(w in scores){
+            //if a min is still found
+            if(w.substr(w.length - 4,4) == '_min'){
+                min = scores[w];
+                delete scores[w];
+                var str = w.substr(0,w.length - 4);
+                str = str.substr(6,str.length - 6);
+                scores[str] = min + "..";
+            }
+        }
+    }
+    console.log("new scores:");
+    console.log(scores);
+    
     sel = [];
     for(var m in onlyOdds){
         sel.push(onlyOdds[m]);
@@ -641,15 +694,54 @@ function checkSelector(sel){
             sel.push(add[p+1]);
         }
     }
+    //addScores
+    var nu = 0;
+    //used to delete extra obj
+    var selBefore = sel.length;
+    //fix needed 0.1.10
+    for(m in scores){
+        //if first time adding scores
+        if(nu == 0){
+            //if it is the only thing in it..
+            if(Object.keys(scores).length == 1){
+                sel.push("scores=={");
+                sel.push(m);
+                sel.push(scores[m] + "}");
+            }else{
+                sel.push("scores=={");
+                sel.push(m);
+                sel.push(scores[m]);
+            }
+        //if last item
+        }else if(nu == Object.keys(scores).length - 1){
+            sel.push(m);
+            sel.push(scores[m] + "}");
+        }else{
+            sel.push(m);
+            sel.push(scores[m]);
+        }
+        nu ++;
+    }
+    
     console.log("final res");
     console.log(sel);
     return filter(sel.join("=")) + "]";
 }
+
+//requires fix 0.1.10 Fix Version: 0.1.11
 function filter(str){
     str = str.split("");
     var skip = 0;
     for(var i in str){
-        if(str[i] == "="){
+        //if scoreboard?
+        var ignore = false;
+        if(str[i] + str[i-1] == "=="){
+            ignore = true;
+            str.splice(i, 1);
+            console.log("Skipping object as index " + i);
+            console.log(str);
+        }
+        if(str[i] == "=" && ignore == false){
             skip += 1;
             if(skip % 2 == 0){
                 str[i] = ",";
@@ -661,16 +753,16 @@ function filter(str){
 }
 function checkGamemode(mode){
     mode = mode.toLowerCase();
-    if(mode == 1 || mode.substring(0,1) == 'c'){
+    if(mode == 1 || mode.substr(0,1) == 'c'){
         return "creative";
     }
-    if(mode == 0 || mode.substring(0,2) == 'su'){
+    if(mode == 0 || mode.substr(0,2) == 'su'){
         return "survival";
     }
-    if(mode == 2 || mode.substring(0,1) == 'a'){
+    if(mode == 2 || mode.substr(0,1) == 'a'){
         return "adventure";
     }
-    if(mode == 3 || mode.substring(0,2) == 'sp'){
+    if(mode == 3 || mode.substr(0,2) == 'sp'){
         return "spectator";
     }
     console.log("undefined gamemode " + mode);
