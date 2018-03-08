@@ -16,8 +16,10 @@ Wednesday 03/07/2018
 0.1.8: begin support for scoreboards (rip my brain lol)
 0.1.9: fix score bug #1
 0.1.10: fix score bug #2 (probably final for this category)
+Thursday 03/08/2018
 0.1.11: fix filter funct
 0.1.12: fix scoreboard
+0.1.13: fix small bug
 */
 
 //vars
@@ -698,7 +700,7 @@ function checkSelector(sel){
     var nu = 0;
     //used to delete extra obj
     var selBefore = sel.length;
-    //fix needed 0.1.10
+    //fix needed 0.1.10 Fix version 0.1.13
     for(m in scores){
         //if first time adding scores
         if(nu == 0){
@@ -725,7 +727,7 @@ function checkSelector(sel){
     
     console.log("final res");
     console.log(sel);
-    return filter(sel.join("=")) + "]";
+    return (filter(sel.join("=")) + "]").replace("scores={,","scores={");
 }
 
 //requires fix 0.1.10 Fix Version: 0.1.11
