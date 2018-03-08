@@ -139,7 +139,7 @@ function parse(typ,version,version2,te){
             if(ar.length > 6){
                 for(var q in ar){
                     if(q > 5){
-                        ar[5] = ar[5] + ar[q];
+                        ar[5] = ar[5] + " " + ar[q];
                     }
                 }
             }
