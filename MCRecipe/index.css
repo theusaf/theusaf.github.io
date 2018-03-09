@@ -1,2 +1,15 @@
 /*imports*/
 @import url('https://fonts.googleapis.com/css?family=Ubuntu');
+#s{
+    display: none;
+}
+#e{
+    display: none;
+}
+#output{
+    width: 1000px;
+    height: 500px;
+}
+#in{
+    width: 910px;
+}

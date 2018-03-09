@@ -21,6 +21,7 @@ Thursday 03/08/2018
 0.1.12: fix scoreboard
 0.1.13: fix small bug
 0.1.14: fix scoreboard for loop cap
+1.2.0: Gamemode works fully, webpage looks nicer
 */
 
 //vars
@@ -85,6 +86,9 @@ var damageList = {
 };
 
 var safeFromDamageList = ["diamond_sword","iron_sword","golden_sword","wooden_sword","stone_sword","diamond_axe","golden_axe","iron_axe","stone_axe","wooden_axe","diamond_shovel","gold_shovel","iron_shovel","stone_shovel","wooden_shovel","diamond_hoe","golden_hoe","iron_hoe","stone_hoe","wooden_hoe","shears","diamond_helmet","golden_helmet","iron_helmet","chainmail_helmet","leather_helmet","diamond_leggings","golden_leggings","iron_leggings","chainmail_leggings","leather_leggings","diamond_chestplate","iron_chestplate","golden_chestplate","chainmail_chestplate","leather_chestplate","diamond_boots","golden_boots","iron_boots","chainmail_boots","leather_boots","flint_and_steel","fishing_rod","carrot_on_a_stick","bow","trident"];
+var entityList = {
+    
+};
 
 var renameList = {
     grass: "grass_block",
@@ -197,7 +201,29 @@ function parse(typ,version,version2,te){
             }
             fin = ar[0] + p + ar[1] + se + p + s.data + nbt + p + ar[3];
             break;
-        
+            
+        case 'gamemode':
+            ar = te.split(" ");
+            var g = checkGamemode(ar[1]);
+            var sel = "";
+            
+            if(typeof(ar[2]) != 'undefined'){
+                console.log("selector is missing");
+                sel = checkSelector(ar[2]);
+            }
+            
+            if(sel != "" && typeof(sel) != 'undefined'){
+                ar[2] = ar[2].substr(0,3);
+            }
+            
+            if(typeof(ar[2]) != 'undefined'){
+                fin = ar[0] + p + g + p + ar[2] + sel;
+            }else{
+                fin = ar[0] + p + g + p;
+            }
+            
+            break;
+            
         default:
             console.error("parseError: Unidentified type " + typ + " or invalid version");
             fin = null;
@@ -274,6 +300,7 @@ function checkNBT(dat){
     }
     return "";
 }
+
 function checkSpawnEgg(nbt){
     
 }
