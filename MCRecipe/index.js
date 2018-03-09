@@ -20,6 +20,7 @@ Thursday 03/08/2018
 0.1.11: fix filter funct
 0.1.12: fix scoreboard
 0.1.13: fix small bug
+0.1.14: fix scoreboard for loop cap
 */
 
 //vars
@@ -260,9 +261,11 @@ function checkNBT(dat){
     if(typeof(dat) != 'undefined'){
         var fixednbt = pars(dat);
         //checkRepeat();
-        
-        //checkSpawnEgg();
-        
+        //spawn egg
+        if(typeof(fixednbt.EntityTag) != 'undefined'){
+            fixednbt.EntityTag = checkSpawnEgg(fixednbt.EntityTag);
+        }
+        //display
         if(typeof(fixednbt.display) != 'undefined'){
             fixednbt.display = updateDisplay(fixednbt.display);
         }
@@ -270,6 +273,9 @@ function checkNBT(dat){
         return str(fixednbt);
     }
     return "";
+}
+function checkSpawnEgg(nbt){
+    
 }
 
 //thanks to http://jsfiddle.net/numoccpk/1/
@@ -361,8 +367,10 @@ function checkSelector(sel){
     var deleted = [];
     
     //removing all scoreboard tings from onlyEvens and onlyOdds
-    //requires fix V 0.1.10
-    for(var z = 0; z < onlyOdds.length + 1; z++){
+    //requires fix V 0.1.10 Fix Version 0.1.14
+    console.log("length of onlyOdds is " + onlyOdds.length);
+    var oldL = onlyOdds.length;
+    for(var z = 0; z < oldL + 1; z++){
         console.log(z - down(deleted,2));
         //make sure no darn TypeError occurs :p
         if(typeof(onlyOdds[z - down(deleted,z)]) != 'undefined'){
@@ -699,7 +707,6 @@ function checkSelector(sel){
     //addScores
     var nu = 0;
     //used to delete extra obj
-    var selBefore = sel.length;
     //fix needed 0.1.10 Fix version 0.1.13
     for(m in scores){
         //if first time adding scores
