@@ -22,6 +22,8 @@ Thursday 03/08/2018
 0.1.13: fix small bug
 0.1.14: fix scoreboard for loop cap
 1.2.0: Gamemode works fully, webpage looks nicer
+Friday 03/09/2018
+1.3.0: Add toggledownfall
 */
 
 //vars
