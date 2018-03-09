@@ -86,9 +86,6 @@ var damageList = {
 };
 
 var safeFromDamageList = ["diamond_sword","iron_sword","golden_sword","wooden_sword","stone_sword","diamond_axe","golden_axe","iron_axe","stone_axe","wooden_axe","diamond_shovel","gold_shovel","iron_shovel","stone_shovel","wooden_shovel","diamond_hoe","golden_hoe","iron_hoe","stone_hoe","wooden_hoe","shears","diamond_helmet","golden_helmet","iron_helmet","chainmail_helmet","leather_helmet","diamond_leggings","golden_leggings","iron_leggings","chainmail_leggings","leather_leggings","diamond_chestplate","iron_chestplate","golden_chestplate","chainmail_chestplate","leather_chestplate","diamond_boots","golden_boots","iron_boots","chainmail_boots","leather_boots","flint_and_steel","fishing_rod","carrot_on_a_stick","bow","trident"];
-var entityList = {
-    
-};
 
 var renameList = {
     grass: "grass_block",
@@ -221,9 +218,13 @@ function parse(typ,version,version2,te){
             }else{
                 fin = ar[0] + p + g + p;
             }
-            
             break;
             
+        case 'toggledownfall':
+            fin = "weather clear";
+            alert("In 1.13, /toggledownfall was removed. There is now no command that toggles rain and clear skies. So, this fixer just assumes you use it to clear the sky");
+            break;
+        
         default:
             console.error("parseError: Unidentified type " + typ + " or invalid version");
             fin = null;
@@ -283,6 +284,7 @@ function pars(str){
     /*global o*/console.log(o);
     return o;
 }
+//item nbt tag COME BACK TO CHECKNBT AND CHECKSPAWNEGG AFTER SUMMON COMMAND COMPLETE
 function checkNBT(dat){
     if(typeof(dat) != 'undefined'){
         var fixednbt = pars(dat);
@@ -302,7 +304,16 @@ function checkNBT(dat){
 }
 
 function checkSpawnEgg(nbt){
+    //for summon
+    //looks like this: {EntityTag:{id:blah,CustomName:blah,etc}}
     
+    nbt.id = nbt.id.toLowerCase();
+    
+    
+    //for give or item
+    var it = nbt.id + "_spawn_egg";
+    
+    return {data: nbt, item: it};
 }
 
 //thanks to http://jsfiddle.net/numoccpk/1/
