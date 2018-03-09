@@ -77,13 +77,69 @@
         var admin = date.getMonth();
         var da = date.getDate();*/
         var evalList = {
+            //now #1 is my bday
+            0:["var bD = {M:2,D:12};","var cD;","displayarea.innerHTML = '<div id=bday><h1>My birthday countdown!</h1><div id=stats></div></div>'",
+            "var no = setInterval(\
+                function(){\
+                    cD = new Date();\
+                    var l = Number(cD.getFullYear() % 4 == 0);\
+                    var months = [31,28 + l,31,30,31,30,31,31,30,31,30,31];\
+                    \
+                    days = months[cD.getMonth()] - cD.getDate();\
+                    var cont=true;\
+                    var ori = cD.getMonth();\
+                    var i = cD.getMonth() + 1;\
+                    while(cont === true){\
+                        if(i !== 12 && i !== 1){\
+                            days = days + months[i];\
+                        }\
+                        if(i == 2 && cD.getDate() <= 11){\
+                            days = 11 - cD.getDate();\
+                            break;\
+                        }\
+                        if(i == 1 && ori == 0){\
+                            days = days + 11;\
+                            cont=false;\
+                        }\
+                        i++;\
+                        if(i > 11){\
+                            i = 0;\
+                        }\
+                        if(i == 1){\
+                            days = days + 11;\
+                            cont = false;\
+                        }\
+                    }\
+                    minutes = 60 - cD.getMinutes();\
+                    hours = 24 - cD.getHours();\
+                    seconds = 60 - cD.getSeconds();\
+                    milliseconds = 1000 - cD.getMilliseconds();\
+                    if(milliseconds > 0){\
+                        seconds --;\
+                        minutes --;\
+                        hours --;\
+                    }\
+                    if(cD.getDate() == 12 && cD.getMonth() == 1){\
+                        milliseconds = 0; seconds = 0; hours = 0;\
+                    }\
+                }\
+                );"
+            ,"var stat = document.getElementById('stats');\
+            setInterval(function(){stat.innerHTML = '<p>(' + days + ' days / 1)(24 hours / 1 day)(60 minutes / 1 hour)(60 seconds / 1 minute)(1000 milliseconds / 1 second) = ' + (days * 24 * 60 * 60 * 1000) + ' milliseconds</p>\
+            <p>(' + hours + ' hours / 1)(60 minutes / 1 hour)(60 seconds / 1 minute)(1000 milliseconds / 1 second) = ' + (hours * 60 * 60 * 1000) + ' milliseconds</p>\
+            <p>(' + minutes + ' minutes / 1)(60 seconds / 1 minute)(1000 milliseconds / 1 second) = ' + (minutes * 60 * 1000) + ' milliseconds</p>\
+            <p>(' + seconds + ' seconds / 1)(1000 milliseconds / 1 second) = ' + (seconds * 1000) + ' milliseconds</p>\
+            <p>Milliseconds: ' + milliseconds + '</p>\
+            <h1>' +((days * 24 * 60 * 60 * 1000)+(hours * 60 * 60 * 1000)+(minutes * 60 * 1000)+(seconds * 1000)+milliseconds)+ ' milliseconds until my birthday!</h1>\
+            <img im=cake src=res/cake.png></img>';});\
+            "],
             //start screen
-            0:["displayarea.innerHTML = '<div class=cen>\
+            1:["displayarea.innerHTML = '<div class=cen>\
                 <h1>The Chemistry and Science behind Computers (Macbook Pro)</h1>\
                 <img src=res/mcpro.png />\
             </div><h4 id=downcenter>Daniel Lau</h4>';","displayarea.style.background = 'gray'"],
             //what is in the computer?
-            1:["displayarea.innerHTML = '<ul>\
+            2:["displayarea.innerHTML = '<ul>\
                 <div class=licont1>\
                     <h2>What is in a Macbook?</h2>\
                     <li>Led display</li>\
@@ -102,7 +158,7 @@
                 </div>\
             <ul>'"],
             //common chemicals/molecules in these parts.
-            2:["displayarea.innerHTML = '<h1 class=\"bl\" font=zero>Important Metals and Elements in (MacBook) computers:</h1>\
+            3:["displayarea.innerHTML = '<h1 class=\"bl\" font=zero>Important Metals and Elements in (MacBook) computers:</h1>\
             <h4 class=\"ble bigger\">Aluminum</h4>\
             <p font=one class=\"bl bigger\">Aluminum is used as a lightweight, sturdy metal that also conducts heat very well, which will then send the heat into the surrounding area, keeping the computer cool.<p>\
             <h4 class=\"ble bigger\">Silicon</h4>\
@@ -110,12 +166,12 @@
             <h4 class=\"ble bigger\">Copper</h4>\
             <p class=\"bl bigger\" font=one>Copper is used in wiring and computer chips. It is cheap, and it conducts electricity very well. Sometimes, silver might be used.</p>'"],
             //how memory is stored videos
-            3:["displayarea.innerHTML = '<div class=ce><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/hjl5boYJOZI?rel=0&amp;showinfo=0&amp;start=113;end=156\" frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe></div>\
+            4:["displayarea.innerHTML = '<div class=ce><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/hjl5boYJOZI?rel=0&amp;showinfo=0&amp;start=113;end=156\" frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe></div>\
             <p class=\"bl bigger\">- Electrons stored in the n type source and drain are trapped and cannot flow from source to drain due to the p type material between them.</p>\
             <p class=\"bl bigger\">- By applying a positive electrical current to the drain and the control gate, electrons can pass through and some will be brought through the silicon dioxide layer and stored in the floating gate, storing a \"1\"</p>\
             <p class=\"bl bigger\">- To flip the value to a zero, a negative charge is sent to the control gate to push the electron out.</p>'"],
             //difference between n-type and p-type
-            4:["displayarea.innerHTML = '<div class=\"licont2 five\"><h1 font=two class=\"bigger\">N TYPE SEMICONDUCTOR</h1>\
+            5:["displayarea.innerHTML = '<div class=\"licont2 five\"><h1 font=two class=\"bigger\">N TYPE SEMICONDUCTOR</h1>\
             <p class=\"bl bigger\">- A silicon material with added impurities such as Phosphorus or Bismuth</p>\
             <p class=\"bl bigger\">- The impurity has <strong>5 valence electrons</strong>, which gives an excess free electron</p>\
             <p class=\"bl bigger\">- This extra electron gives it a negative charge, hence the &apos;N&apos;</p>\
@@ -126,15 +182,15 @@
             <p class=\"bl bigger\">- The hole, or an absence of an electron is considered to give a positive charge, hence the &apos;P&apos;</p>\
             <img src=res/psem2.gif im=nt></img></div>';"],
             //lithium batteries
-            5:["displayarea.innerHTML = '<h2 class=ble>How do Lithium Ion batteries work?</h2>\
+            6:["displayarea.innerHTML = '<h2 class=ble>How do Lithium Ion batteries work?</h2>\
             <p class=\"bl bigger doub par\">Lithium Ion batteries have a negative anode, made of Carbon and a positive cathode, made of Cobalt Oxide (CoO2). When the battery is &apos;charged&apos;, Lithium is bonded with the Carbon. Then when the circuit is completed, chemical reactions occur within the Carbon-Lithium mix and realease the electrons. The chemical energy in the electrons is used in your device. Then the electrons and positively charged lithium ions are bonded to the cathode as LiCoO2, ready to be recharged. To recharge the battery, energy is applied to the battery to try and reverse the process.<p>\
             <img src=res/lithb.jpg im=lit />';"],
             //conclusion
             //󠀠zero width space
-            6:["if(typeof(goup) !== 'undefined'){clearInterval(ups);}","displayarea.innerHTML = '<h1 class=ble>Conclusion</h1>\
+            7:["if(typeof(goup) !== 'undefined'){clearInterval(ups);}","displayarea.innerHTML = '<h1 class=ble>Conclusion</h1>\
             <p class=\"ble bigger par doub\">Computers are very complicated. On the outside, it looks like an Aluminum shell. However, on the inside are loads of complex, chemical and physical things that program the device. The computer&apos;s storage is millions upon millions of tiny transistors, storing data as electrons trapped in a floating gate. These electron are put there through quantum mechanics and removed with a negative charge. The battery of the computer is also very complicated chemistry. Ions and electrons are moved from a positive to a negative side to charge and discharge it.</p>';"],
             //sources​ &#9;//tab
-            7:["displayarea.style.background = 'gray';","if(typeof(no) !== 'undefined'){clearInterval(no);}",
+            8:["displayarea.style.background = 'gray';","if(typeof(no) !== 'undefined'){clearInterval(no);}",
             "displayarea.innerHTML = '<div id=upward>\
                 <h1 style=text-align:center>Sources</h1>\
                 <ul class=url>\
@@ -162,7 +218,7 @@
                 ups.style.transform = 'translateY(' + nm + 'px)';\
             },30);"],
             //birthday! :)
-            9:["clearInterval(goup);","displayarea.style.background = 'gray'","var bD = {M:2,D:12};","var cD;","displayarea.innerHTML = '<div id=bday><h1>My birthday countdown!</h1><div id=stats></div></div>'",
+            10:["clearInterval(goup);","displayarea.style.background = 'gray'","var bD = {M:2,D:12};","var cD;","displayarea.innerHTML = '<div id=bday><h1>My birthday countdown!</h1><div id=stats></div></div>'",
             "var no = setInterval(\
                 function(){\
                     cD = new Date();\
@@ -218,7 +274,7 @@
             <img im=cake src=res/cake.png></img>';});\
             "],
             //yay! kahoot game
-            8:["if(typeof(no) !== 'undefined'){clearInterval(no);}","displayarea.style.background='white'","displayarea.innerHTML = '<h1 id=gameheader style=\"margin-left: 15px\">Kahoot!!!</h1><iframe class=fullsc src=https://play.kahoot.it/#/?quizId=3dc75cde-6580-439c-aa54-10ccaf1b05ed />'"]
+            9:["if(typeof(no) !== 'undefined'){clearInterval(no);}","displayarea.style.background='white'","displayarea.innerHTML = '<h1 id=gameheader style=\"margin-left: 15px\">Kahoot!!!</h1><iframe class=fullsc src=https://play.kahoot.it/#/?quizId=3dc75cde-6580-439c-aa54-10ccaf1b05ed />'"]
         };
         function openSlide(){
             //renders the slides
