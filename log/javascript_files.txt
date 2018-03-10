@@ -1,0 +1,147 @@
+function randomNumberGame(max){
+        var again = false;
+        var n = Math.round(Math.random()*max);
+        var lives = Math.ceil(max / 15) + 1;
+        alert("You have to guess the random number. You have " + lives + " lives. The number is from 0 to " + max);
+        function o(){
+                again = false;
+                var res = Number(prompt("Guess the Number!"));
+                if(res > n){
+                        alert("Oops! Too high!");
+                        lives = lives - 1;
+                        again = true;
+                }
+                if(res < n){
+                        alert("Oops! Too low!");
+                        lives = lives - 1;
+                        again = true;
+                }
+                if(res == n){
+                        alert("Congrats! You won! :)");
+                }
+                if(lives == 0){
+                        alert("You lose :(\nThe number was " + n);
+                        again = false;
+                }
+                if(again == true){
+                        o();
+                }
+        }
+        o();
+}
+function trustGame(players){
+    function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+        
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+            
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+        return array;
+    }
+    players = shuffle(players);
+    var len = players.length;
+    players.push(players[0]);
+    var prevP = "";
+    var turn = 0;
+    var attack = false;
+    var init = true;
+    var ded = false;
+    function ga(){
+        alert("Pass device to " + players[turn]);
+        //if not first time or last person ded
+        if(init == false){
+            var co = confirm("Do you trust " + prevP);
+            //if you do trus
+            if(co == true){
+                //if there was an attack
+                if(attack == true){
+                    alert("Unfortunately " + prevP + " killed you");
+                    //if first player
+                    if(turn == 0){
+                        players.splice(turn,1);
+                        players.splice(players.length - 1, 1);
+                        players.push(players[0]);
+                    }else{
+                        players.splice(turn,1);
+                    }
+                    len = len - 1;
+                    turn = turn - 1;
+                    ded = true;
+                    init = true;
+                }
+            //if you dont trust
+            }else{
+                //if you were not attacked
+                if(attack == false){
+                    alert("Unfortunately, you were wrong about your conviction and you were punished and killed");
+                    //if first player
+                    if(turn == 0){
+                        players.splice(turn,1);
+                        players.splice(players.length - 1,1);
+                        players.push(players[0]);
+                    }else{
+                        players.splice(turn,1);
+                    }
+                    turn = turn - 1;
+                    len = len - 1;
+                    ded = true;
+                    init = true;
+                //if you were going to be attacked
+                }else{
+                    alert("You were correct in your conviction and " + prevP + " was killed for their crimes");
+                    //if first player
+                    if(turn == 0){
+                        players.splice(len - 1,1);
+                        len = len - 1;
+                    //if second player
+                    }else if(turn == 1){
+                        players.splice(turn - 1, 1);
+                        players.splice(players.length - 1);
+                        players.push(players[0]);
+                        len = len - 1;
+                        turn = turn - 1;
+                    }else{
+                        players.splice(turn - 1, 1);
+                        len = len - 1;
+                        turn = turn - 1;
+                    }
+                }
+            }
+        }
+        
+        //checks if everyone is dead or not
+        if(players[0] == players[1]){ //1 player left
+            alert("GG to " + players[0] + "! You are the last person standing and have won the game!");
+            return "GG to " + players[turn];
+        }
+        if(ded == false){
+            var con = confirm("Do you want to kill " + players[turn + 1]);
+            if(con == true){
+                attack = true;
+            }else{
+                attack = false;
+            }
+            init = false;
+        }
+        //setup for next round
+        prevP = players[turn];
+        //checks to see if you are the last person
+        if(turn == len - 1){
+            turn = 0;
+        }else{
+            turn = turn + 1;
+        }
+        ded = false;
+        ga();
+    }
+    ga();
+}
