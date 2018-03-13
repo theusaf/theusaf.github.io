@@ -24,6 +24,7 @@ Thursday 03/08/2018
 1.2.0: Gamemode works fully, webpage looks nicer
 Friday 03/09/2018
 1.3.0: Add toggledownfall
+1.3.1: Allow spaces in selector
 */
 
 //vars
@@ -160,6 +161,25 @@ function parse(typ,version,version2,te){
     switch (typ) {
         case 'give':
             var ar = te.split(" ");
+            //check to see if the selector is split into stuff
+            if(ar[1][ar[1].length - 1] != "]"){
+                var q = 0;
+                var don = false;
+                while(don === false){
+                    q ++;
+                    if(ar[1 + q][ar[q + 1].length - 1] == "]"){
+                        don = true;
+                        ar[1] = ar[1] + " " + ar[1 + q];
+                        ar.splice(q + 1,1);
+                    }else{
+                        ar[1] = ar[1]+ " " + ar[1+q];
+                        ar.splice(q + 1,1);
+                        console.log(ar);
+                        q = q - 1;
+                    }
+                }
+            }
+            
             //rejoin nbt data
             if(ar.length > 6){
                 for(var q in ar){
@@ -226,7 +246,13 @@ function parse(typ,version,version2,te){
             fin = "weather clear";
             alert("In 1.13, /toggledownfall was removed. There is now no command that toggles rain and clear skies. So, this fixer just assumes you use it to clear the sky");
             break;
-        
+        case 'testfor':
+            //try to find a command that will run for all players without destroying gameplay
+            //will be done after summon is complete. follows following format: /execute if entity <entity> run 
+            break;
+        case 'summon':
+            ar = te.split(" ");
+            break;
         default:
             console.error("parseError: Unidentified type " + typ + " or invalid version");
             fin = null;
@@ -491,7 +517,7 @@ function checkSelector(sel){
             default:
                 //no selector!
                 console.log("No selector found");
-                if(ok == false){
+                if(ok == false && j >= onlyOdds.length - 1){
                     return "";
                 }
         }
