@@ -24,7 +24,13 @@ Thursday 03/08/2018
 1.2.0: Gamemode works fully, webpage looks nicer
 Friday 03/09/2018
 1.3.0: Add toggledownfall
-1.3.1: Allow spaces in selector
+1.3.1: Allow spaces in selector though probably didnt need this as 1.13 is when spaces are added...
+Friday 03/16/2018
+1.3.2: Super minor update. Starting projects on setblock and summon
+*/
+
+/*Notes and Random Comments
+Can somebody explain what the heck the wiki means by that "CollarColor has been swapped for consistency?"
 */
 
 //vars
@@ -161,8 +167,8 @@ function parse(typ,version,version2,te){
     switch (typ) {
         case 'give':
             var ar = te.split(" ");
-            //check to see if the selector is split into stuff
-            if(ar[1][ar[1].length - 1] != "]"){
+            //check to see if the selector is split into stuff. Removed. See update log
+            /*if(ar[1][ar[1].length - 1] != "]"){
                 var q = 0;
                 var don = false;
                 while(don === false){
@@ -178,7 +184,7 @@ function parse(typ,version,version2,te){
                         q = q - 1;
                     }
                 }
-            }
+            }*/
             
             //rejoin nbt data
             if(ar.length > 6){
@@ -222,7 +228,7 @@ function parse(typ,version,version2,te){
             break;
             
         case 'gamemode':
-            ar = te.split(" ");
+            var ar = te.split(" ");
             var g = checkGamemode(ar[1]);
             var sel = "";
             
@@ -251,13 +257,47 @@ function parse(typ,version,version2,te){
             //will be done after summon is complete. follows following format: /execute if entity <entity> run 
             break;
         case 'summon':
-            ar = te.split(" ");
+            var ar = te.split(" ");
+            ar[1] = ar[1].toLowerCase();
+            var type = ar;
+            if(ar.length > 6){
+                for(var q in ar){
+                    if(q > 5){
+                        ar[5] = ar[5] + " " + ar[q];
+                    }
+                }
+            }
+            var nbt = checkEntityNBT(ar[5],typ);
+            fin = ar[0] + p + type + p + ar[2] + p + ar[3] + p + ar[4]; + nbt; 
+            break;
+        case 'setblock':
+            var ar = te.split(" ");
+            if(ar.length > 6){
+                for(var q in ar){
+                    if(q > 5){
+                        ar[5] = ar[5] + " " + ar[q];
+                    }
+                }
+            }
+            
+            if(Number(ar[5]).isNaN() && true){ //data value is a block state
+                var s = ar[4] + ar[5];
+            }else{ //data value is a number
+                var s = checkBlockDamage(ar[5],ar[4]);
+            }
+            fin = ar[0] + p + ar[1] + p + ar[2] + p + ar[3];
             break;
         default:
             console.error("parseError: Unidentified type " + typ + " or invalid version");
             fin = null;
     }
     return fin;
+}
+function checkBlockDamage(n,id){
+    
+}
+function checkEntityNBT(nbt,type){
+    //will start on this when setblock is complete
 }
 function checkDamage(n,obj){
     obj = obj.toLowerCase();
@@ -395,7 +435,7 @@ function updateDisplay(dats){
         if(typeof(dats.Name) !== 'undefined'){
             dats.Name = "{\"text\":\"" + dats.Name + "\"}";
         }
-        if(dats.Lore !== undefined){
+        if(typeof(dats.Lore) !== 'undefined'){
             for(var i in  dats.Lore){
                 dats.Lore[i] = "{\"text\":\"" + dats.Lore[i] + "}";
             }
