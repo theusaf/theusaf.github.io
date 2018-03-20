@@ -31,6 +31,7 @@ Friday 03/16/2018
 
 /*Notes and Random Comments
 Can somebody explain what the heck the wiki means by that "CollarColor has been swapped for consistency?"
+Ugh. setblock is a nightmare!
 */
 
 //vars
@@ -166,6 +167,7 @@ function parse(typ,version,version2,te){
     var p = " ";
     switch (typ) {
         case 'give':
+            (function(){
             var ar = te.split(" ");
             //check to see if the selector is split into stuff. Removed. See update log
             /*if(ar[1][ar[1].length - 1] != "]"){
@@ -225,9 +227,11 @@ function parse(typ,version,version2,te){
                 ar.push("");
             }
             fin = ar[0] + p + ar[1] + se + p + s.data + nbt + p + ar[3];
+            })();
             break;
             
         case 'gamemode':
+            (function(){
             var ar = te.split(" ");
             var g = checkGamemode(ar[1]);
             var sel = "";
@@ -246,11 +250,14 @@ function parse(typ,version,version2,te){
             }else{
                 fin = ar[0] + p + g + p;
             }
+            })();
             break;
             
         case 'toggledownfall':
+            (function(){
             fin = "weather clear";
             alert("In 1.13, /toggledownfall was removed. There is now no command that toggles rain and clear skies. So, this fixer just assumes you use it to clear the sky");
+            })();
             break;
         case 'testfor':
             //try to find a command that will run for all players without destroying gameplay
@@ -281,11 +288,13 @@ function parse(typ,version,version2,te){
             }
             
             if(Number(ar[5]).isNaN() && true){ //data value is a block state
-                var s = ar[4] + ar[5];
+                var s = ar[4] + "[" +ar[5] + "]";
             }else{ //data value is a number
-                var s = checkBlockDamage(ar[5],ar[4]);
+                var s = checkBlockDamage(ar[5],ar[4]); //this is weird how c9 is getting confused
+                //checkDamage afterwards
             }
-            fin = ar[0] + p + ar[1] + p + ar[2] + p + ar[3];
+            
+            fin = ar[0] + p + ar[1] + p + ar[2] + p + ar[3] + s;
             break;
         default:
             console.error("parseError: Unidentified type " + typ + " or invalid version");
@@ -293,7 +302,44 @@ function parse(typ,version,version2,te){
     }
     return fin;
 }
-function checkBlockDamage(n,id){
+/*Notes for dataList
+Check sapling and leave variant block state
+Make sure that values that are currently replaced by 'null' are correct
+*/
+var dataList = { //list of data values for blocks. May be incorrect. Rip me...
+    sapling:{
+        id: ["oak_sapling","spruce_sapling","birch_sapling","jungle_sapling","acacia_sapling","dark_oak_sapling",null,null,null],
+        values: [null,null,null,null,null,null,null,null,"stage=1"],
+        hasMultiple: true
+    },
+    piston_extension: {
+        id: "moving_piston",
+        values: [],
+        hasMultiple: false
+    },
+    
+    torch: {
+        id: ["torch","wall_torch"],
+        values: [],
+        hasMultiple: true
+    },
+    golden_rail: {
+        id: "powered_rail",
+        values: ["shape=north_south","shape=west_east","shape=ascending_east","shape=ascending_west","shape=ascending_north","shape=ascending_south",null,null,"powered=true"],
+        hasMultiple: false
+    },
+    leaves: {
+        id: ["oak_leaves","spruce_leaves","birch_leaves","jungle_leaves","oak_leaves","spruce_leaves","birch_leaves","jungle_leaves","oak_leaves","spruce_leaves","birch_leaves","jungle_leaves","oak_leaves","spruce_leaves","birch_leaves","jungle_leaves"],
+        values: [null,null,null,null,"decayable=false","decayable=false","decayable=false","decayable=false","check_decay=true","check_decay=true","check_decay=true","check_decay=true","check_decay=true,decayable=false","check_decay=true,decayable=false","check_decay=true,decayable=false","check_decay=true,decayable=false"],
+        hasMultiple: true
+    },
+    leaves2: {
+        id: ["acacia_leaves","dark_oak_leaves","acacia_leaves","dark_oak_leaves","acacia_leaves","dark_oak_leaves","acacia_leaves","dark_oak_leaves"],
+        values: [null,null,"decayable=false","decayable=false","check_decay=true","check_decay=true","check_decay=true,decayable=false","check_decay=true,decayable=false"],
+        hasMultiple: true
+    }
+};
+function checkBlockDamage(n,id){ //checks the list of data values for blocks. renames are used in checkRename();
     
 }
 function checkEntityNBT(nbt,type){
