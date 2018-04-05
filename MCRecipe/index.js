@@ -70,8 +70,8 @@ var damageList = {
     stone_slab2: ["red_sandstone_slab","smooth_red_sanstone"],
     monster_egg: ["infested_stone","infested_cobblestone","infested_stone_bricks","infested_mossy_stone_bricks","infested_cracked_stone_bricks","infested_chiseled_stone_bricks"],
     stonebrick: ["stone_bricks","mossy_stone_bricks","cracked_stone_bricks","chiseled_stone_bricks"],
-    brown_mushroom_block: ["brown_mushroom_block","mushroom_stem"],
-    red_mushroom_block: ["red_mushroom_block","mushroom_stem"],
+    /*brown_mushroom_block: ["brown_mushroom_block","mushroom_stem"],
+    red_mushroom_block: ["red_mushroom_block","mushroom_stem"],*/
     cobblestone_wall: ["cobblestone_wall","mossy_cobblestone_wall"],
     anvil: ["anvil","chipped_anvil","damaged_anvil"],
     quartz_block: ["quartz_block","chiseled_quartz_block","quartz_pillar"],
@@ -308,19 +308,13 @@ Make sure that values that are currently replaced by 'null' are correct
 */
 var dataList = { //list of data values for blocks. May be incorrect. Rip me...
     sapling:{
-        id: ["oak_sapling","spruce_sapling","birch_sapling","jungle_sapling","acacia_sapling","dark_oak_sapling",null,null,null],
-        values: [null,null,null,null,null,null,null,null,"stage=1"],
+        id: ["oak_sapling","spruce_sapling","birch_sapling","jungle_sapling","acacia_sapling","dark_oak_sapling","oak_sapling","oak_sapling","oak_sapling","spruce_sapling","birch_sapling","acacia_sapling","dark_oak_sapling","oak_sapling","oak_sapling"],
+        values: [null,null,null,null,null,null,null,null,"stage=1","stage=1","stage=1","stage=1","stage=1","stage=1","stage=1","stage=1"],
         hasMultiple: true
     },
-    piston_extension: {
-        id: "moving_piston",
-        values: [],
-        hasMultiple: false
-    },
-    
     torch: {
-        id: ["torch","wall_torch"],
-        values: [],
+        id: ["torch","wall_torch","wall_torch","wall_torch","wall_torch","torch","torch","torch","torch","torch","torch","torch","torch","torch","torch","torch"],
+        values: [null,"facing=east","facing=west","facing=south","facing=north",null,null,null,null,null,null,null,null,null,null,null],
         hasMultiple: true
     },
     golden_rail: {
@@ -337,7 +331,113 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me...
         id: ["acacia_leaves","dark_oak_leaves","acacia_leaves","dark_oak_leaves","acacia_leaves","dark_oak_leaves","acacia_leaves","dark_oak_leaves"],
         values: [null,null,"decayable=false","decayable=false","check_decay=true","check_decay=true","check_decay=true,decayable=false","check_decay=true,decayable=false"],
         hasMultiple: true
-    }
+    },
+    wooden_slab:{
+        id: ["oak_slab","spruce_slab","birch_slab","jungle_slab","acacia_slab","dark_oak_slab","oak_slab","oak_slab","oak_slab","spruce_slab","birch_slab","jungle_slab","acacia_slab","dark_oak_slab","oak_slab","oak_slab"],
+        values: [null,null,null,null,null,null,null,null,"type=top","type=top","type=top","type=top","type=top","type=top","type=top","type=top"],
+        hasMultiple: true
+    },
+    double_wooden_slab: {
+        id: ["oak_slab","spruce_slab","birch_slab","jungle_slab","acacia_slab","dark_oak_slab","oak_slab","oak_slab","oak_slab","spruce_slab","birch_slab","jungle_slab","acacia_slab","dark_oak_slab","oak_slab","oak_slab"],
+        values: ["type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double"],
+        hasMultiple: true
+    },
+    stone_slab: {
+        id: ["stone_slab","sandstone_slab","petrified_oak_slab","cobblestone_slab","brick_slab","stone_brick_slab","nether_brick_slab","quartz_slab","stone_slab","sandstone_slab","petrified_oak_slab","cobblestone_slab","brick_slab","stone_brick_slab","nether_brick_slab","quartz_slab"],
+        values: [null,null,null,null,null,null,null,null,"type=top","type=top","type=top","type=top","type=top","type=top","type=top","type=top"],
+        hasMultiple: true
+    },
+    double_stone_slab: {
+        id: ["stone_slab","sandstone_slab","petrified_oak_slab","cobblestone_slab","brick_slab","stone_brick_slab","nether_brick_slab","quartz_slab","stone_slab","sandstone_slab","petrified_oak_slab","cobblestone_slab","brick_slab","stone_brick_slab","nether_brick_slab","quartz_slab"],
+        values: ["type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double"],
+        hasMultiple: true
+    },
+    stone_slab2: {
+        id: "red_sandstone_slab",
+        values: [null,null,null,null,null,null,null,null,"type=top","type=top","type=top","type=top","type=top","type=top","type=top","type=top"],
+        hasMultiple: false
+    },
+    double_stone_slab2: {
+        id: "red_sandstone_slab",
+        values: ["type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double"],
+        hasMultiple: false
+    },
+    purpur_slab: {
+        id: "purpur_slab",
+        values: [null,null,null,null,null,null,null,null,"type=top","type=top","type=top","type=top","type=top","type=top","type=top","type=top"],
+        hasMultiple: false
+    },
+    double_purpur_slab: {
+        id: "purpur_slab",
+        values: ["type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double","type=double"],
+        hasMultiple: false
+    },
+    furnace: {
+        id: "furnace",
+        values: [null,null,null,"facing=south","facing=west","facing=east",null,null,null,"facing=south","facing=west","facing=east",null,null,null,"facing=south"],
+        hasMultiple: false
+    },
+    lit_furnace: {
+        id: "furnace",
+        values: ["lit=true","lit=true","lit=true","facing=south,lit=true","facing=west,lit=true","facing=east,lit=true","lit=true","lit=true","lit=true","facing=south,lit=true","facing=west,lit=true","facing=east,lit=true","lit=true","lit=true","lit=true","facing=south,lit=true"],
+        hasMultiple: false
+    },
+    stone_stairs: {
+        id: "cobblestone_stairs",
+        values: ["facing=east","facing=west","facing=south","facing=north","facing=east,half=top","facing=west,half=top","facing=south,half=top","facing=north,half=top","facing=east","facing=west","facing=south","facing=north","facing=east,half=top","facing=west,half=top","facing=south,half=top","facing=north,half=top"],
+        hasMultiple: false
+    }, //seems a bit off... (bug, perhaps?)
+    wooden_pressure_plate: {
+        id: "oak_pressure_plate",
+        values: [null,"powered=true",null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        hasMultiple: false
+    },
+    lit_redstone_ore: {
+        id: "redstone_ore",
+        values: ["lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true"],
+        hasMultiple: false
+    },
+    redstone_torch: {
+        id: [null,"redstone_wall_torch","redstone_wall_torch","redstone_wall_torch","redstone_wall_torch",null,null,null,null,null,null,null,null,null,null,null],
+        values: [null,"facing=east","facing=west","facing=south","facing=north",null,null,null,null,null,null,null,null,null,null,null],
+        hasMultiple: true
+    },
+    unlit_redstone_torch: {
+        id: [null,"redstone_wall_torch","redstone_wall_torch","redstone_wall_torch","redstone_wall_torch",null,null,null,null,null,null,null,null,null,null,null],
+        values: ["lit=false","facing=east,lit=false","facing=west,lit=false","facing=south,lit=false","facing=north,lit=false","lit=false","lit=false","lit=false","lit=false","lit=false","lit=false","lit=false","lit=false","lit=false","lit=false","lit=false"],
+        hasMultiple: true
+    },
+    snow_layer: {
+        id: "snowDELETE", //needed because snow_layer goes to snow and snow goes to snow_block
+        values: [null,"layers=2","layers=3","layers=4","layers=5","layers=6","layers=7","layers=8",null,"layers=2","layers=3","layers=4","layers=5","layers=6","layers=7","layers=8"],
+        hasMultiple: false
+    }, //remeber to check this one...
+    pumpkin: {
+        id: "carved_pumpkin",
+        hasMultiple: false,
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south","facing=west","facing=north","facing=east","facing=south","facing=west","facing=north","facing=east","facing=south","facing=west","facing=north","facing=east"]
+    }, //once again, off...
+    lit_pumpkin: {
+        id: "jack_o_lantern",
+        hasMultiple: false,
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south","facing=west","facing=north","facing=east","facing=south","facing=west","facing=north","facing=east","facing=south","facing=west","facing=north","facing=east"]
+    },//seriously, this needs a fix
+    trapdoor: {
+        id: "oak_trapdoor",
+        values: ["facing=north","facing=south","facing=west","facing=east","facing=north,open=true","facing=south,open=true","facing=west,open=true","facing=east,open=true","facing=north,half=top","facing=south,half=top","facing=west,half=top","facing=east,half=top","facing=north,half=top,open=true","facing=south,half=top,open=true","facing=west,half=top,open=true","facing=east,half=top,open=true"],
+        hasMultiple: false
+    },
+    red_mushroom_block: {
+        id: [],
+        values: [],
+        hasMultiple: true
+    },
+    brown_mushroom_block: {
+        id: [],
+        values: [],
+        hasMultiple: true
+    },
+    
 };
 function checkBlockDamage(n,id){ //checks the list of data values for blocks. renames are used in checkRename();
     
