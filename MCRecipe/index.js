@@ -306,7 +306,7 @@ function parse(typ,version,version2,te){
 Check sapling and leave variant block state
 Make sure that values that are currently replaced by 'null' are correct
 */
-var dataList = { //list of data values for blocks. May be incorrect. Rip me...
+var dataList = { //list of data values for blocks. May be incorrect. Rip me... WARNING: some commands will be a bit off. MAY NEED MORE WORK AS SOME DEFAULLT VALUES ARE NOT THE SAME AS 0
     sapling:{
         id: ["oak_sapling","spruce_sapling","birch_sapling","jungle_sapling","acacia_sapling","dark_oak_sapling","oak_sapling","oak_sapling","oak_sapling","spruce_sapling","birch_sapling","acacia_sapling","dark_oak_sapling","oak_sapling","oak_sapling"],
         values: [null,null,null,null,null,null,null,null,"stage=1","stage=1","stage=1","stage=1","stage=1","stage=1","stage=1","stage=1"],
@@ -428,13 +428,13 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me...
         hasMultiple: false
     },
     red_mushroom_block: {
-        id: [],
-        values: [],
+        id: ["red_mushroom_block","red_mushroom_block","red_mushroom_block","red_mushroom_block","red_mushroom_block","red_mushroom_block","red_mushroom_block","red_mushroom_block","red_mushroom_block","red_mushroom_block","mushroom_stem","red_mushroom_block","red_mushroom_block","red_mushroom_block","mushroom_stem"],
+        values: ["up=false,down=false,east=false,west=false,north=false,south=false","down=false,east=false,south=false","down=false,east=false,west=false,south=false","down=false,west=false,south=false","down=false,east=false,north=false,south=false","down=false,east=false,west=false,north=false,south=false","down=false,west=false,north=false,south=false","down=false,east=false,north=false","down=false,east=false,west=false,north=false","down=false,west=false,north=false","up=false,down=false","up=false,down=false,east=false,west=false,north=false,south=false","up=false,down=false,east=false,west=false,north=false,south=false","up=false,down=false,east=false,west=false,north=false,south=false",null,null],
         hasMultiple: true
     },
     brown_mushroom_block: {
-        id: [],
-        values: [],
+        id: ["brown_mushroom_block","brown_mushroom_block","brown_mushroom_block","brown_mushroom_block","brown_mushroom_block","brown_mushroom_block","brown_mushroom_block","brown_mushroom_block","brown_mushroom_block","brown_mushroom_block","mushroom_stem","brown_mushroom_block","brown_mushroom_block","brown_mushroom_block","mushroom_stem"],
+        values: ["up=false,down=false,east=false,west=false,north=false,south=false","down=false,east=false,south=false","down=false,east=false,west=false,south=false","down=false,west=false,south=false","down=false,east=false,north=false,south=false","down=false,east=false,west=false,north=false,south=false","down=false,west=false,north=false,south=false","down=false,east=false,north=false","down=false,east=false,west=false,north=false","down=false,west=false,north=false","up=false,down=false","up=false,down=false,east=false,west=false,north=false,south=false","up=false,down=false,east=false,west=false,north=false,south=false","up=false,down=false,east=false,west=false,north=false,south=false",null,null],
         hasMultiple: true
     },
     

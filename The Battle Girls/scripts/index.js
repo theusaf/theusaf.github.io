@@ -165,8 +165,8 @@ var girlloader2 = new THREE.ObjectLoader();
 var girlloader3 = new THREE.ObjectLoader();
 
 
-//Load naked Arianna HairType = 0
-girlloader.load(
+//Load Arianna HairType = 0
+/*girlloader.load(
     "models/Arianna0.json",
     function ( loadedObj ) {    
         body.Arianna0 = loadedObj.getObjectByName("Body");
@@ -203,7 +203,7 @@ girlloader.load(
         
         //it appears that the objects become materials...
     }
-);
+);*/
 //load Chinese Arianna HairType = 0
 girlloader2.load(
     "models/Arianna0China.json",
