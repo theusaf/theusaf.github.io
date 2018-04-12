@@ -27,6 +27,8 @@ Friday 03/09/2018
 1.3.1: Allow spaces in selector though probably didnt need this as 1.13 is when spaces are added...
 Friday 03/16/2018
 1.3.2: Super minor update. Starting projects on setblock and summon
+Wednesday 04/11/2018
+1.3.3: Adding more data values for block list siiiighhhh...
 */
 
 /*Notes and Random Comments
@@ -93,7 +95,7 @@ var damageList = {
     //spawn eggs are not added as they do not have a "damage" value
     skull: ["skeleton_skull","wither_skeleton_skull","zombie_head","player_head","creeper_head","dragon_head"],
     banner: ["white_banner","orange_banner","magenta_banner","light_blue_banner","yellow_banner","lime_banner","pink_banner","gray_banner","light_gray_banner","cyan_banner","purple_banner","blue_banner","brown_banner","green_banner","red_banner","black_banner"]
-};
+}; //for give mostly
 
 var safeFromDamageList = ["diamond_sword","iron_sword","golden_sword","wooden_sword","stone_sword","diamond_axe","golden_axe","iron_axe","stone_axe","wooden_axe","diamond_shovel","gold_shovel","iron_shovel","stone_shovel","wooden_shovel","diamond_hoe","golden_hoe","iron_hoe","stone_hoe","wooden_hoe","shears","diamond_helmet","golden_helmet","iron_helmet","chainmail_helmet","leather_helmet","diamond_leggings","golden_leggings","iron_leggings","chainmail_leggings","leather_leggings","diamond_chestplate","iron_chestplate","golden_chestplate","chainmail_chestplate","leather_chestplate","diamond_boots","golden_boots","iron_boots","chainmail_boots","leather_boots","flint_and_steel","fishing_rod","carrot_on_a_stick","bow","trident"];
 
@@ -306,7 +308,7 @@ function parse(typ,version,version2,te){
 Check sapling and leave variant block state
 Make sure that values that are currently replaced by 'null' are correct
 */
-var dataList = { //list of data values for blocks. May be incorrect. Rip me... WARNING: some commands will be a bit off. MAY NEED MORE WORK AS SOME DEFAULLT VALUES ARE NOT THE SAME AS 0
+var dataList = { //list of data values for blocks. May be incorrect. Rip me... WARNING: some commands will be a bit off. MAY NEED MORE WORK AS SOME DEFAULLT VALUES ARE NOT THE SAME AS 0. You better thank be as I even allow non-correct block data numbers
     sapling:{
         id: ["oak_sapling","spruce_sapling","birch_sapling","jungle_sapling","acacia_sapling","dark_oak_sapling","oak_sapling","oak_sapling","oak_sapling","spruce_sapling","birch_sapling","acacia_sapling","dark_oak_sapling","oak_sapling","oak_sapling"],
         values: [null,null,null,null,null,null,null,null,"stage=1","stage=1","stage=1","stage=1","stage=1","stage=1","stage=1","stage=1"],
@@ -437,6 +439,51 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
         values: ["up=false,down=false,east=false,west=false,north=false,south=false","down=false,east=false,south=false","down=false,east=false,west=false,south=false","down=false,west=false,south=false","down=false,east=false,north=false,south=false","down=false,east=false,west=false,north=false,south=false","down=false,west=false,north=false,south=false","down=false,east=false,north=false","down=false,east=false,west=false,north=false","down=false,west=false,north=false","up=false,down=false","up=false,down=false,east=false,west=false,north=false,south=false","up=false,down=false,east=false,west=false,north=false,south=false","up=false,down=false,east=false,west=false,north=false,south=false",null,null],
         hasMultiple: true
     },
+    fence_gate: {
+        id: "oak_fence_gate",
+        hasMultiple: false,
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south,open=true","facing=west,open=true","facing=north,open=true","facing=east,open=true","facing=south,powered=true","facing=west,powered=true","facing=north,powered=true","facing=east,powered=true","facing=south,powered=true,open=true","facing=west,powered=true,open=true","facing=north,powered=true,open=true","facing=east,powered=true,open=true"]
+    },
+    lit_redstone_lamp: {
+        id: "redstone_lamp",
+        hasMultiple: false,
+        values: ["lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true","lit=true"]
+    },
+    cobblestone_wall: {
+        id: ["cobblestone_wall","mossy_cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall","cobblestone_wall"],
+        hasMultiple: true,
+        values: ["up=true","up=true","up=true","up=true","up=true","up=true","up=true","up=true","up=true","up=true","up=true","up=true","up=true","up=true","up=true","up=true"]
+    },
+    wooden_button: {
+        id: "oak_button",
+        values: ["face=floor","facing=east","facing=west","facing=south","facing=north","face=ceiling","face=ceiling","face=ceiling","face=floor,powered=true","facing=east,powered=true","facing=west,powered=true","facing=south,powered=true","facing=north,powered=true","face=ceiling,powered=true","face=ceiling,powered=true","face=ceiling,powered=true"],
+        hasMultiple: false
+    }, //fixed.
+    anvil: {
+        id: ["anvil","anvil","anvil","anvil","chipped_anvil","chipped_anvil","chipped_anvil","chipped_anvil","damaged_anvil","damaged_anvil","damaged_anvil","damaged_anvil"],
+        hasMultiple: true,
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south","facing=west","facing=north","facing=east","facing=south","facing=west","facing=north","facing=east"]
+    }, //strange: one of the few blocks that doesn't support non-used values. (goes from 0-11. no more...)
+    daylight_detector: {
+        ud: "daylight_detector",
+        hasMultiple: false,
+        values: [null,"power=0","power=1","power=2","power=3","power=4","power=5","power=6","power=7","power=8","power=9","power=10","power=11","power=12","power=13","power=14","power=15"]
+    },
+    daylight_detector_inverted: {
+        id: "daylight_detector",
+        hasMultiple: false,
+        values: ["inverted=true","power=0,inverted=true","power=1,inverted=true","power=2,inverted=true","power=3,inverted=true","power=4,inverted=true","power=5,inverted=true","power=6,inverted=true","power=7,inverted=true","power=8,inverted=true","power=9,inverted=true","power=10,inverted=true","power=11,inverted=true","power=12,inverted=true","power=13,inverted=true","power=14,inverted=true","power=15,inverted=true"]
+    },
+    quartz_block: {
+        id: ["quartz_block","chiseled_quartz_block","quartz_pillar","quartz_pillar","quartz_pillar","quartz_block","quartz_block","quartz_block","quartz_block","quartz_block","quartz_block","quartz_block","quartz_block","quartz_block","quartz_block","quartz_block"],
+        hasMultiple: false,
+        values: [null,null,"axis=y","axis=x","axis=z",null,null,null,null,null,null,null,null,null,null,null]
+    },
+    double_plant: {
+        id: ["sunflower","lilac","tall_grass","large_fern","rose_bush","peony","sunflower","sunflower","sunflower","sunflower","sunflower","sunflower","sunflower","sunflower","sunflower","sunflower"],
+        hasMultiple: true,
+        values: [null,null,null,null,null,null,null,null,"half=upper","half=upper","half=upper","half=upper","half=upper","half=upper","half=upper","half=upper"]
+    }, //no more facing. plants now work like lilypads :p
     
 };
 function checkBlockDamage(n,id){ //checks the list of data values for blocks. renames are used in checkRename();
