@@ -31,6 +31,7 @@ Wednesday 04/11/2018
 1.3.3: Adding more data values for block list siiiighhhh...
 Wednesday 04/18/2018
 1.4.0: Adding more data values, fixing bugs, and making a working setblock thing
+1.5.0: Added /help.... :p
 */
 
 /*Notes and Random Comments
@@ -365,6 +366,11 @@ function parse(typ,version,version2,te){
                 fin = ar[0] + p + ar[1] + p + ar[2] + p + ar[3] + p + correct + numstate + nbt + p + handling;
                 console.log(fin);
             })();
+            break;
+        case 'help':
+            var randomHelpList = ["try fixing a real command...","Subscribe! https://www.youtube.com/theusaf","Type /help for a list of commands","This is a line of text","This might help you! https://shortr.github.io/?A","Dolphins are cool!","I wish we could ride dolphins","Stop pressing the fix button please...","Error 404-Command found","Open the banana from the bottom!","Those are my cookies","Searge says theusaf says Dinnerbone says hi","https://www.minecraft.net","Not an official Minecraft website... Duh...","Have you tried swimming in the ocean?"];
+            var randomStr = randomHelpList[Math.round(Math.random()*randomHelpList.length - 1)];
+            fin = "theusaf says " + randomStr;
             break;
         default:
             console.error("parseError: Unidentified type " + typ + " or invalid version");
