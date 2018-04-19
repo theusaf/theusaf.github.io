@@ -152,6 +152,7 @@ var renameList = {
 };
 
 //funcs
+//submit button
 function submit(text,startVersion,endVersion){
     var t = "";
     var split = [];
@@ -164,12 +165,15 @@ function submit(text,startVersion,endVersion){
     t = parse(type,startVersion,endVersion,text);
     out.value = t;
 }
+//gets command type
 function getType(text){
     var t = text.split(" ")[0];
     t = t.replace(/\//img,"");
     return t;
 }
+//main thing for fixing
 function parse(typ,version,version2,te){
+    //version and verstion2 are not used currently
     var fin = "";
     var p = " ";
     switch (typ) {
@@ -635,6 +639,8 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
         values: []
     } //come back to later
 };
+
+//checks block names with damage and states
 function checkBlockDamage(n,id){
     var n2 = n;
     console.log("original state: " + n2);
@@ -659,9 +665,13 @@ function checkBlockDamage(n,id){
         state: "[" + n2 + "]"
     };
 } //checks the list of data values for blocks. renames are used in checkRename();
+
+//checks entity nbt
 function checkEntityNBT(nbt,type){
     //will start on this when setblock is complete
 }
+
+//checks item name with damage (/give)
 function checkDamage(n,obj){
     obj = obj.toLowerCase();
     if(typeof(n) != 'undefined'){
@@ -700,6 +710,8 @@ function checkDamage(n,obj){
         };
     }
 }
+
+//checks item name
 function checkRename(obj){
     obj = obj.toLowerCase();
     for(var i in renameList){
@@ -710,11 +722,40 @@ function checkRename(obj){
     }
     return {data: obj};
 }
+
+//attepmts to remove non-needed whitespace. Might not use it right now
+function removeWhiteSpace(t){
+    var tab = "\u0009";
+}
+
+//converts strings to objects
 function pars(str){
-    eval("var o =" +  str);
+    try{
+        eval("var o =" +  str);
+    }
+    catch(e){
+        console.log("Error found: " + e + ". Assumming due to object not being a string...")
+        //display tag error
+        if(str.search("display:{Name:") !== -1){
+            var str2 = str.split("");
+            str2.splice(str.search("display:{Name:") +14,0,"\"");
+            //repeat through string until hit "," or "}"
+            var end = 0;
+            for(var t = str.search("display:{Name:") + 14; t < str.length ;t++){
+                if(str[t] == "," || str[t] == "}"){
+                    end = t;
+                    t = str.length;
+                }
+            }
+            str2.splice(end + 1,0,"\"");
+            console.log(str2);
+            eval("var o =" + str2.join(""));
+        }
+    }
     /*global o*/console.log(o);
     return o;
 }
+
 //item nbt tag COME BACK TO CHECKNBT AND CHECKSPAWNEGG AFTER SUMMON COMMAND COMPLETE
 function checkNBT(dat){
     if(typeof(dat) != 'undefined'){
@@ -734,6 +775,7 @@ function checkNBT(dat){
     return "";
 } //item nbt
 
+//updates spawn egg tag
 function checkSpawnEgg(nbt){
     //for summon
     //looks like this: {EntityTag:{id:blah,CustomName:blah,etc}}
@@ -748,6 +790,7 @@ function checkSpawnEgg(nbt){
 }
 
 //thanks to http://jsfiddle.net/numoccpk/1/
+//converts objects to strings
 function str(obj) {
     var prop;
     //create an array that will later be joined into a string.
@@ -789,7 +832,7 @@ function str(obj) {
     return string.join(",");
 }
 
-
+//updates display tag
 function updateDisplay(dats){
     if(typeof(dats) == 'undefined'){
         return "";
@@ -798,14 +841,16 @@ function updateDisplay(dats){
         if(typeof(dats.Name) !== 'undefined'){
             dats.Name = "{\"text\":\"" + dats.Name + "\"}";
         }
-        if(typeof(dats.Lore) !== 'undefined'){
+        /*if(typeof(dats.Lore) !== 'undefined'){
             for(var i in  dats.Lore){
                 dats.Lore[i] = "{\"text\":\"" + dats.Lore[i] + "}";
             }
-        }
+        }*///Aparently, Lore does not use the new text format...
         return dats;
     }
 }
+
+//checks selector
 function checkSelector(sel){
     sel = sel.substr(3);
     sel = sel.substr(0,sel.length - 1);
@@ -1229,6 +1274,8 @@ function filter(str){
     }
     return str.join("");
 }
+
+//checks gamemode
 function checkGamemode(mode){
     mode = mode.toLowerCase();
     if(mode == 1 || mode.substr(0,1) == 'c'){
