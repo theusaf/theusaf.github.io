@@ -29,6 +29,8 @@ Friday 03/16/2018
 1.3.2: Super minor update. Starting projects on setblock and summon
 Wednesday 04/11/2018
 1.3.3: Adding more data values for block list siiiighhhh...
+Wednesday 04/18/2018
+1.4.0: Adding more data values, fixing bugs, and making a working setblock thing
 */
 
 /*Notes and Random Comments
@@ -127,6 +129,8 @@ var renameList = {
     slime: "slime_block",
     magma: "magma_block",
     red_nether_brick: "red_nether_bricks",
+    silver_shulker_box: "light_gray_shulker_box",
+    silver_glazed_terracotta: "light_gray_glazed_terracotta",
     wooden_door: "oak door",
     boat: "oak_boat",
     reeds: "sugar_cane",
@@ -271,8 +275,8 @@ function parse(typ,version,version2,te){
             var type = ar;
             if(ar.length > 6){
                 for(var q in ar){
-                    if(q > 5){
-                        ar[5] = ar[5] + " " + ar[q];
+                    if(q > 6){
+                        ar[6] = ar[6] + " " + ar[q];
                     }
                 }
             }
@@ -280,23 +284,87 @@ function parse(typ,version,version2,te){
             fin = ar[0] + p + type + p + ar[2] + p + ar[3] + p + ar[4]; + nbt; 
             break;
         case 'setblock':
-            var ar = te.split(" ");
-            if(ar.length > 6){
-                for(var q in ar){
-                    if(q > 5){
-                        ar[5] = ar[5] + " " + ar[q];
+            (function(){
+                var ar = te.split(" ");
+                console.log(ar);
+                //fixes spaces in nbt data
+                if(ar.length > 6){
+                console.log("length is too long");
+                var spliceList = [];
+                for(var q in ar){ //supposed to make nbt same
+                    if(q > 6){
+                        ar[6] = ar[6] + " " + ar[q];
+                        spliceList.push(q);
                     }
                 }
+                var nn = 0;
+                for(var y in spliceList){
+                    ar.splice(y + 7 - nn);
+                    nn ++;
+                }
             }
-            
-            if(Number(ar[5]).isNaN() && true){ //data value is a block state
-                var s = ar[4] + "[" +ar[5] + "]";
+                console.log(ar);
+                /*if(ar[6] !== undefined){ //there is nbt data
+                console.log(ar[6]);
+                if(ar[6].substr(0,7).search("keep") !== -1){
+                    ar[4] = ar[4] + ar[6].split("keep")[1].substr(1,Infinity);
+                }
+                if(ar[6].substr(0,7).search("destroy") !== -1){
+                    ar[4] = ar[4] + ar[6].split("destroy")[1].substr(1,Infinity);
+                }
+                if(ar[6].substr(0,7).search("replace") !== -1){
+                    ar[4] = ar[4] + ar[6].split("replace")[1].substr(1,Infinity);
+                }
+            }
+            if(isNaN(ar[5]) && ar[5] !== undefined){ //data value is a block state
+                console.log("found block state");
+                //s is the new block id and state
+                var s = checkBlockDamage(-1,ar[4]);
+                s = s + "[" +ar[5] + "]";
             }else{ //data value is a number
-                var s = checkBlockDamage(ar[5],ar[4]); //this is weird how c9 is getting confused
-                //checkDamage afterwards
-            }
-            
-            fin = ar[0] + p + ar[1] + p + ar[2] + p + ar[3] + s;
+                console.log("Found number");
+                var s = checkBlockDamage(ar[5],ar[4]);
+            }*/
+                //setblock x y z block data/state handling {nbt}
+                var correct = ar[4]; //block
+                var nbt = ar[6]; //handling {nbt}
+                var numstate = ar[5]; //data/state
+                var handling = ar[6]; // handling {nbt}
+                var correct2 = correct;
+                
+                correct = checkBlockDamage(numstate,correct).id;
+                correct = checkRename(correct).data;
+                if (correct.toLowerCase() == "snowdelete"){
+                    correct = "snow";
+                }
+                
+                numstate = checkBlockDamage(numstate,correct2).state;
+                
+                if(handling !== undefined){
+                    handling = handling.split(" ")[0];
+                }else{
+                    handling = "";
+                }
+                
+                if(nbt !== undefined){
+                    if(nbt.substr(0,7).search("keep") !== -1){
+                        nbt = nbt.split("keep")[1].substr(1,Infinity);
+                    }
+                    if(nbt.substr(0,7).search("destroy") !== -1){
+                        nbt = nbt.split("destroy")[1].substr(1,Infinity);
+                    }
+                    if(nbt.substr(0,7).search("replace") !== -1){
+                        nbt = nbt.split("replace")[1].substr(1,Infinity);
+                    }
+                }else{
+                    nbt = "";
+                }
+                
+                
+                
+                fin = ar[0] + p + ar[1] + p + ar[2] + p + ar[3] + p + correct + numstate + nbt + p + handling;
+                console.log(fin);
+            })();
             break;
         default:
             console.error("parseError: Unidentified type " + typ + " or invalid version");
@@ -484,11 +552,107 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
         hasMultiple: true,
         values: [null,null,null,null,null,null,null,null,"half=upper","half=upper","half=upper","half=upper","half=upper","half=upper","half=upper","half=upper"]
     }, //no more facing. plants now work like lilypads :p
-    
+    silver_shulker_box: {
+        id: "light_gray_shulker_box",
+        hasMultiple: false,
+        values:[]
+    }, //come back to later
+    wooden_door: {
+        id: "oak_door",
+        hasMultiple: false,
+        values: []
+    }, //come back to later
+    powered_repeater: {
+        id: "repeater",
+        hasMultiple: false,
+        values: []
+    },
+    unpowered_repeater: {
+        id: "repeater",
+        hasMultiple: false,
+        values: []
+    }, //come back to later
+    powered_comparator: {
+        id: "comparator",
+        hasMultiple: false,
+        values:[]
+    },
+    unpowered_comparator: {
+        id: "comparator",
+        hasMultiple: false,
+        values: []
+    }, //come back to later
+    standing_sign: {
+        id: "sign",
+        hasMultiple: false,
+        values: ["rotation=south","rotation=south-southwest","rotation=southwest","rotation=west","rotation=west-northwest","rotation=northwest","rotation=north","rotation=north-northeast","rotation=northeast","rotation=east-northeast","rotation=east","rotation=east-southeast","rotation=southeast","rotation=south-southeast"]
+    },
+    wall_sign: {
+        id: "sign",
+        hasMultiple: false,
+        values: []
+    }, //come back to later,
+    reeds: {
+        id: "sugar_cane",
+        hasMultiple: false,
+        values: ["age=0","age=1","age=2","age=3","age=4","age=5","age=6","age=7","age=8","age=9","age=10","age=11","age=12","age=13","age=14","age=15"]
+    },
+    bed: {
+        id: [],
+        hasMultiple: true,
+        values: []
+    }, //come back to later
+    pumpkin_stem: {
+        id: [],
+        hasMultiple: true,
+        values: []
+    }, //come back to later
+    melon_stem: {
+        id: [],
+        hasMultiple: true,
+        values: []
+    }, //come back to later
+    //check to see if flower_pot has any block data
+    skull: {
+        id: [],
+        hasMultiple: true,
+        values: []
+    }, //come back to later
+    standing_banner: {
+        id: [],
+        hasMultiple: true,
+        values: []
+    }, //come back to later
+    wall_banner: {
+        id: [],
+        hasMultiple: true,
+        values: []
+    } //come back to later
 };
-function checkBlockDamage(n,id){ //checks the list of data values for blocks. renames are used in checkRename();
-    
-}
+function checkBlockDamage(n,id){
+    var n2 = n;
+    console.log("original state: " + n2);
+    n = Number(n);
+    console.log(n);
+    console.log(id);
+    if(Object.keys(dataList).includes(id) && isNaN(n) == false){
+        if(dataList[id].hasMultiple){
+            return {id: dataList[id].id[n], state: "[" + dataList[id].values[n] + "]"};
+        }else{
+            return {id: dataList[id].id, state: "[" + dataList[id].values[n] + "]"};
+        }
+    }
+    if(n2 == undefined){
+        return {
+            id: id,
+            state: ""
+        };
+    }
+    return {
+        id: id,
+        state: "[" + n2 + "]"
+    };
+} //checks the list of data values for blocks. renames are used in checkRename();
 function checkEntityNBT(nbt,type){
     //will start on this when setblock is complete
 }
@@ -562,7 +726,7 @@ function checkNBT(dat){
         return str(fixednbt);
     }
     return "";
-}
+} //item nbt
 
 function checkSpawnEgg(nbt){
     //for summon
