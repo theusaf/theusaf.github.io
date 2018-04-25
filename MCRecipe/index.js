@@ -32,6 +32,10 @@ Wednesday 04/11/2018
 Wednesday 04/18/2018
 1.4.0: Adding more data values, fixing bugs, and making a working setblock thing
 1.5.0: Added /help.... :p
+Thursday 04/19/2018
+1.5.1: Added string fixing in display.
+1.5.2: Fixed bugs with string fixing
+1.5.3: Adding shulker boxes to data list
 */
 
 /*Notes and Random Comments
@@ -344,6 +348,9 @@ function parse(typ,version,version2,te){
                 }
                 
                 numstate = checkBlockDamage(numstate,correct2).state;
+                if(numstate == "[null]"){
+                    numstate = "";
+                }
                 
                 if(handling !== undefined){
                     handling = handling.split(" ")[0];
@@ -386,7 +393,7 @@ function parse(typ,version,version2,te){
 Check sapling and leave variant block state
 Make sure that values that are currently replaced by 'null' are correct
 */
-var dataList = { //list of data values for blocks. May be incorrect. Rip me... WARNING: some commands will be a bit off. MAY NEED MORE WORK AS SOME DEFAULLT VALUES ARE NOT THE SAME AS 0. You better thank be as I even allow non-correct block data numbers
+var dataList = { //list of data values for blocks. May be incorrect. Rip me... WARNING: some commands will be a bit off. MAY NEED MORE WORK AS SOME DEFAULLT VALUES ARE NOT THE SAME AS 0. You better thank be as I even allow non-correct block data numbers. NOTE TO SELF-REMOVE ALL "NULL" LATER
     sapling:{
         id: ["oak_sapling","spruce_sapling","birch_sapling","jungle_sapling","acacia_sapling","dark_oak_sapling","oak_sapling","oak_sapling","oak_sapling","spruce_sapling","birch_sapling","acacia_sapling","dark_oak_sapling","oak_sapling","oak_sapling"],
         values: [null,null,null,null,null,null,null,null,"stage=1","stage=1","stage=1","stage=1","stage=1","stage=1","stage=1","stage=1"],
@@ -565,22 +572,97 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
     silver_shulker_box: {
         id: "light_gray_shulker_box",
         hasMultiple: false,
-        values:[]
-    }, //come back to later
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    white_shulker_box: {
+        id: "white_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    orange_shulker_box: {
+        id: "orange_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    magenta_shulker_box: {
+        id: "magenta_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    light_blue_shulker_box: {
+        id: "light_blue_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    yellow_shulker_box: {
+        id: "yellow_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    lime_shulker_box: {
+        id: "lime_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    pink_shulker_box: {
+        id: "pink_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    gray_shulker_box: {
+        id: "gray_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    cyan_shulker_box: {
+        id: "cyan_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    purple_shulker_box: {
+        id: "purple_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    blue_shulker_box: {
+        id: "blue_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    brown_shulker_box: {
+        id: "brown_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    green_shulker_box: {
+        id: "green_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    red_shulker_box: {
+        id: "red_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    black_shulker_box: {
+        id: "black_shulker_box",
+        hasMultiple: false,
+        values:["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
     wooden_door: {
         id: "oak_door",
         hasMultiple: false,
-        values: []
-    }, //come back to later
+        values: ["facing=east","facing=south","facing=west","facing=north","facing=east,open=true","facing=south,open=true","facing=west,open=true","facing=north,open=true","facing=north,half=upper","facing=north,half=top,hinge=right","facing=north,half=upper,powered=true","facing=north,half=upper,hinge=right,powered=true","facing=north,half=upper","facing=north,half=upper,hinge=right","facing=north,half=upper,powered=true","facing=north,half=upper,powered=true,hinge=right"]
+    },
     powered_repeater: {
         id: "repeater",
         hasMultiple: false,
-        values: []
+        values: ["facing=south,powered=true","facing=west,powered=true","facing=north,powered=true","facing=east,powered=true","facing=south,powered=true,delay=2","facing=west,powered=true,delay=2","facing=north,powered=true,delay=2","facing=east,powered=true,delay=2","facing=south,powered=true,delay=3","facing=west,powered=true,delay=3","facing=north,powered=true,delay=3","facing=east,powered=true,delay=3","facing=south,powered=true,delay=4","facing=west,powered=true,delay=4","facing=north,powered=true,delay=4","facing=east,powered=true,delay=4"]
     },
     unpowered_repeater: {
         id: "repeater",
         hasMultiple: false,
-        values: []
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south,delay=2","facing=west,delay=2","facing=north,delay=2","facing=east,delay=2","facing=south,delay=3","facing=west,delay=3","facing=north,delay=3","facing=east,delay=3","facing=south,delay=4","facing=west,delay=4","facing=north,delay=4","facing=east,delay=4"]
     }, //come back to later
     powered_comparator: {
         id: "comparator",
@@ -839,6 +921,9 @@ function updateDisplay(dats){
     }else{
         //fix the display tag
         if(typeof(dats.Name) !== 'undefined'){
+            console.log("dats.Name: " + dats.Name);
+            dats.Name = dats.Name.replace(/\\/img,"\\\\");
+            dats.Name = dats.Name.replace(/\"/img,"\\\"");
             dats.Name = "{\"text\":\"" + dats.Name + "\"}";
         }
         /*if(typeof(dats.Lore) !== 'undefined'){
