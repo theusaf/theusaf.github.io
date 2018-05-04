@@ -36,6 +36,9 @@ Thursday 04/19/2018
 1.5.1: Added string fixing in display.
 1.5.2: Fixed bugs with string fixing
 1.5.3: Adding shulker boxes to data list
+Tuesday - Thursday 05/03/2018
+1.5.4: Added a string fixer!
+1.5.5: Fixed the string fixer!
 */
 
 /*Notes and Random Comments
@@ -45,7 +48,7 @@ Ugh. setblock is a nightmare!
 
 //vars
 var out = document.getElementById('output');
-var justincase = {con: console.log, clear: console.clear};
+/*var justincase = {con: console.log, clear: console.clear};
 console.log = function(m){
     var consol = document.getElementById('console');
     if(typeof(m) == 'string' || typeof(m) == 'number'){
@@ -57,7 +60,7 @@ console.log = function(m){
 console.clear = function(){
     var consol = document.getElementById('console');
     consol.innerText = "";
-}
+}*/
 
 var damageList = {
     wool: ["white_wool","orange_wool","magenta_wool","light_blue_wool","yellow_wool","lime_wool","pink_wool","gray_wool","light_gray_wool","cyan_wool","purple_wool","blue_wool","brown_wool","green_wool","red_wool","black_wool"],
@@ -810,30 +813,79 @@ function removeWhiteSpace(t){
     var tab = "\u0009";
 }
 
-//converts strings to objects
-function pars(str){
-    try{
-        eval("var o =" +  str);
-    }
-    catch(e){
-        console.log("Error found: " + e + ". Assumming due to object not being a string...")
-        //display tag error
-        if(str.search("display:{Name:") !== -1){
-            var str2 = str.split("");
-            str2.splice(str.search("display:{Name:") +14,0,"\"");
-            //repeat through string until hit "," or "}"
-            var end = 0;
-            for(var t = str.search("display:{Name:") + 14; t < str.length ;t++){
-                if(str[t] == "," || str[t] == "}"){
-                    end = t;
-                    t = str.length;
-                }
+//attempts to fix a string object and convert it to object
+function strfix(s){
+    //{Command:setblock x y z command_block 1 0 {Command:"hi this is a bracket: {}"} } --> {Command:"setblock x y z command_block 1 0 {Command:\"hi this is a braket: {}\"}"}
+    var insertlist = [];
+    var inserttype = [];
+    var instr = false;
+    var nest = false;
+    var complete = false;
+    var needsfix = false;
+    var brackets = 0;
+    for(var i in s){
+        if(!instr && s[i] == "\"" && !nest){ //if single quote
+            console.log("found start of string");
+            if(complete == false && needsfix == true){
+                inserttype.push("\\");
+                insertlist.push(Number(i));
             }
-            str2.splice(end + 1,0,"\"");
-            console.log(str2);
-            eval("var o =" + str2.join(""));
+            instr = true;
+        }else if (s.substr(i,2) == "\\\"" && !nest){ //if \"
+            console.log("Found a nested string.");
+            if(complete == false && needsfix == true){
+                inserttype.push("\\");
+                insertlist.push(Number(i));
+            }
+            nest = true;
+        }else if (s.substr(i,2) == "\\\"" && nest){ //if ending \"
+            console.log("Found 'end' of nested string");
+            if(complete == false && needsfix == true){
+                inserttype.push("\\");
+                insertlist.push(Number(i));
+            }
+            nest=false;
+        }else if(!nest && instr && s[i] == "\""){
+            console.log("Found end of string");
+            instr = false;
+            if(complete == false && needsfix == true){
+                inserttype.push("\\");
+                insertlist.push(Number(i));
+            }
+        }else if(!complete && brackets == 0 && needsfix && s[i] == "{"){
+            console.log("Found start of bracket");
+            brackets = brackets + 1;
+        }else if(!complete && brackets > 0 && s[i] == "}"){
+            console.log("Found an end of bracket");
+            brackets = brackets - 1;
+        }else if (!instr && s[i] == ":" && s[Number(i)+1] != "\"" && !needsfix && s[Number(i) + 1] != "{" && s[Number(i) + 1] != "["){ //if not in a string, and is :
+            console.log("Found a missing quote");
+            insertlist.push(Number(i) + 1);
+            inserttype.push("\"");
+            complete = false;
+            needsfix = true;
+        }else if(!instr && (s[i] == "}" || s[i] == ",") && !complete && needsfix && brackets == 0){
+            console.log("Found end of broken string");
+            insertlist.push(Number(i));
+            inserttype.push("\"");
+            complete = true;
         }
     }
+    var l = s.split("");
+    console.log(inserttype);
+    console.log(insertlist);
+    for(var u in insertlist){
+        console.log(insertlist[u]);
+        l[insertlist[u]] = inserttype[u] + l[insertlist[u]]
+    }
+    console.log("result: " + l.join(""));
+    return l.join("");
+}
+
+//converts strings to objects
+function pars(str){
+    var o;
+    eval("o = " + strfix(str));
     /*global o*/console.log(o);
     return o;
 }
