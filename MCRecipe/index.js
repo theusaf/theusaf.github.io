@@ -37,8 +37,12 @@ Thursday 04/19/2018
 1.5.2: Fixed bugs with string fixing
 1.5.3: Adding shulker boxes to data list
 Tuesday - Thursday 05/03/2018
-1.5.4: Added a string fixer!
+1.5.4: Added a (better) string fixer!
 1.5.5: Fixed the string fixer!
+1.5.6: Added complete support for spawn eggs
+1.5.7: Fixed the string fixer! (again)
+1.5.8: Fixed another string fixer bug.. (again...)
+1.5.9: Allowed Numbers like 10b to be accepted by the string fixer
 */
 
 /*Notes and Random Comments
@@ -231,7 +235,9 @@ function parse(typ,version,version2,te){
                 ar[1] = ar[1].substr(0,3);
             }
             
-            var nbt = checkNBT(ar[5]);
+            var nbt2 = ar[5];
+            var id = checkNBT(nbt2).id;
+            var nbt = checkNBT(ar[5]).data;
             if(altS !== ""){
                 if(typeof(nbt) != 'undefined' && nbt != ""){
                     nbt = nbt.substr(0,nbt.length - 1);
@@ -239,6 +245,12 @@ function parse(typ,version,version2,te){
                 }else{
                     nbt = "{" + altS + "}";
                 }
+            }
+            if(nbt == "{}"){
+                nbt = "";
+            }
+            if(typeof(id) != 'undefined'){
+                s.data = id;
             }
             //if statement :p
             if(ar[3] === undefined){
@@ -858,17 +870,20 @@ function strfix(s){
         }else if(!complete && brackets > 0 && s[i] == "}"){
             console.log("Found an end of bracket");
             brackets = brackets - 1;
-        }else if (!instr && s[i] == ":" && s[Number(i)+1] != "\"" && !needsfix && s[Number(i) + 1] != "{" && s[Number(i) + 1] != "["){ //if not in a string, and is :
-            console.log("Found a missing quote");
-            insertlist.push(Number(i) + 1);
-            inserttype.push("\"");
-            complete = false;
-            needsfix = true;
+        }else if (!instr && s[i] == ":" && s[Number(i)+1] != "\"" && !needsfix && s[Number(i) + 1] != "{" && s[Number(i) + 1] != "["){ //if not in a string, and is : and is not a number.
+            if(nn(s.substr(Number(i) + 1,Infinity))){
+                console.log("Found a missing quote");
+                insertlist.push(Number(i) + 1);
+                inserttype.push("\"");
+                complete = false;
+                needsfix = true;
+            }
         }else if(!instr && (s[i] == "}" || s[i] == ",") && !complete && needsfix && brackets == 0){
             console.log("Found end of broken string");
             insertlist.push(Number(i));
             inserttype.push("\"");
             complete = true;
+            needsfix = false;
         }
     }
     var l = s.split("");
@@ -876,10 +891,35 @@ function strfix(s){
     console.log(insertlist);
     for(var u in insertlist){
         console.log(insertlist[u]);
-        l[insertlist[u]] = inserttype[u] + l[insertlist[u]]
+        l[insertlist[u]] = inserttype[u] + l[insertlist[u]];
     }
     console.log("result: " + l.join(""));
     return l.join("");
+}
+
+//this will be used to fix 10b, 10.0f, etc errors
+//function fixsub(str){}
+
+//checks string for number...
+function nn(st){
+    var str = "";
+    
+    for(var k in st){
+        if(st[k] == "}" || st[k] == "]" || st[k] == ","){
+            console.log("Hit end of 'string'. String: " + str);
+            if(str == ""){
+                return true;
+            }
+            return isNaN(str);
+        }else{
+            str = str + st[k];
+        }
+    }
+    console.log("Hit end of 'string'. String: " + str);
+    if(str == ""){
+        return true;
+    }
+    return isNaN(str);
 }
 
 //converts strings to objects
@@ -894,17 +934,23 @@ function pars(str){
 function checkNBT(dat){
     if(typeof(dat) != 'undefined'){
         var fixednbt = pars(dat);
+        var id = undefined;
         //checkRepeat();
         //spawn egg
         if(typeof(fixednbt.EntityTag) != 'undefined'){
-            fixednbt.EntityTag = checkSpawnEgg(fixednbt.EntityTag);
+            id = checkSpawnEgg(fixednbt.EntityTag).item;
+            fixednbt = pars(dat);
+            fixednbt.EntityTag = checkSpawnEgg(fixednbt.EntityTag).nbt;
+            if(typeof(fixednbt.EntityTag != 'undefined')){
+                delete fixednbt.EntityTag;
+            }
         }
         //display
         if(typeof(fixednbt.display) != 'undefined'){
             fixednbt.display = updateDisplay(fixednbt.display);
         }
         
-        return str(fixednbt);
+        return {data:str(fixednbt),id:id};
     }
     return "";
 } //item nbt
@@ -916,9 +962,9 @@ function checkSpawnEgg(nbt){
     
     nbt.id = nbt.id.toLowerCase();
     
-    
     //for give or item
     var it = nbt.id + "_spawn_egg";
+    delete nbt.id;
     
     return {data: nbt, item: it};
 }
@@ -964,6 +1010,19 @@ function str(obj) {
     
     console.log(string.join(","));
     return string.join(",");
+}
+
+var enchantFixes = {
+    "0": "protection"
+};
+
+function updateEnchantments(data){
+    if(typeof(data) == 'undefined'){
+        return "";
+    }else{
+        //fix enchants
+        
+    }
 }
 
 //updates display tag
