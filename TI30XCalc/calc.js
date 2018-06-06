@@ -148,7 +148,7 @@ function go(){
                         bestN = Number(i);
                     }
                 }
-                out.innerText = String(Math.floor(bestN / div));
+                out.innerText = String(Math.floor(Number(String(bestN + startP)) / div));
                 
             }
         };
