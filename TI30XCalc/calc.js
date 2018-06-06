@@ -139,9 +139,9 @@ function go(){
                 var bestNRes = 0.9999999999; //worst number :p
                 var bestN = 0;
                 //repeat through 30,000
-                for(var i = 0; i < 30000; i++){
+                for(var i = 0; i < 1000000; i++){
                     //if 0 + "" --> 0
-                    if(Number("." + String(Number(String(i) + startP) / div).split(".")[1]) < bestNRes){
+                    if(Number("." + String(Number(String(i) + startP) / div).split(".")[1]) < bestNRes && String(Number(String(i) + startP) / div).split(".")[0].length < 10){
                         bestNRes = Number("." + String(Number(String(i) + startP) / div).split(".")[1]);
                         console.log(bestNRes);
                         console.log(String(Number(String(i) + startP) / div));
