@@ -31,7 +31,7 @@ function k(){
                     var en = Number(end.value);
                     var a = Math.pow(2,31) - 85; //loop around number
                     var val = Math.abs(Number(inputNum.value));
-                    var div = 53668.30516818;
+                    var div = 1 / (40014 / a);
                     var useOpt = false;
                     if(start.value !== '' || end.value !== ''){
                         if(start.value === ''){
@@ -87,6 +87,8 @@ var checkLength = function(e,l){
 //it seems that full understanding is not yet in my mind :p
 function go(){
     if(ch.value == 'Find Next Percents from Number'){
+        opts[0].style.display = "block";
+        opts[1].style.display = "none";
         var hasChange = false;
         inputNum.onchange = inputNum.onkeydown =  function(e){
             hasChange = false;
@@ -113,6 +115,41 @@ function go(){
                         }
                     },10)
                 }
+            }
+        };
+    }else{
+        opts[0].style.display = "none";
+        opts[1].style.display = "block";
+        let b = document.getElementById("pe");
+        let out = document.getElementById("outps");
+        b.onclick = function(){
+            let startP = document.getElementById("perc").value;
+            if(startP && !isNaN(startP)){
+                if(Number(startP) >= 1){
+                    console.log("bigger than or equal 1");
+                    startP = "";
+                }else if(Number(startP) == 0){
+                    console.log("zero");
+                    out.innerText = "1";
+                    return;
+                }else{
+                    startP = "." + startP.split(".")[1];
+                }
+                const div = 40014 / (Math.pow(2,31) - 85);
+                var bestNRes = 0.9999999999; //worst number :p
+                var bestN = 0;
+                //repeat through 30,000
+                for(var i = 0; i < 30000; i++){
+                    //if 0 + "" --> 0
+                    if(Number("." + String(Number(String(i) + startP) / div).split(".")[1]) < bestNRes){
+                        bestNRes = Number("." + String(Number(String(i) + startP) / div).split(".")[1]);
+                        console.log(bestNRes);
+                        console.log(String(Number(String(i) + startP) / div));
+                        bestN = Number(i);
+                    }
+                }
+                out.innerText = String(Math.floor(bestN / div));
+                
             }
         };
     }
