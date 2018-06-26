@@ -43,6 +43,8 @@ Tuesday - Thursday 05/03/2018
 1.5.7: Fixed the string fixer! (again)
 1.5.8: Fixed another string fixer bug.. (again...)
 1.5.9: Allowed Numbers like 10b to be accepted by the string fixer
+Monday 06/25/2018
+1.5.10 Added fixes for enchantments
 */
 
 /*Notes and Random Comments
@@ -950,6 +952,12 @@ function checkNBT(dat){
             fixednbt.display = updateDisplay(fixednbt.display);
         }
         
+        //enchants
+        if(typeof(fixednbt.ench) != 'undefined'){
+            fixednbt.Enchantments = updateEnchantments(fixednbt.ench);
+            delete fixednbt.ench;
+        }
+        
         return {data:str(fixednbt),id:id};
     }
     return "";
@@ -1012,16 +1020,17 @@ function str(obj) {
     return string.join(",");
 }
 
-var enchantFixes = {
-    "0": "protection"
-};
+var enchantFixes = ["protection","fire_protection","feather_falling","blast_protection","projectile_protection","respiration","aqua_affinity","thorns","depth_strider","frost_walker","binding_curse","","","","","","sharpness","smite","bane_of_arthropods","knockback","fire_aspect","looting","sweeping","","","","","","","","","","efficiency","silk_touch","unbreaking","fortune","","","","","","","","","","","","","power","punch","flame","infinity","","","","","","","","","","luck_of_the_sea","lure","","","","","","","","mending","vanishing_curse"]
 
 function updateEnchantments(data){
     if(typeof(data) == 'undefined'){
         return "";
     }else{
-        //fix enchants
-        
+        var enchObj = [];
+        for(let i in data){
+            enchObj.push({id:enchantFixes[data[i].id],lvl:data[i].lvl});
+        }
+        return enchObj;
     }
 }
 
