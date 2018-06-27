@@ -1,7 +1,7 @@
 //MC COMMAND UPDATER
 //VERSION 0.1.8
 /*Update log:
-*Dates may be off
+*Some Dates may be off
 Monday 03/05/2018
 0.1.0: Basic give support + nbt
 0.1.1: Add damage and rename values
@@ -45,6 +45,8 @@ Tuesday - Thursday 05/03/2018
 1.5.9: Allowed Numbers like 10b to be accepted by the string fixer
 Monday 06/25/2018
 1.5.10 Added fixes for enchantments
+Wednesday 06/27/2018
+1.5.11 Preparing to finish all damage values for blocks :(
 */
 
 /*Notes and Random Comments
@@ -721,7 +723,6 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
         hasMultiple: true,
         values: []
     }, //come back to later
-    //check to see if flower_pot has any block data
     skull: {
         id: [],
         hasMultiple: true,
@@ -736,7 +737,95 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
         id: [],
         hasMultiple: true,
         values: []
-    } //come back to later
+    }, //come back to later
+    command_block: {}, //later
+    repeating_command_block: {}, //later
+    chain_command_block: {}, //later
+    chest: {}, //later
+    trapped_chest: {}, //later
+    acacia_door: {},
+    acacia_fence: {},
+    acacia_fence_gate: {},
+    acacia_stairs: {},
+    beetroots: {},
+    birch_door: {},
+    birch_fence: {},
+    birch_fence_gate: {},
+    birch_stairs: {},
+    brick_stairs: {},
+    brewing_stand: {},
+    cactus: {},
+    cake: {},
+    carrots: {},
+    cauldron: {},
+    chorus_flower: {},
+    chorus_plant: {},
+    cocoa: {},
+    dark_oak_door: {},
+    dark_oak_fence: {},
+    dark_oak_fence_gate: {},
+    dark_oak_stairs: {},
+    dispenser: {},
+    dropper: {},
+    end_portal_frame: {},
+    end_rod: {},
+    ender_chest: {},
+    farmland: {},
+    fence: {},
+    flowing_lava: {},
+    flowing_water: {},
+    glass_pane: {},
+    heavy_weighted_pressure_plate: {},
+    hopper: {},
+    iron_bars: {},
+    iron_door: {},
+    iron_trapdoor: {},
+    jukebox: {},
+    jungle_door: {},
+    jungle_fence: {},
+    jungle_fence_gate: {},
+    jugnle_stairs: {},
+    ladder: {},
+    lava: {},
+    lever: {},
+    monster_egg: {},
+    dirt: {},
+    nether_brick_fence: {},
+    nether_brick_stairs: {},
+    nether_wart: {},
+    oak_stairs: {},
+    observer: {},
+    piston: {},
+    piston_extension: {},
+    piston_head: {},
+    purpur_pillar: {},
+    purpur_stairs: {},
+    quartz_stairs: {},
+    red_flower: {},
+    red_sandstone_stairs: {},
+    redstone_wire: {},
+    sandstone_stairs: {},
+    sponge: {},
+    spruce_door: {},
+    spruce_fence: {},
+    spruce_fence_gate: {},
+    spruce_stairs: {},
+    stained_glass_pane: {},
+    sticky_piston: {},
+    stone_brick_stairs: {},
+    stone_button: {},
+    stone_pressure_plate: {},
+    tallgrass: {},
+    stained_glass: {},
+    stained_hardened_clay: {},
+    tnt: {},
+    tripwire: {},
+    tripwire_hook: {},
+    vine: {},
+    water: {},
+    waterlily: {},
+    wheat: {},
+    wool: {},
 };
 
 //checks block names with damage and states
@@ -938,6 +1027,7 @@ function checkNBT(dat){
         var fixednbt = pars(dat);
         var id = undefined;
         //checkRepeat();
+        
         //spawn egg
         if(typeof(fixednbt.EntityTag) != 'undefined'){
             id = checkSpawnEgg(fixednbt.EntityTag).item;
