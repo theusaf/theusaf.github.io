@@ -47,6 +47,8 @@ Monday 06/25/2018
 1.5.10 Added fixes for enchantments
 Wednesday 06/27/2018
 1.5.11 Preparing to finish all damage values for blocks :(
+Saturday 08/04/2018
+1.5.12 Adding even more damage values... siiighh
 */
 
 /*Notes and Random Comments
@@ -913,7 +915,6 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
     water: {},
     waterlily: {},
     wheat: {},
-    wool: {},
 };
 
 //checks block names with damage and states
@@ -1076,8 +1077,11 @@ function strfix(s){
     return l.join("");
 }
 
+//looks for repetition
+function repetition(obj,n){}
+
 //this will be used to fix 10b, 10.0f, etc errors
-//function fixsub(str){}
+function fixsub(str){}
 
 //checks string for number...
 function nn(st){
