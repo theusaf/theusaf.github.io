@@ -682,85 +682,173 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
         id: "repeater",
         hasMultiple: false,
         values: ["facing=south","facing=west","facing=north","facing=east","facing=south,delay=2","facing=west,delay=2","facing=north,delay=2","facing=east,delay=2","facing=south,delay=3","facing=west,delay=3","facing=north,delay=3","facing=east,delay=3","facing=south,delay=4","facing=west,delay=4","facing=north,delay=4","facing=east,delay=4"]
-    }, //come back to later
+    }, 
     powered_comparator: {
         id: "comparator",
         hasMultiple: false,
-        values:[]
+        values:["facing=south","facing=west","facing=north","facing=east","facing=south,mode=subtract","facing=west,mode=subtract","facing=north,mode=subtract","facing=east,mode=subtract","facing=south,powered=true","facing=west,powered=true","facing=north,powered=true","facing=east,powered=true","facing=south,mode=subtract,powered=true","facing=west,mode=subtract,powered=true","facing=north,mode=subtract,powered=true","facing=east,mode=subtract,powered=true"]
     },
     unpowered_comparator: {
         id: "comparator",
         hasMultiple: false,
-        values: []
-    }, //come back to later
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south,mode=subtract","facing=west,mode=subtract","facing=north,mode=subtract","facing=east,mode=subtract","facing=south,powered=true","facing=west,powered=true","facing=north,powered=true","facing=east,powered=true","facing=south,mode=subtract,powered=true","facing=west,mode=subtract,powered=true","facing=north,mode=subtract,powered=true","facing=east,mode=subtract,powered=true"]
+    }, 
+    //funnily enough, the powered/unpowered comparators are both exactly the same
     standing_sign: {
         id: "sign",
         hasMultiple: false,
         values: ["rotation=south","rotation=south-southwest","rotation=southwest","rotation=west","rotation=west-northwest","rotation=northwest","rotation=north","rotation=north-northeast","rotation=northeast","rotation=east-northeast","rotation=east","rotation=east-southeast","rotation=southeast","rotation=south-southeast"]
     },
     wall_sign: {
-        id: "sign",
+        id: "wall_sign",
         hasMultiple: false,
-        values: []
-    }, //come back to later,
+        values: ["facing=north","facing=north","facing=north","facing=south","facing=west","facing=east","facing=north","facing=north","facing=north","facing=south","facing=west","facing=east","facing=north","facing=north","facing=north","facing=south"]
+    }, 
     reeds: {
         id: "sugar_cane",
         hasMultiple: false,
         values: ["age=0","age=1","age=2","age=3","age=4","age=5","age=6","age=7","age=8","age=9","age=10","age=11","age=12","age=13","age=14","age=15"]
     },
     bed: {
-        id: [],
-        hasMultiple: true,
-        values: []
-    }, //come back to later
+        id: "red_bed",
+        hasMultiple: false,
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south","facing=west","facing=north","facing=east","facing=south,part=head","facing=west,part=head","facing=north,part=head","facing=east,part=head","facing=south,part=head,occupied=true","facing=west,part=head,occupied=true","facing=north,part=head,occupied=true","facing=east,part=head,occupied=true"]
+    },
     pumpkin_stem: {
-        id: [],
-        hasMultiple: true,
-        values: []
-    }, //come back to later
+        id: "pumpkin_stem",
+        hasMultiple: false,
+        values: ["age=0","age=1","age=2","age=3","age=4","age=5","age=6","age=7",null,null,null,null,null,null,null,null]
+    },
     melon_stem: {
-        id: [],
-        hasMultiple: true,
-        values: []
-    }, //come back to later
+        id: "melon_stem",
+        hasMultiple: false,
+        values: ["age=0","age=1","age=2","age=3","age=4","age=5","age=6","age=7",null,null,null,null,null,null,null,null]
+    }, 
     skull: {
-        id: [],
+        id: ["skeleton_wall_skull","skeleton_skull","skeleton_wall_skull","skeleton_wall_skull","skeleton_wall_skull","skeleton_wall_skull","skeleton_wall_skull","skeleton_skull","skeleton_wall_skull","skeleton_skull","skeleton_wall_skull","skeleton_wall_skull","skeletong_wall_skull","skeleton_wall_skull","skeleton_wall_skull","skeleton_skull"],
         hasMultiple: true,
-        values: []
-    }, //come back to later
+        values: ["facing=east","rotation=0","facing=north","facing=south","facing=west","facing=east","facing=east","rotation=0","facing=east","rotation=0","facing=north","facing=south","facing=west","facing=east","facing=east","rotation=0"]
+    }, 
     standing_banner: {
-        id: [],
-        hasMultiple: true,
-        values: []
-    }, //come back to later
+        id: "black_banner",
+        hasMultiple: false,
+        values: ["rotation=0","rotation=1","rotation=2","rotation=3","rotation=4","rotation=5","rotation=6","rotation=7","rotation=8","rotation=9","rotation=10","rotation=11","rotation=12","rotation=13","rotation=14","rotation=15"]
+    }, 
     wall_banner: {
-        id: [],
-        hasMultiple: true,
-        values: []
-    }, //come back to later
-    command_block: {}, //later
-    repeating_command_block: {}, //later
-    chain_command_block: {}, //later
-    chest: {}, //later
-    trapped_chest: {}, //later
-    acacia_door: {},
-    acacia_fence: {},
-    acacia_fence_gate: {},
-    acacia_stairs: {},
-    beetroots: {},
-    birch_door: {},
-    birch_fence: {},
-    birch_fence_gate: {},
-    birch_stairs: {},
-    brick_stairs: {},
-    brewing_stand: {},
-    cactus: {},
-    cake: {},
-    carrots: {},
-    cauldron: {},
-    chorus_flower: {},
-    chorus_plant: {},
-    cocoa: {},
+        id: "black_wall_banner",
+        hasMultiple: false,
+        values: ["facing=north","facing=north","facing=north","facing=south","facing=west","facing=east","facing=north","facing=north","facing=north","facing=south","facing=west","facing=east","facing=north","facing=north","facing=north","facing=south"]
+    },
+    command_block: {
+        id: "command_block",
+        hasMultiple: false,
+        values: ["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=down,conditional=true","facing=up,conditional=true","facing=north,conditional=true","facing=south,conditional=true","facing=west,conditional=true","facing=east,conditional=true","facing=down,conditional=true","facing=up,conditional=true"]
+    },
+    repeating_command_block: {
+        id: "repeating_command_block",
+        hasMultiple: false,
+        values: ["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=down,conditional=true","facing=up,conditional=true","facing=north,conditional=true","facing=south,conditional=true","facing=west,conditional=true","facing=east,conditional=true","facing=down,conditional=true","facing=up,conditional=true"]
+    }, 
+    chain_command_block: {
+        id: "chain_command_block",
+        hasMultiple: false,
+        values: ["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=down,conditional=true","facing=up,conditional=true","facing=north,conditional=true","facing=south,conditional=true","facing=west,conditional=true","facing=east,conditional=true","facing=down,conditional=true","facing=up,conditional=true"]
+    }, 
+    chest: {
+        id: "chest",
+        hasMultiple: false,
+        values: ["facing=north","facing=north","facing=north","facing=south","facing=west","facing=east","facing=north","facing=north","facing=north","facing=south","facing=west","facing=east","facing=north","facing=north","facing=north","facing=south"]
+    }, 
+    trapped_chest: {
+        id: "trapped_chest",
+        hasMultiple:false,
+        values: ["facing=north","facing=north","facing=north","facing=south","facing=west","facing=east","facing=north","facing=north","facing=north","facing=south","facing=west","facing=east","facing=north","facing=north","facing=north","facing=south"]
+    },
+    acacia_door: {
+        id: "acacia_door",
+        hasMultiple: false,
+        values: ["facing=east","facing=south","facing=west","facing=north","facing=east,open=true","facing=south,open=true","facing=west,open=true","facing=north,open=true","facing=north,half=upper","facing=north,half=upper,hinge=right","facing=north,half=upper,powered=true","facing=north,half=upper,hinge=right,powered=true","facing=north,half=upper","facing=north,half=upper,hinge=right","facing=north,half=upper,powered=true","facing=north,half=upper,powered=true,hinge=right"]
+    },
+    acacia_fence: {
+        id: "acacia_fence",
+        hasMultiple: false,
+        values: ["east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true"]
+    },
+    acacia_fence_gate: {
+        id: "acacia_fence_gate",
+        hasMultiple: false,
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south,open=true","facing=west,open=true","facing=north,open=true","facing=east,open=true","facing=south,powered=true","facing=west,powered=true","facing=north,powered=true","facing=east,powered=true","facing=south,powered=true,open=true","facing=west,powered=true,open=true","facing=north,powered=true,open=true","facing=east,powered=true,open=true"]
+    },
+    acacia_stairs: {
+        id: "acacia_stairs",
+        hasMultiple: false,
+        values: ["facing=east","facing=west","facing=south","facing=north","facing=east,half=top","facing=west,half=top","facing=south,half=top","facing=north,half=top","facing=east","facing=west","facing=south","facing=north","facing=east,half=top","facing=west,half=top","facing=south,half=top","facing=north,half=top"]
+    },
+    beetroots: {
+        id: "beetroots",
+        hasMultiple: false,
+        values: ["age=0","age=1","age=2","age=3",null,null,null,null,null,null,null,null,null,null,null,null]
+    },
+    birch_door: {
+        id: "birch_door",
+        hasMultiple: false,
+        values: ["facing=east","facing=south","facing=west","facing=north","facing=east,open=true","facing=south,open=true","facing=west,open=true","facing=north,open=true","facing=north,half=upper","facing=north,half=upper,hinge=right","facing=north,half=upper,powered=true","facing=north,half=upper,hinge=right,powered=true","facing=north,half=upper","facing=north,half=upper,hinge=right","facing=north,half=upper,powered=true","facing=north,half=upper,powered=true,hinge=right"]
+    },
+    birch_fence: {
+        id: "birch_fence",
+        hasMultiple: false,
+        values: ["east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true"]
+    },
+    birch_fence_gate: {
+        id: "birch_fence_gate",
+        hasMultiple:false,
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south,open=true","facing=west,open=true","facing=north,open=true","facing=east,open=true","facing=south,powered=true","facing=west,powered=true","facing=north,powered=true","facing=east,powered=true","facing=south,powered=true,open=true","facing=west,powered=true,open=true","facing=north,powered=true,open=true","facing=east,powered=true,open=true"]
+    },
+    birch_stairs: {
+        id: "birch_stairs",
+        hasMultiple: false,
+        values: ["facing=east","facing=west","facing=south","facing=north","facing=east,half=top","facing=west,half=top","facing=south,half=top","facing=north,half=top","facing=east","facing=west","facing=south","facing=north","facing=east,half=top","facing=west,half=top","facing=south,half=top","facing=north,half=top"]
+    },
+    brick_stairs: {
+        id: "brick_stairs",
+        hasMultiple:false,
+        values: ["facing=east","facing=west","facing=south","facing=north","facing=east,half=top","facing=west,half=top","facing=south,half=top","facing=north,half=top","facing=east","facing=west","facing=south","facing=north","facing=east,half=top","facing=west,half=top","facing=south,half=top","facing=north,half=top"]
+    },
+    brewing_stand: {
+        id: "brewing_stand",
+        hasMultiple: false,
+        values: [null,"has_bottle_0=true","has_bottle_1=true","has_bottle_0=true,has_bottle_1=true","has_bottle_2=true","has_bottle_0=true,has_bottle_2=true","has_bottle_1=true,has_bottle_2=true","has_bottle_0=true,has_bottle_1=true,has_bottle_2=true",null,"has_bottle_0=true","has_bottle_1=true","has_bottle_0=true,has_bottle_1=true","has_bottle_2=true","has_bottle_0=true,has_bottle_2=true","has_bottle_1=true,has_bottle_2=true","has_bottle_0=true,has_bottle_1=true,has_bottle_2=true"]
+    },
+    cactus: {
+        id: "cactus",
+        hasMultiple: false,
+        values: ["age=0","age=1","age=2","age=3","age=4","age=5","age=6","age=7","age=8","age=9","age=10","age=11","age=12","age=13","age=14","age=15"]
+    },
+    cake: {
+        id: "cake",
+        hasMultiple: false,
+        values: ["bites=0","bites=1","bites=2","bites=3","bites=4","bites=5","bites=6",null,null,null,null,null,null,null,null,null]
+    },
+    carrots: {
+        id: "carrots",
+        hasMultiple: false,
+        values: ["age=0","age=1","age=2","age=3","age=4","age=5","age=6","age=7",null,null,null,null,null,null,null,null]
+    },
+    cauldron: {
+        id: "cauldron",
+        hasMultiple: false,
+        values: ["level=0","level=1","level=2","level=3",null,null,null,null,null,null,null,null,null,null,null,null]
+    },
+    chorus_flower: {
+        id: "chorus_flower",
+        hasMultiple: false,
+        values: ["age=0","age=1","age=2","age=3","age=4","age=5",null,null,null,null,null,null,null,null,null,null]
+    },
+    cocoa: {
+        id: "cocoa",
+        hasMultiple: false,
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south,age=1","facing=west,age=1","facing=north,age=1","facing=east,age=1","facing=south,age=2","facing=west,age=2","facing=north,age=2","facing=east,age=2",null,null,null,null]
+    },
     dark_oak_door: {},
     dark_oak_fence: {},
     dark_oak_fence_gate: {},
@@ -1110,7 +1198,7 @@ function str(obj) {
     return string.join(",");
 }
 
-var enchantFixes = ["protection","fire_protection","feather_falling","blast_protection","projectile_protection","respiration","aqua_affinity","thorns","depth_strider","frost_walker","binding_curse","","","","","","sharpness","smite","bane_of_arthropods","knockback","fire_aspect","looting","sweeping","","","","","","","","","","efficiency","silk_touch","unbreaking","fortune","","","","","","","","","","","","","power","punch","flame","infinity","","","","","","","","","","luck_of_the_sea","lure","","","","","","","","mending","vanishing_curse"]
+var enchantFixes = ["protection","fire_protection","feather_falling","blast_protection","projectile_protection","respiration","aqua_affinity","thorns","depth_strider","frost_walker","binding_curse","","","","","","sharpness","smite","bane_of_arthropods","knockback","fire_aspect","looting","sweeping","","","","","","","","","","efficiency","silk_touch","unbreaking","fortune","","","","","","","","","","","","","power","punch","flame","infinity","","","","","","","","","","luck_of_the_sea","lure","","","","","","","","mending","vanishing_curse"];
 
 function updateEnchantments(data){
     if(typeof(data) == 'undefined'){
