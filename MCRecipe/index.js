@@ -42,13 +42,15 @@ Tuesday - Thursday 05/03/2018
 1.5.6: Added complete support for spawn eggs
 1.5.7: Fixed the string fixer! (again)
 1.5.8: Fixed another string fixer bug.. (again...)
-1.5.9: Allowed Numbers like 10b to be accepted by the string fixer
+1.5.9: Starting function to allow Numbers like 10b to be accepted by the string fixer
 Monday 06/25/2018
 1.5.10 Added fixes for enchantments
 Wednesday 06/27/2018
 1.5.11 Preparing to finish all damage values for blocks :(
 Saturday 08/04/2018
 1.5.12 Adding even more damage values... siiighh
+Sunday 08/05/2018
+1.5.13 Adding more damage values...
 */
 
 /*Notes and Random Comments
@@ -774,7 +776,7 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
     acacia_fence: {
         id: "acacia_fence",
         hasMultiple: false,
-        values: ["east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true"]
+        values: [null,"east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true"]
     },
     acacia_fence_gate: {
         id: "acacia_fence_gate",
@@ -799,7 +801,7 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
     birch_fence: {
         id: "birch_fence",
         hasMultiple: false,
-        values: ["east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true"]
+        values: [null,"east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true"]
     },
     birch_fence_gate: {
         id: "birch_fence_gate",
@@ -851,21 +853,76 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
         hasMultiple: false,
         values: ["facing=south","facing=west","facing=north","facing=east","facing=south,age=1","facing=west,age=1","facing=north,age=1","facing=east,age=1","facing=south,age=2","facing=west,age=2","facing=north,age=2","facing=east,age=2",null,null,null,null]
     },
-    dark_oak_door: {},
-    dark_oak_fence: {},
-    dark_oak_fence_gate: {},
-    dark_oak_stairs: {},
-    dispenser: {},
-    dropper: {},
-    end_portal_frame: {},
-    end_rod: {},
-    ender_chest: {},
-    farmland: {},
-    fence: {},
-    flowing_lava: {},
-    flowing_water: {},
-    glass_pane: {},
-    heavy_weighted_pressure_plate: {},
+    dark_oak_door: {
+        id: "dark_oak_door",
+        hasMultiple: false,
+        values: ["facing=east","facing=south","facing=west","facing=north","facing=east,open=true","facing=south,open=true","facing=west,open=true","facing=north,open=true","facing=north,half=upper","facing=north,half=upper,hinge=right","facing=north,half=upper,powered=true","facing=north,half=upper,hinge=right,powered=true","facing=north,half=upper","facing=north,half=upper,hinge=right","facing=north,half=upper,powered=true","facing=north,half=upper,powered=true,hinge=right"]
+    },
+    dark_oak_fence: {
+        id: "dark_oak_fence",
+        hasMultiple: false,
+        values: [null,"east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true"]
+    },
+    dark_oak_fence_gate: {
+        id: "dark_oak_fence_gate",
+        hasMultiple:false,
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south,open=true","facing=west,open=true","facing=north,open=true","facing=east,open=true","facing=south,powered=true","facing=west,powered=true","facing=north,powered=true","facing=east,powered=true","facing=south,powered=true,open=true","facing=west,powered=true,open=true","facing=north,powered=true,open=true","facing=east,powered=true,open=true"]
+    },
+    dark_oak_stairs: {
+        id: "dark_oak_stairs",
+        hasMultiple:false,
+        values: ["facing=east","facing=west","facing=south","facing=north","facing=east,half=top","facing=west,half=top","facing=south,half=top","facing=north,half=top","facing=east","facing=west","facing=south","facing=north","facing=east,half=top","facing=west,half=top","facing=south,half=top","facing=north,half=top"]
+    },
+    dispenser: {
+        id: "dispenser",
+        hasMultiple: false,
+        values: ["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=down,triggered=true","facing=up,triggered=true","facing=north,triggered=true","facing=south,triggered=true","facing=west,triggered=true","facing=east,triggered=true","facing=down,triggered=true","facing=up,triggered=true"]
+    },
+    dropper: {
+        id: "dropper",
+        hasMultiple: false,
+        values: ["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=down,triggered=true","facing=up,triggered=true","facing=north,triggered=true","facing=south,triggered=true","facing=west,triggered=true","facing=east,triggered=true","facing=down,triggered=true","facing=up,triggered=true"]
+    },
+    end_portal_frame: {
+        id: "end_portal_frame",
+        hasMultiple: false,
+        values: ["facing=south","facing=west","facing=north","facing=east","facing=south,eye=true","facing=west,eye=true","facing=north,eye=true","facing=east,eye=true","facing=south","facing=west","facing=north","facing=east","facing=south,eye=true","facing=west,eye=true","facing=north,eye=true","facing=east,eye=true"]
+    },
+    end_rod: {
+        id: "end_rod",
+        hasMultiple: false,
+        values: ["facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south","facing=west","facing=east","facing=down","facing=up","facing=north","facing=south"]
+    },
+    ender_chest: {
+        id: "ender_chest",
+        hasMultiple: false,
+        values: ["facing=north","facing=north","facing=north","facing=south","facing=west","facing=east","facing=north","facing=north","facing=north","facing=south","facing=west","facing=east","facing=north","facing=north","facing=north","facing=south"]
+    },
+    farmland: {
+        id: "farmland",
+        hasMultiple: false,
+        values: [null,"moisture=1","moisture=2","moisture=3","moisture=4","moisture=5","moisture=6","moisture=7",null,"moisture=1","moisture=2","moisture=3","moisture=4","moisture=5","moisture=6","moisture=7"]
+    },
+    fence: {
+        id: "oak_fence",
+        hasMultiple: false,
+        values: [null,"east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true","east=true"]
+    },
+    flowing_lava: {
+        id: "lava",
+        hasMultiple: false,
+        values: [null,"level=7","level=6","level=5","level=4","level=3","level=2","level=1","level=9","level=9","level=9","level=9","level=9","level=9","level=9","level=9"]
+    },
+    flowing_water: {
+        id: "water",
+        hasMultiple: false,
+        values: [null,"level=7","level=6","level=5","level=4","level=3","level=2","level=1","level=9","level=9","level=9","level=9","level=9","level=9","level=9","level=9"]
+    },
+    heavy_weighted_pressure_plate: {
+        id: "heavy_weighted_pressure_plate",
+        hasMultiple: false,
+        values: [null,"power=1","power=2","power=3","power=4","power=5","power=6","power=7","power=8","power=9","power=10","power=11","power=12","power=13","power=14","power=15"]
+    },
     hopper: {},
     iron_bars: {},
     iron_door: {},
