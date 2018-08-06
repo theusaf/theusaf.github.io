@@ -1,5 +1,5 @@
 //MC COMMAND UPDATER
-//VERSION 1.6.0.0
+//VERSION 1.6.1.0
 //(Major Update).(Commands_Completed).(Misc Changes).(if applicable, this is actually higher than the previous number and means that a subcommand has been completed)
 /*Update log:
 *Some Dates may be off
@@ -55,6 +55,7 @@ Sunday 08/05/2018
 Monday 08/06/2018
 1.5.14 Adding scoreboard command support
 1.6.0 Finished testfor kindof
+1.6.1 Fixed a bug with the testfor command
 */
 
 /*Notes and Random Comments
@@ -321,11 +322,16 @@ function parse(typ,version,version2,te){
             if(ar.length > 3){
                 ar[2] = ar.slice(2).join(" ");
             }
-            ar[1] = checkSelector(ar[1].substr(2));
-            ar[1] = ar[1].substr(0,ar[1].length - 1) + ",nbt=" + ar[2] + "]"
+            if(ar[2] == undefined){
+                ar[2] = "";
+            }
+            let sel = checkSelector(ar[1]);
+            ar[1] = sel != "" ? ar[1].substr(0,3) + sel : ar[1].substr(0,2);
+            
+            ar[1] = ar[2] != "" ? ar[1].substr(0,ar[1].length - 1) + ",nbt=" + ar[2] + "]" : ar[1];
             //checkEntityNBT later :p
-            fin = "execute if entity " + ar[1] + "run summon falling_block ~ ~ ~ {BlockState:{Name:\"barrier\"}}";
-            });
+            fin = "execute if entity " + ar[1] + " run summon falling_block ~ ~ ~ {BlockState:{Name:\"barrier\"}}";
+            })();
             break;
         case 'summon':
             var ar = te.split(" ");
@@ -432,7 +438,7 @@ function parse(typ,version,version2,te){
             var randomHelpList = ["try fixing a real command...","Subscribe! https://www.youtube.com/theusaf","Type /help for a list of commands","This is a line of text","This might help you! https://shortr.github.io/?A","Dolphins are cool!","I wish we could ride dolphins","Stop pressing the fix button please...","Error 404-Command found","Open the banana from the bottom!","Those are my cookies","Searge says theusaf says Dinnerbone says hi","https://www.minecraft.net","Not an official Minecraft website... Duh...","Have you tried swimming in the ocean?"];
             var randomStr = randomHelpList[Math.round(Math.random()*randomHelpList.length - 1)];
             fin = "theusaf says " + randomStr;
-            });
+            })();
             break;
         default:
             console.error("parseError: Unidentified type " + typ + " or invalid version");
