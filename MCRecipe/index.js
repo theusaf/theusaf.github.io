@@ -1,5 +1,6 @@
 //MC COMMAND UPDATER
-//VERSION 0.1.8
+//VERSION 1.5.13.0
+//(Major Update).(Commands_Completed).(Misc Changes).(if applicable, this is actually higher than the previous number and means that a subcommand has been completed)
 /*Update log:
 *Some Dates may be off
 Monday 03/05/2018
@@ -51,6 +52,8 @@ Saturday 08/04/2018
 1.5.12 Adding even more damage values... siiighh
 Sunday 08/05/2018
 1.5.13 Adding more damage values...
+Monday 08/06/2018
+1.5.14 Adding scoreboard command support
 */
 
 /*Notes and Random Comments
@@ -196,6 +199,20 @@ function parse(typ,version,version2,te){
     var fin = "";
     var p = " ";
     switch (typ) {
+        case 'scoreboard':
+            var ar = te.split(" ");
+            let ty;
+            
+            if(ar[1] == "objectives"){
+                if(ar[2] == "add"){
+                    ty = "oa";
+                }
+            }else{
+                
+            }
+            
+            fin = ty == "oa"? ar[0] + p + ar[1] + p + ar[2]: null;
+            break;
         case 'give':
             (function(){
             var ar = te.split(" ");
@@ -972,6 +989,65 @@ var dataList = { //list of data values for blocks. May be incorrect. Rip me... W
     water: {},
     waterlily: {},
     wheat: {},
+};
+
+//list of scoreboard renames
+var scoreboardList = {
+    "stat.animalsBred": "minecraft.custom:minecraft.animals_bred",
+    "stat.armorCleaned": "minecraft.custom:minecraft.clean_armor",
+    "stat.aviateOneCm": "minecraft.custom:minecraft.aviate_one_cm",
+    "stat.bannerCleaned": "minecraft.custom:minecraft.clean_banner",
+    "stat.beaconInteraction": "minecraft.custom:minecraft.interact_with_beacon",
+    "stat.boatOneCm": "minecraft.custom:minecraft.boat_one_cm",
+    "stat.breakItem.minecraft.": "minecraft.broken:minecraft.", //note. this one needs special code...
+    "stat.brewingStandInteraction": "minecraft.custom:minecraft.interact_with_brewingstand",
+    "stat.craftItem.minecraft.": "minecraft.cratfed:minecraft.", //also special
+    "stat.cakeSlicesEaten": "minecraft.custom:minecraft.eat_cake_slice",
+    "stat.cauldronFiled": "minecraft.custom:minecraft.fill_cauldron",
+    "stat.cauldronUsed": "minecraft.custom:minecraft.use_cauldron",
+    "stat.chestOpened": "minecraft.custom:minecraft.open_chest",
+    "stat.climbOneCm": "minecraft.custom:minecraft.climb_one_cm",
+    "stat.craftingTableInteraction": "minecraft.custom:minecraft.interact_with_crafting_table",
+    "stat.crouchOneCm": "minecraft.custom:minecraft.crouch_one_cm",
+    "stat.damageDealt": "minecraft.custom:minecraft.damage_dealt",
+    "stat.damageTaken": "minecraft.custom:minecraft.damage_taken",
+    "stat.deaths": "minecraft.custom:minecraft.deaths",
+    "stat.dispenserInspected": "minecraft.custom:minecraft.inspect_dispenser",
+    "stat.diveOneCm": "minecraft.custom:minecraft.walk_under_water_one_cm",
+    "stat.enderChestOpened": "minecraft.custom:minecraft.open_enderchest",
+    "stat.drop.minecraft.": "minecraft.dropped:minecraft.", //special
+    "stat.entityKilledBy.": "minecraft.killed_by:minecraft.", //special
+    "stat.fallOneCm": "minecraft.custom:minecraft.fall_one_cm",
+    "stat.fishCaught": "minecraft.custom:minecraft.fish_caught",
+    "stat.flyOneCm": "minecraft.custom:minecraft.fly_one_cm",
+    "stat.furnaceInteraction": "minecraft.custom:minecraft.interact_with_furnace",
+    "stat.hopperInspected": "minecraft.custom:minecraft.inspect_hopper",
+    "stat.horseOneCm": "minecraft.custom:minecraft.horse_one_cm",
+    "stat.itemEnchanted": "minecraft.custom:minecraft.enchant_item",
+    "stat.jump": "minecraft.custom:minecraft.jump",
+    "stat.killEntity.": "minecraft.killed:minecraft.", //special
+    "stat.leaveGame": "minecraft.custom:minecraft.leave_game",
+    "stat.mineBlock.minecraft.": "minecraft.mined:minecraft.", //special
+    "stat.minecartOneCm": "minecraft.custom:minecraft.minecart_one_cm",
+    "stat.mobKills": "minecraft.custom:minecraft.mob_kills",
+    "stat.noteblockPlayed": "minecraft.custom:minecraft.play_noteblock",
+    "stat.noteblockTuned": "minecraft.custom:minecraft.tune_noteblock",
+    "stat.pickup.minecraft.": "minecraft.picked_up:minecraft.", //special
+    "stat.pigOneCm": "minecraft.custom:minecraft.pig_one_cm",
+    "stat.playOneMinute": "minecraft.custom:minecraft.play_one_minute",
+    "stat.playerKills": "minecraft.custom:minecraft.player_kills",
+    "stat.recordPlayed": "minecraft.custom:minecraft.play_record",
+    "stat.shulkerBoxOpened": "minecraft.custom:minecraft.open_shulker_box",
+    "stat.sleepInBed": "minecraft.custom:minecraft.sleep_in_bed",
+    "stat.sneakTime": "minecraft.custom:minecraft.sneak_time",
+    "stat.sprintOneCm": "minecraft.custom:minecraft.sprint_one_cm",
+    "stat.swimOneCm": "minecraft.custom:minecraft.swim_one_cm",
+    "stat.talkedToVillager": "minecraft.custom:minecraft.talked_to_villager",
+    "stat.timeSinceDeath": "minecraft.custom:minecraft.time_since_death",
+    "stat.tradedWithVillager": "minecraft.custom:minecraft.traded_with_villager",
+    "stat.trappedChestTriggered": "minecraft.custom:minecraft.trigger_trapped_chest",
+    "stat.useItem.minecraft.": "minecraft.used:minecraft.",
+    "stat.walkOneCm": "minecraft.custom:minecraft.walk_one_cm"
 };
 
 //checks block names with damage and states
