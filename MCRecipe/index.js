@@ -56,6 +56,8 @@ Monday 08/06/2018
 1.5.14 Adding scoreboard command support
 1.6.0 Finished testfor kindof
 1.6.1 Fixed a bug with the testfor command
+Sunday 09/16/2018
+1.6.2 Adding support for testforblock :p
 */
 
 /*Notes and Random Comments
@@ -333,6 +335,10 @@ function parse(typ,version,version2,te){
             fin = "execute if entity " + ar[1] + " run summon falling_block ~ ~ ~ {BlockState:{Name:\"barrier\"}}";
             })();
             break;
+        case 'testforblock':
+            var ar = te.split(" ");
+            fin = "execute if block " + ar[1] + " run summon falling_block ~ ~ ~ {BlockState:{Name:\"barrier\"}}";
+        break;
         case 'summon':
             var ar = te.split(" ");
             ar[1] = ar[1].toLowerCase();
