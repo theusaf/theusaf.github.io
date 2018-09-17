@@ -1161,7 +1161,7 @@ function removeWhiteSpace(t){
     var tab = "\u0009";
 }
 
-//attempts to fix a string object and convert it to object
+//attempts to fix a string object and convert it to object (as string)
 function strfix(s){
     //{Command:setblock x y z command_block 1 0 {Command:"hi this is a bracket: {}"} } --> {Command:"setblock x y z command_block 1 0 {Command:\"hi this is a braket: {}\"}"}
     var insertlist = [];
@@ -1233,8 +1233,14 @@ function strfix(s){
     return l.join("");
 }
 
-//looks for repetition
-function repetition(obj,n){}
+//looks for repetition and returns a string of the repeated fixed object
+function repetition(obj,n){
+    let rep_type = -1;
+    let rep_list = Object.keys(obj);
+    for(let i in rep_list){
+        
+    }
+}
 
 //this will be used to fix 10b, 10.0f, etc errors
 function fixsub(str){}
