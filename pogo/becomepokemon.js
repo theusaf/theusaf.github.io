@@ -485,18 +485,20 @@ function renderPokemonStats(){
     }else{
         //dont render.
     }
-    var url;
     outPut.toBlob(function(blob){
-        url = URL.createObjectURL(blob);
+        var url = URL.createObjectURL(blob);
+        var link = document.getElementById("d");
+        if(link == null){
+            link = document.createElement("a");    
+            link.id = "d";
+            link.href = url;
+            link.innerHTML = "Download Image";
+            document.body.appendChild(link);
+        }else{
+            link.href = url;
+            link.innerHTML = "Download Image";
+        }
     });
-    var link = document.getElementById("d");
-    if(link == null){
-        link = document.createElement("a");    
-        link.id = "d";
-    }
-    link.href = url;
-    link.innerHTML = "Download image";
-    document.body.appendChild(link);
 }
 
 function getPoint(c1,c2,radius,angle){
