@@ -485,8 +485,10 @@ function renderPokemonStats(){
     }else{
         //dont render.
     }
-    var blob = outPut.toBlob();
-    var url = URL.createObjectURL(blob);
+    var url;
+    outPut.toBlob(function(blob){
+        url = URL.createObjectURL(blob);
+    });
     var link = document.getElementById("d");
     if(link == null){
         link = document.createElement("a");    
