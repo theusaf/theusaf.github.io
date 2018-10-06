@@ -5,14 +5,15 @@
 10/05/2018 - More code stuff
            - Rendering stuff
            - Maths
-           - Decided that you can only be pokemon that don't have evolutions, and only one type...
+           - Decided that you can only be pokemon that don't have evolutions
 10/06/2018 - "fininshed", may add more pokemon in future :p
            - Added arcanine
+           - Decided to add any pokemon with no evolutions, but use only one of the types... (maybe the scanner won't notice)
 */
 var outPut = document.getElementsByTagName("canvas")[0];
 var c = outPut.getContext('2d');
 
-var pokemons = ["hitmonlee","arcanine","hitmonchan","raikou"];
+var pokemons = ["hitmonlee","arcanine","hitmonchan","raikou","tentacruel","sunflora","suicune"];
 
 pokemons = shuffle(pokemons);
 
@@ -124,6 +125,93 @@ const PokemonDB = {
         }],
         base: [180,241,210]
     },
+    "tentacruel": {
+        type: "water",
+        fast_moves: [{
+            name: "Acid",
+            damage: 9,
+            t: "poison"
+        },{
+            name: "Poison Jab",
+            damage: 10,
+            t: "poison"
+        }],
+        charge_moves: [{
+            name: "Hydro Pump",
+            damage: 130,
+            type: "full",
+            t: "water"
+        },{
+            name: "Sludge Wave",
+            damage: 110,
+            type: "full",
+            t: "poison"
+        },{
+            name: "Blizzard",
+            damage: 130,
+            type: "full",
+            t: "ice"
+        }],
+        base: [160,166,237]
+    },
+    "sunflora": {
+        type: "grass",
+        fast_moves: [{
+            name: "Razor Leaf",
+            damage: 13,
+            t: "grass"
+        },{
+            name: "Bullet Seed",
+            damage: 8,
+            t: "grass"
+        }],
+        charge_moves: [{
+            name: "Petal Blizzard",
+            damage: 110,
+            type: "full",
+            t: "grass"
+        },{
+            name: "Solar Beam",
+            damage: 180,
+            type: "full",
+            t: "grass"
+        },{
+            name: "Sludge Bomb",
+            damage: 80,
+            type: "full",
+            t: "poison"
+        }],
+        base: [150,185,148]
+    },
+    "suicune": {
+        type: "water",
+        fast_moves: [{
+            name: "Snarl",
+            damage: 12,
+            t: "dark"
+        },{
+            name: "Extrasensory",
+            damage: 12,
+            t: "phychic"
+        }],
+        charge_moves: [{
+            name: "Hydro Pump",
+            damage: 130,
+            type: "full",
+            t: "water"
+        },{
+            name: "Bubble Beam",
+            damage: 45,
+            type: "full",
+            t: "third"
+        },{
+            name: "Water Pulse",
+            damage: 70,
+            type: "half",
+            t: "water"
+        }],
+        base: [200,180,235]
+    }
 };
 
 /*global Image*/
@@ -152,7 +240,10 @@ const typeColors = {
     water: "#5EAADC",
     poison: "#B961CF",
     ground: "#D58F5C",
-    steel: "#5496A2"
+    steel: "#5496A2",
+    grass: "#5DBE67",
+    ice: "#7CD2C7",
+    psychic: "#FC8684"
 };
 
 const types = {
@@ -164,7 +255,10 @@ const types = {
     electric: new Image(),
     dark: new Image(),
     fire: new Image(),
-    steel: new Image()
+    steel: new Image(),
+    grass: new Image(),
+    ice: new Image(),
+    psychic: new Image()
 };
 types.fighting.src = "i/t/fighting.png";
 types.rock.src = "i/t/rock.png";
@@ -175,6 +269,9 @@ types.electric.src = "i/t/electric.png";
 types.dark.src = "i/t/dark.png";
 types.fire.src = "i/t/fire.png";
 types.steel.src = "i/t/steel.png";
+types.grass.src = "i/t/grass.png";
+types.ice.src = "i/t/ice.png";
+types.psychic = "i/t/psychic.png";
 
 const candies = {
     hitmonlee: {
@@ -192,12 +289,27 @@ const candies = {
     raikou: {
         n: "raikou",
         i: new Image()
+    },
+    sunflora: {
+        n: "sunkern",
+        i: new Image()
+    },
+    suicune: {
+        n: "suicune",
+        i: new Image()
+    },
+    tentacruel: {
+        n: "tentacool",
+        i: new Image()
     }
 };
 candies.hitmonlee.i.src = "i/c/hitmonlee.png";
 candies.hitmonchan.i.src = "i/c/hitmonchan.png";
 candies.arcanine.i.src = "i/c/arcanine.png";
 candies.raikou.i.src = "i/c/raikou.png";
+candies.sunflora.i.src = "i/c/sunkern.png";
+candies.suicune.i.src = "i/c/suicune.png";
+candies.tentacruel.i.src = "i/c/tentacool.png";
 
 //constant "cp" multipliers for each half pokemon level
 const CPScalarList = [0.094,0.135137432,0.16639787,0.192650919,0.21573247,0.236572661,0.25572005,0.273530381,0.29024988,0.306057377,0.3210876,0.335445036,0.34921268,0.362457751,0.37523559,0.387592406,0.39956728,0.411193551,0.42250001,0.432926419,0.44310755,0.4530599578,0.46279839,0.472336083,0.48168495,0.4908558,0.49985844,0.508701765,0.51739395,0.525942511,0.53435433,0.542635767,0.55079269,0.558830576,0.56675452,0.574569153,0.58227891,0.589887917,0.59740001,0.604818814,0.61215729,0.619399365,0.62656713,0.633644533,0.64065295,0.647576426,0.65443563,0.661214806,0.667934,0.674577537,0.68116492,0.687680648,0.69414365,0.700538673,0.70688421,0.713164996,0.71939909,0.725571552,0.7317,0.734741009,0.73776948,0.740785574,0.74378943,0.746781211,0.74976104,0.752729087,0.75568551,0.758630378,0.76156384,0.764486065,0.76739717,0.770297266,0.7731865,0.776064962,0.77893275,0.781790055,0.78463697,0.787473578,0.79030001];
