@@ -22,6 +22,8 @@ HP = (BASE STAM + STAM IV) * (CPScalar)*/
 var outPut = document.getElementsByTagName("canvas")[0];
 var c = outPut.getContext('2d');
 
+const pokemons = ["hitmonlee","arcanine"];
+
 //data useful for calculations. base means [STA,ATK,DEF]
 const PokemonDB = {
     "hitmonlee": {
@@ -52,6 +54,35 @@ const PokemonDB = {
             t: "fighting"
         }],
         base: [100,224,211]
+    },
+    "arcanine": {
+        type: "fire",
+        fast_moves: [{
+            name: "Fire Fang",
+            damage: 11,
+            t: "fire"
+        },{
+            name: "Snarl",
+            damage: 12,
+            t: "dark"
+        }],
+        charge_moves: [{
+            name: "Fire Blast",
+            damage: 140,
+            type: "full",
+            t: "fire"
+        },{
+            name: "Wild Charge",
+            damage: 90,
+            type: "half",
+            t: "electric"
+        },{
+            name: "Crunch",
+            damage: 70,
+            type: "third",
+            t: "dark"
+        }],
+        base: [180,227,166]
     }
 };
 //constant "cp" multipliers for each half pokemon level
@@ -122,7 +153,9 @@ const types = {
     water: new Image(),
     ground: new Image(),
     poison: new Image(),
-    electric: new Image()
+    electric: new Image(),
+    dark: new Image(),
+    fire: new Image()
 };
 types.fighting.src = "i/t/fighting.png";
 types.rock.src = "i/t/rock.png";
@@ -130,6 +163,8 @@ types.water.src = "i/t/water.png";
 types.ground.src = "i/t/ground.png";
 types.poison.src = "i/t/poison.png";
 types.electric.src = "i/t/electric.png";
+types.dark.src = "i/t/dark.png";
+types.fire.src = "i/t/fire.png";
 
 const candies = {
     hitmonlee: {
@@ -139,10 +174,15 @@ const candies = {
     hitmonchan: {
         n: "tyrogue",
         i: new Image()
+    },
+    arcanine: {
+        n: "growlithe",
+        i: new Image()
     }
 };
 candies.hitmonlee.i.src = "i/c/hitmonlee.png";
 candies.hitmonchan.i.src = "i/c/hitmonchan.png";
+candies.arcanine.i.src = "i/c/arcanine.png";
 
 function drawStarterInfo(){
     c.clearRect(0,0,640,1136);
@@ -430,11 +470,15 @@ function renderPokemonStats(){
     c.font = "42.8px \"Lato\", sans-serif";
     var name = pName.value == "" ? "You" : pName.value;
     var namex = 320 - (c.measureText(name).width / 2);
+    var pokemon = pokemons[Number(document.getElementById("pokeid").value)];
+    if(pokemon == undefined){
+        pokemon = "hitmonlee";
+    }
     c.fillText(name,namex,559);
     c.drawImage(images[4],namex + c.measureText(name).width + 13,526);
     calculateValues(plvl);
-    let cp = CP("hitmonlee",lvl,sta,atk,def);
-    let hp = HP("hitmonlee",lvl,sta);
+    let cp = CP(pokemon,lvl,sta,atk,def);
+    let hp = HP(pokemon,lvl,sta);
     let candust = StarCandy(lvl);
     c.drawImage(playerImage,200,178,236,319);
     if(gender == "male"){
@@ -452,13 +496,13 @@ function renderPokemonStats(){
     c.beginPath();
     c.strokeStyle = "white";
     c.lineWidth = 8;
-    c.arc(318,405,262.5,Math.PI,Math.PI * (1 + cp / CP("hitmonlee",plvl,sta,atk,def)));
+    c.arc(318,405,262.5,Math.PI,Math.PI * (1 + cp / CP(pokemon,plvl,sta,atk,def)));
     c.stroke();
     c.closePath();
     //drawing the bigger dot :p
     c.beginPath();
     c.fillStyle = "white";
-    c.arc(getPoint(318,405,262.5,Math.PI * (1 + cp / CP("hitmonlee",plvl,sta,atk,def)))[0],getPoint(318,405,262.5,Math.PI * (1 + cp / CP("hitmonlee",plvl,sta,atk,def)))[1],7,0,2*Math.PI);
+    c.arc(getPoint(318,405,262.5,Math.PI * (1 + cp / CP(pokemon,plvl,sta,atk,def)))[0],getPoint(318,405,262.5,Math.PI * (1 + cp / CP(pokemon,plvl,sta,atk,def)))[1],7,0,2*Math.PI);
     c.fill();
     c.closePath();
     //hp stat is located (center,592)
@@ -475,9 +519,9 @@ function renderPokemonStats(){
     c.fillText(cp,ax,119);
     c.fillStyle = "#98ACAD";
     c.font = "18.9px \"Lato\", sans-serif";
-    ax = 320 - (c.measureText(String("FIGHTING")).width / 2);
-    c.fillText("FIGHTING",ax,729);
-    c.drawImage(types.fighting,302,664);
+    ax = 320 - (c.measureText(String(PokemonDB[pokemon].type.toUpperCase())).width / 2);
+    c.fillText(PokemonDB[pokemon].type.toUpperCase(),ax,729);
+    c.drawImage(types[PokemonDB[pokemon].type],302,664);
     c.font = "27px \"Lato\", sans-serif";
     c.fillStyle = "#466B6D";
     ax = 504.5 - (c.measureText("2.25m").width / 2);
@@ -488,23 +532,23 @@ function renderPokemonStats(){
     c.fillStyle = "#456A6D";
     ax = 442.5 - (c.measureText("99").width / 2);
     c.fillText("99",ax,823);
-    c.drawImage(candies.hitmonlee.i,395,795);
+    c.drawImage(candies[pokemon].i,395,795);
     c.fillStyle = "#98ACAD";
     c.font = "18.9px \"Lato\", sans-serif";
-    ax = 442 - (c.measureText(String("TYROGUE CANDY")).width / 2);
-    c.fillText("TYROGUE CANDY",ax,854);
+    ax = 442 - (c.measureText(String(`${candies[pokemon].n.toUpperCase()} CANDY`)).width / 2);
+    c.fillText(`${candies[pokemon].n.toUpperCase()} CANDY`,ax,854);
     c.drawImage(images[13],339,908);
     c.fillStyle = "#45696C";
     c.font = "26px \"Lato\", sans-serif";
     ax = 382 - (c.measureText(String(candust.dust)).width / 2);
     c.fillText(String(candust.dust),ax,934);
-    c.drawImage(candies.hitmonlee.i,449,910,28,28);
+    c.drawImage(candies[pokemon].i,449,910,28,28);
     c.font = "26px \"Lato\", sans-serif";
     ax = 489 - (c.measureText(String(candust.candy)).width / 2);
     c.fillText(String(candust.candy),ax,934);
     //randomly choose a charged and quick attack
-    let qa = PokemonDB.hitmonlee.fast_moves[Math.floor(Math.random()*PokemonDB.hitmonlee.fast_moves.length)];
-    let qc = PokemonDB.hitmonlee.charge_moves[Math.floor(Math.random()*PokemonDB.hitmonlee.charge_moves.length)];
+    let qa = PokemonDB[pokemon].fast_moves[Math.floor(Math.random()*PokemonDB[pokemon].fast_moves.length)];
+    let qc = PokemonDB[pokemon].charge_moves[Math.floor(Math.random()*PokemonDB[pokemon].charge_moves.length)];
     c.drawImage(types[qa.t],43,1028);
     c.drawImage(types[qc.t],43,1084);
     c.fillStyle = "#44696C";
