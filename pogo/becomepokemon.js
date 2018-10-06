@@ -949,6 +949,8 @@ function renderPokemonStats(){
             highest = "Defense";
         }else if(def == atk){
             highest = "Defense and Attack";
+        }else{
+            highest = "Attack";
         }
     }else if(def == sta){
         if(def > atk){
