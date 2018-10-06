@@ -7,18 +7,8 @@
            - Maths
            - Decided that you can only be pokemon that don't have evolutions, and only one type...
 10/06/2018 - "fininshed", may add more pokemon in future :p
+           - Added arcanine
 */
-
-//max image size is 236x319, located at (201,178)
-//canvas size is 640 by 1136
-//563 from top, 547 from left is the gender (m)
-
-//name font size is 42.9 (42 is incorrect. the measuretext seems to take into account 2 extra pixels at the start/end of text :p)
-
-/*Calculation notes:
-weight and random stats will be calculated randomly lol
-CP = (BASE ATK + ATK IV)*(BASE DEF + DEF IV)^0.5*(BASE STA + STA IV)^0.5*(CPScalar)^2/10
-HP = (BASE STAM + STAM IV) * (CPScalar)*/
 var outPut = document.getElementsByTagName("canvas")[0];
 var c = outPut.getContext('2d');
 
@@ -144,7 +134,13 @@ images[13].src = "i/stardust.png";
 
 const typeColors = {
     fighting: "#D5425F",
-    rock: "#CBBD8E"
+    rock: "#CBBD8E",
+    fire: "#FEA153",
+    electric: "#F7DA5C",
+    dark: "#5E5B6E",
+    water: "#5EAADC",
+    poison: "#B961CF",
+    ground: "#D58F5C"
 };
 
 const types = {
