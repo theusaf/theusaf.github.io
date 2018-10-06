@@ -485,6 +485,16 @@ function renderPokemonStats(){
     }else{
         //dont render.
     }
+    var blob = outPut.toBlob();
+    var url = URL.createObjectURL(blob);
+    var link = document.getElementById("d");
+    if(link == null){
+        link = document.createElement("a");    
+        link.id = "d";
+    }
+    link.href = url;
+    link.innerHTML = "Download image";
+    document.body.appendChild(link);
 }
 
 function getPoint(c1,c2,radius,angle){
