@@ -207,9 +207,12 @@ function drawStarterInfo(){
 let pLevel = document.getElementById("lvl");
 let pName = document.getElementById("name");
 let sub = document.getElementsByTagName("button")[0];
-sub.onclick = renderPokemonStats;
+sub.onclick = rendcalc;
 
 function calculateValues(pLevel){
+    atk = 8;
+    def = 8;
+    sta = 8;
     let qs = Array.from(document.getElementsByClassName("question2"));
     let ans = Array.from(document.getElementsByClassName("question3"));
     let levelPercent = 0.5;
@@ -456,10 +459,13 @@ function calculateValues(pLevel){
     }
 }
 
+function rendcalc(){
+    let plvl = pLevel.value <= 40 && pLevel.value > 0 ? Number(pLevel.value) : 1;
+    calculateValues(plvl);
+    renderPokemonStats();
+}
+
 function renderPokemonStats(){
-    atk = 8;
-    def = 8;
-    sta = 8;
     drawStarterInfo();
     let plvl = pLevel.value <= 40 && pLevel.value > 0 ? Number(pLevel.value) : 1;
     c.fillStyle = "#44696C";
@@ -472,7 +478,6 @@ function renderPokemonStats(){
     }
     c.fillText(name,namex,559);
     c.drawImage(images[4],namex + c.measureText(name).width + 13,526);
-    calculateValues(plvl);
     let cp = CP(pokemon,lvl,sta,atk,def);
     let hp = HP(pokemon,lvl,sta);
     let candust = StarCandy(lvl);
