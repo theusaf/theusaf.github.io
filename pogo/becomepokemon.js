@@ -6,6 +6,7 @@
            - Rendering stuff
            - Maths
            - Decided that you can only be pokemon that don't have evolutions, and only one type...
+10/06/2018 - "fininshed", may add more pokemon in future :p
 */
 
 //max image size is 236x319, located at (201,178)
@@ -496,6 +497,7 @@ var def = 8;
 var sta = 8;
 var lvl = 1;
 var playerImage = new Image();
+playerImage.src = "i/empty.png";
 var qs = document.getElementById("questions");
 
 var levelQuests = [{n:"How old are you?",t:"number",i:0},{n:"What is your lowest grade in your last/current school?",t:"text",i:1},{n:"Do you play Minecraft?",t:"checkbox",i:2},{n:"Do you play Roblox?",t:"checkbox",i:3},{n:"Do you play Pokemon Go?",t:"checkbox",i:4}];
