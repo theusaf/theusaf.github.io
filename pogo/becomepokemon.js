@@ -90,11 +90,11 @@ function CPScalar(lvl){
 }
 
 function HP(id,lvl,staIV){
-    return Math.round((PokemonDB[id].base[0] + staIV)*CPScalar(lvl));
+    return Math.floor((PokemonDB[id].base[0] + staIV)*CPScalar(lvl));
 }
 
 function CP(id,lvl,staIV,atkIV,defIV){
-    return Math.round(((PokemonDB[id].base[1] + atkIV)*Math.pow(PokemonDB[id].base[2] + defIV,0.5)*Math.pow(PokemonDB[id].base[0] + staIV,0.5)*Math.pow(CPScalar(lvl),2))/10);
+    return Math.floor(((PokemonDB[id].base[1] + atkIV)*Math.pow(PokemonDB[id].base[2] + defIV,0.5)*Math.pow(PokemonDB[id].base[0] + staIV,0.5)*Math.pow(CPScalar(lvl),2))/10);
 }
 
 function StarCandy(plvl){
