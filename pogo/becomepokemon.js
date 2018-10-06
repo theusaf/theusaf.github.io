@@ -430,17 +430,57 @@ function renderPokemonStats(){
     c.drawImage(types[qa.t],43,1028);
     c.drawImage(types[qc.t],43,1084);
     c.fillStyle = "#44696C";
-    c.font = "28.6 \"Lato\", sans-serif";
+    c.font = "28.6px \"Lato\", sans-serif";
     c.fillText(qa.name,92,1058);
     c.fillText(qc.name,92,1114);
-    ax = c.measureText(qc.name) + 13;
     c.fillStyle = typeColors[qc.t];
+    ax = c.measureText(qc.name).width + 13 + 91;
+    console.log(ax);
     if(qc.type == "full"){
-        
+        c.beginPath();
+        c.moveTo(ax,1112);
+        c.lineTo(ax + 8,1094);
+        c.lineTo(ax + 176,1094);
+        c.lineTo(ax + 169,1112);
+        c.fill();
+        c.closePath();
     }else if(qc.type == "half"){
-        
+        c.beginPath();
+        c.moveTo(ax,1112);
+        c.lineTo(ax + 8,1094);
+        c.lineTo(ax + 87,1094);
+        c.lineTo(ax + 80,1112);
+        c.fill();
+        c.closePath();
+        c.beginPath();
+        c.moveTo(ax + 90,1112);
+        c.lineTo(ax + 98,1094);
+        c.lineTo(ax + 176,1094);
+        c.lineTo(ax + 169,1112);
+        c.fill();
+        c.closePath();
     }else if(qc.type == "third"){
-        
+        c.beginPath();
+        c.moveTo(ax,1112);
+        c.lineTo(ax + 8,1094);
+        c.lineTo(ax + 56,1094);
+        c.lineTo(ax + 49,1112);
+        c.fill();
+        c.closePath();
+        c.beginPath();
+        c.moveTo(ax + 60,1112);
+        c.lineTo(ax + 67,1094);
+        c.lineTo(ax + 116,1094);
+        c.lineTo(ax + 109,1112);
+        c.fill();
+        c.closePath();
+        c.beginPath();
+        c.moveTo(ax + 120,1112);
+        c.lineTo(ax + 126,1094);
+        c.lineTo(ax + 175,1094);
+        c.lineTo(ax + 169,1112);
+        c.fill();
+        c.closePath();
     }else{
         //dont render.
     }
