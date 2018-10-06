@@ -555,9 +555,9 @@ function renderPokemonStats(){
     strap.innerHTML = `Its best attribute(s) is/are ${highest}`;
     if(def == 15 || sta == 15 || atk == 15){
         staap.innerHTML = "Its stats are out of this world!";
-    }else if(atk >= 13 || sta >= 13 || atk >= 13){
+    }else if(def >= 13 || sta >= 13 || atk >= 13){
         staap.innerHTML = "Its stats are pretty impressive!";
-    }else if(atk >= 8 || sta >= 8 || atk >= 8){
+    }else if(def >= 8 || sta >= 8 || atk >= 8){
         staap.innerHTML = "Its stats are decent.";
     }else{
         staap.innerHTML = "Its stats are garbage...";
