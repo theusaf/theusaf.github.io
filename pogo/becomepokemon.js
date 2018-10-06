@@ -553,7 +553,7 @@ function renderPokemonStats(){
         }
     }
     strap.innerHTML = `Its best attribute(s) is/are ${highest}`;
-    if(atk == 15 || sta == 15 || atk == 15){
+    if(def == 15 || sta == 15 || atk == 15){
         staap.innerHTML = "Its stats are out of this world!";
     }else if(atk >= 13 || sta >= 13 || atk >= 13){
         staap.innerHTML = "Its stats are pretty impressive!";
