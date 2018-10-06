@@ -494,10 +494,26 @@ function renderPokemonStats(){
             link.href = url;
             link.innerHTML = "Download Image";
             document.body.appendChild(link);
+            document.body.appendChild(document.createElement("br"));
         }else{
             link.href = url;
             link.innerHTML = "Download Image";
         }
+        var reader = new FileReader();
+        var link2 = document.getElementById("d2");
+        reader.onload = function(e){
+            if(link2 == null){
+                link2 = document.createElement("a");
+                link2.id = "d2";
+                link2.href = reader.result;
+                link2.innerHTML = "Download image (if the first link doesn't work)";
+                document.body.appendChild(link2);
+            }else{
+                link2.href = reader.result;
+                link2.innerHTML = "Download image (if the first link doesn't work)";
+            }
+        };
+        reader.readAsDataURL(blob);
     });
 }
 
