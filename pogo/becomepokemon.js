@@ -12,7 +12,9 @@
 var outPut = document.getElementsByTagName("canvas")[0];
 var c = outPut.getContext('2d');
 
-const pokemons = ["hitmonlee","arcanine"];
+var pokemons = ["hitmonlee","arcanine","hitmonchan"];
+
+pokemons = shuffle(pokemons);
 
 //data useful for calculations. base means [STA,ATK,DEF]
 const PokemonDB = {
@@ -73,8 +75,95 @@ const PokemonDB = {
             t: "dark"
         }],
         base: [180,227,166]
+    },
+    "hitmonchan": {
+        type: "fighting",
+        fast_moves: [{
+            name: "Counter",
+            damage: 12,
+            t: "fighting"
+        },{
+            name: "Bullet Punch",
+            damage: 9,
+            t: "steel"
+        }],
+        charge_moves: [{
+            name: "Thunder Punch",
+            damage: 45,
+            type: "third",
+            t: "electric"
+        }],
+        base: [100,224,211]
+    },
+};
+
+/*global Image*/
+const images = [new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image()];
+images[0].src = "i/iphone_bar.png";
+images[1].src = "i/male_sign.png";
+images[2].src = "i/star.png";
+images[3].src = "i/powerup-button.png";
+images[4].src = "i/pencil.png";
+images[5].src = "i/x.png";
+images[6].src = "i/menu.png";
+images[7].src = "i/star_now.png";
+images[8].src = "i/line.png";
+images[9].src = "i/wfh.png";
+images[10].src = "i/bar_vert.png";
+images[11].src = "i/hpbar.png";
+images[12].src = "i/female_sign.png";
+images[13].src = "i/stardust.png";
+
+const typeColors = {
+    fighting: "#D5425F",
+    rock: "#CBBD8E",
+    fire: "#FEA153",
+    electric: "#F7DA5C",
+    dark: "#5E5B6E",
+    water: "#5EAADC",
+    poison: "#B961CF",
+    ground: "#D58F5C",
+    steel: "#5496A2"
+};
+
+const types = {
+    fighting: new Image(),
+    rock: new Image(),
+    water: new Image(),
+    ground: new Image(),
+    poison: new Image(),
+    electric: new Image(),
+    dark: new Image(),
+    fire: new Image(),
+    steel: new Image()
+};
+types.fighting.src = "i/t/fighting.png";
+types.rock.src = "i/t/rock.png";
+types.water.src = "i/t/water.png";
+types.ground.src = "i/t/ground.png";
+types.poison.src = "i/t/poison.png";
+types.electric.src = "i/t/electric.png";
+types.dark.src = "i/t/dark.png";
+types.fire.src = "i/t/fire.png";
+
+const candies = {
+    hitmonlee: {
+        n: "tyrogue",
+        i: new Image()
+    },
+    hitmonchan: {
+        n: "tyrogue",
+        i: new Image()
+    },
+    arcanine: {
+        n: "growlithe",
+        i: new Image()
     }
 };
+candies.hitmonlee.i.src = "i/c/hitmonlee.png";
+candies.hitmonchan.i.src = "i/c/hitmonchan.png";
+candies.arcanine.i.src = "i/c/arcanine.png";
+
 //constant "cp" multipliers for each half pokemon level
 const CPScalarList = [0.094,0.135137432,0.16639787,0.192650919,0.21573247,0.236572661,0.25572005,0.273530381,0.29024988,0.306057377,0.3210876,0.335445036,0.34921268,0.362457751,0.37523559,0.387592406,0.39956728,0.411193551,0.42250001,0.432926419,0.44310755,0.4530599578,0.46279839,0.472336083,0.48168495,0.4908558,0.49985844,0.508701765,0.51739395,0.525942511,0.53435433,0.542635767,0.55079269,0.558830576,0.56675452,0.574569153,0.58227891,0.589887917,0.59740001,0.604818814,0.61215729,0.619399365,0.62656713,0.633644533,0.64065295,0.647576426,0.65443563,0.661214806,0.667934,0.674577537,0.68116492,0.687680648,0.69414365,0.700538673,0.70688421,0.713164996,0.71939909,0.725571552,0.7317,0.734741009,0.73776948,0.740785574,0.74378943,0.746781211,0.74976104,0.752729087,0.75568551,0.758630378,0.76156384,0.764486065,0.76739717,0.770297266,0.7731865,0.776064962,0.77893275,0.781790055,0.78463697,0.787473578,0.79030001];
 const StarDustCost = [200,400,600,800,1000,1300,1600,1900,2200,2500,3000,3500,4000,4500,5000,6000,7000,8000,9000,10000];
@@ -115,70 +204,20 @@ window.onload = window.onresize = function(evt){
     outPut.style.right = `${tx}px`;
 };
 
-/*global Image*/
-const images = [new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image()];
-images[0].src = "i/iphone_bar.png";
-images[1].src = "i/male_sign.png";
-images[2].src = "i/star.png";
-images[3].src = "i/powerup-button.png";
-images[4].src = "i/pencil.png";
-images[5].src = "i/x.png";
-images[6].src = "i/menu.png";
-images[7].src = "i/star_now.png";
-images[8].src = "i/line.png";
-images[9].src = "i/wfh.png";
-images[10].src = "i/bar_vert.png";
-images[11].src = "i/hpbar.png";
-images[12].src = "i/female_sign.png";
-images[13].src = "i/stardust.png";
-
-const typeColors = {
-    fighting: "#D5425F",
-    rock: "#CBBD8E",
-    fire: "#FEA153",
-    electric: "#F7DA5C",
-    dark: "#5E5B6E",
-    water: "#5EAADC",
-    poison: "#B961CF",
-    ground: "#D58F5C"
-};
-
-const types = {
-    fighting: new Image(),
-    rock: new Image(),
-    water: new Image(),
-    ground: new Image(),
-    poison: new Image(),
-    electric: new Image(),
-    dark: new Image(),
-    fire: new Image()
-};
-types.fighting.src = "i/t/fighting.png";
-types.rock.src = "i/t/rock.png";
-types.water.src = "i/t/water.png";
-types.ground.src = "i/t/ground.png";
-types.poison.src = "i/t/poison.png";
-types.electric.src = "i/t/electric.png";
-types.dark.src = "i/t/dark.png";
-types.fire.src = "i/t/fire.png";
-
-const candies = {
-    hitmonlee: {
-        n: "tyrogue",
-        i: new Image()
-    },
-    hitmonchan: {
-        n: "tyrogue",
-        i: new Image()
-    },
-    arcanine: {
-        n: "growlithe",
-        i: new Image()
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
     }
-};
-candies.hitmonlee.i.src = "i/c/hitmonlee.png";
-candies.hitmonchan.i.src = "i/c/hitmonchan.png";
-candies.arcanine.i.src = "i/c/arcanine.png";
+    return array;
+}
 
 function drawStarterInfo(){
     c.clearRect(0,0,640,1136);
