@@ -122,7 +122,7 @@ const PokemonDB = {
             type: "half",
             t: "electric"
         }],
-        base: [100,193,212]
+        base: [180,241,210]
     },
 };
 
