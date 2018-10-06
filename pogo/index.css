@@ -12,6 +12,9 @@ input{
 .question{
     display: inline;
 }
+.question2{
+    display: inline;
+}
 .half{
     width: 50%;
 }
