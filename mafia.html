@@ -130,6 +130,7 @@
             //night is doing actions. night2 is showing results. day is day...
             let time = "night";
             let players = [];
+            
             document.addEventListener("resize",resize);
             
             function resize(resEvt){
@@ -630,8 +631,43 @@
                 }
             }
             
-            function dayUpdate(){
+            function generateResultText(){
                 
+            }
+            
+            function dayUpdate(){
+                let investValues = {
+                    "mafioso": "Vigilante, Veteran, Mafioso",
+                    "godfather": "Bodyguard, Godfather, Arsonist",
+                    "janitor": "Retributionist, Janitor",
+                    "framer": "Framer, Vampire, Jester",
+                    "consiglier": "Investigator, Consigliere, Mayor",
+                    "bodyguard": "Bodyguard, Godfather, Arsonist",
+                    "doctor": "Doctor, Disguiser, Serial Killer",
+                    "escort": "Transporter, Escort, Consort",
+                    "sheriff": "Sheriff, Executioner, Werewolf",
+                    "investigator": "Investigator, Consigliere, Mayor",
+                    "jailor": "Spy, Blackmailer, Jailor",
+                    "lookout": "Lookout, Forger",
+                    "mayor": "Investigator, Consigliere, Mayor",
+                    "retributionist": "Retributionist, Janitor",
+                    "spy": "Spy, Blackmailer, Jailor",
+                    "transporter": "Transporter, Escort, Consort",
+                    "vampirehunter": "Survivor, Vampire Hunter, Amnesiac",
+                    "veteran": "Vigilante, Veteran, Mafioso",
+                    "vigilante": "Vigilante, Veteran, Mafioso",
+                    "blackmailer": "Spy, Blackmailer, Jailor",
+                    "consort": "Transporter, Escort, Consort",
+                    "disguiser": "Doctor, Disguiser, Serial Killer",
+                    "amnesiac": "Survivor, Vampire Hunter, Amnesiac",
+                    "arsonist": "Bodyguard, Godfather, Arsonist",
+                    "executioner": "Sheriff, Executioner, Werewolf",
+                    "jester": "Framer, Vampire, Jester",
+                    "serialkiller": "Doctor, Disguiser, Serial Killer",
+                    "survivor": "Survivor, Vampire Hunter, Amnesiac",
+                    "vampire": "Framer, Vampire, Jester",
+                    "werewolf": "Sheriff, Executioner, Werewolf",
+                };
             }
             
             function updateStats(){
@@ -703,10 +739,23 @@
                     updateStats();
                 }
                 turn ++;
+                if(turn == players.length){
+                    turn = -1;
+                    time = time == "night" ? (function(){
+                        dayUpdate();
+                        return "night2";
+                    })() : "day";
+                }
                 if(time == "night"){
                     showTeam(players[turn].role);
                     generateRoleText(players[turn].role);
                     createActionText(players[turn].role);
+                }
+                if(time == "night2"){
+                    
+                }
+                if(time == "day"){
+                    updatePlayerLists();
                 }
             }
             

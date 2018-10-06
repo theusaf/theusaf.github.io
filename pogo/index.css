@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
+canvas{
+    position: fixed;
+    top: 0;
+    right: 0;
+    border: 10px solid black;
+}
+input{
+    display: inline;
+}
+.question{
+    display: inline;
+}
+.half{
+    width: 50%;
+}
