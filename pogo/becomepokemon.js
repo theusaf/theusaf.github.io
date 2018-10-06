@@ -515,6 +515,53 @@ function renderPokemonStats(){
         };
         reader.readAsDataURL(blob);
     });
+    var appraisalIV = ((atk + def + sta) / 45)*100;
+    var ivapp = document.getElementById("appraisal");
+    var strap = document.getElementById("appraisal2");
+    var staap = document.getElementById("appraisal3");
+    if(appraisalIV > 82.2){
+        ivapp.innerHTML = `Your ${name} is amazing!!!`;
+    }else if(appraisalIV > 66.7){
+        ivapp.innerHTML = `Your ${name} is pretty strong!`;
+    }else if(appraisalIV > 51.1){
+        ivapp.innerHTML = `Your ${name} is decent.`;
+    }else{
+        ivapp.innerHTML = `Your ${name} is weak.`;
+    }
+    var highest = "";
+    if(def > sta){
+        if(def > atk){
+            highest = "Defense";
+        }else if(def == atk){
+            highest = "Defense and Attack";
+        }
+    }else if(def == sta){
+        if(def > atk){
+            highest = "Defense and HP";
+        }else if(def == atk){
+            highest = "Defense, HP, and Attack";
+        }else{
+            highest = "Attack";
+        }
+    }else{
+        if(sta > atk){
+            highest = "HP";
+        }else if(sta == atk){
+            highest = "HP and Attack";
+        }else{
+            highest = "Attack";
+        }
+    }
+    strap.innerHTML = `Its best attribute(s) is/are ${highest}`;
+    if(atk == 15 || sta == 15 || atk == 15){
+        staap.innerHTML = "Its stats are out of this world!";
+    }else if(atk >= 13 || sta >= 13 || atk >= 13){
+        staap.innerHTML = "Its stats are pretty impressive!";
+    }else if(atk >= 8 || sta >= 8 || atk >= 8){
+        staap.innerHTML = "Its stats are decent.";
+    }else{
+        staap.innerHTML = "Its stats are garbage...";
+    }
 }
 
 function getPoint(c1,c2,radius,angle){
