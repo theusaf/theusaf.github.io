@@ -509,6 +509,113 @@ function calculateValues(pLevel){
                     lvl = lvl / 1.7;
                 }
             break;
+            case "27":
+                switch (ans[i].value.toLowerCase()) {
+                    case 'run':
+                        def = def + 1;
+                    break;
+                    case 'hide':
+                        def = def + 3;
+                    break;
+                    case 'defend':
+                        def = def - 2;
+                        atk = atk + 1;
+                        sta = sta - 1;
+                    break;
+                    default:
+                        def = def - 3;
+                        atk = atk - 1;
+                    break;
+                }
+            break;
+            case "28":
+                if(Number(ans[i].value) > 3){
+                    lvl = lvl * 1.2;
+                }else if(Number(ans[i].value) < 3){
+                    lvl = lvl / 1.4;
+                }else{
+                    lvl = lvl * 1.5;
+                }
+            break;
+            case "30":
+                if(ans[i].value.search(/(african)/img) != -1 && ans[i].value.search(/(european)/img) != -1){
+                    lvl = lvl * 3;
+                    sta = sta + 1;
+                    def = def + 1;
+                }else{
+                    lvl = lvl / 3;
+                    sta = sta - 2;
+                    def = def - 1;
+                    atk = atk - 1;
+                }
+            break;
+            case "29":
+                if(ans[i].checked){
+                    def = def + 2;
+                }else{
+                    def = def - 2;
+                    atk = atk - 1;
+                    sta = sta - 1;
+                }
+            break;
+            case "31":
+                if(ans[i].value == "50"){
+                    sta = sta + 1;
+                }else{
+                    sta = sta - 5;
+                    def = def - 3;
+                    atk = atk - 2;
+                }
+            break;
+            case "32":
+                switch (ans[i].value.toLowerCase()) {
+                    case 'leia':
+                        atk = atk + 3;
+                        def = def - 1;
+                    break;
+                    case 'luke':
+                        atk = atk + 4;
+                        sta = sta - 1;
+                    break;
+                    case 'vader':
+                        atk = atk + 5;
+                        sta = sta - 2;
+                    break;
+                    case 'rey':
+                        atk = atk + 2;
+                        def = def - 1;
+                    break;
+                    case 'ren':
+                        atk = atk + 6;
+                        def = def - 4;
+                        sta = sta - 1;
+                    break;
+                    case 'han':
+                        atk = atk + 2;
+                        def = def + 1;
+                        sta = sta - 1;
+                    break;
+                    case 'chewy':
+                        atk = atk + 2;
+                        def = def + 4;
+                        sta = sta - 4;
+                    break;
+                    case 'rose':
+                        atk = atk - 2;
+                        def = def - 2;
+                        sta = sta - 2;
+                    break;
+                    case 'yoda':
+                        atk = atk + 1;
+                        def = def + 1;
+                        sta = sta + 1;
+                    break;
+                    default:
+                        sta = sta - 2;
+                        atk = atk - 1;
+                        def = def - 1;
+                }
+            break;
         }
     }
     if(levelPercent > 1){
@@ -773,10 +880,10 @@ var playerImage = new Image();
 playerImage.src = "i/empty.png";
 var qs = document.getElementById("questions");
 
-var levelQuests = [{n:"How old are you?",t:"number",i:0},{n:"What is your lowest grade in your last/current school?",t:"text",i:1},{n:"Do you play Minecraft?",t:"checkbox",i:2},{n:"Do you play Roblox?",t:"checkbox",i:3},{n:"Do you play Pokemon Go?",t:"checkbox",i:4},{n:"Are you gay?",t:"checkbox",i:20},{n:"Name the two 'secret' chess moves.",t:"text",i:26}];
-var HealthQuests = [{n:"How much time do you spend on the computer per day?",t:"number",i:5},{n:"Do you eat breakfast every day?",t:"checkbox",i:6},{n:"How much sleep do you get?",t:"number",i:7},{n:"Do you go out to eat often?",t:"checkbox",i:8},{n:"Are you in a relationship?",t:"checkbox",i:19},{n:"Can you cook?",t:"checkbox",i:21},{n:"What time do you wake up on weekends? (in 24h time)",t:"number",i:22}];
-var DamageQuests = [{n:"Do you consider yourself buff?",t:"checkbox",i:9},{n:"Do you prefer revenge over forgiveness?",t:"checkbox",i:10},{n:"How much money do you earn per hour?",t:"number",i:11},{n:"What is your gender ('male'/'female'/'neither')",t:"text",i:12},{n:"How tall are you (in ft)?",t:"number",i:17},{n:"Do you own a gun?",t:"checkbox",i:18},{n:"Do you believe in God?",t:"checkbox",i:24}];
-var DefenseQuests = [{n:"Do you get angry to insults?",t:"checkbox",i:13},{n:"Do you consider yourself as sexy?",t:"checkbox",i:14},{n:"How many push ups can you do in one go, no stopping?",t:"number",i:15},{n:"Are you scared of weapons / sharp tools?",t:"checkbox",i:16},{n:"Are you 'good' at chess?",t:"checkbox",i:23},{n:"Would you eat green eggs and ham?",t:"checkbox",i:25}];
+var levelQuests = [{n:"How old are you?",t:"number",i:0},{n:"What is your lowest grade in your last/current school?",t:"text",i:1},{n:"Do you play Minecraft?",t:"checkbox",i:2},{n:"Do you play Roblox?",t:"checkbox",i:3},{n:"Do you play Pokemon Go?",t:"checkbox",i:4},{n:"Are you gay?",t:"checkbox",i:20},{n:"Name the two 'secret' chess moves.",t:"text",i:26},{n:"How many meals do you have per day?",t:"number",i:28},{n:"What is the airspeed velocity of an unladen swallow?",t:"text",i:30}];
+var HealthQuests = [{n:"How much time do you spend on the computer per day?",t:"number",i:5},{n:"Do you eat breakfast every day?",t:"checkbox",i:6},{n:"How much sleep do you get?",t:"number",i:7},{n:"Do you go out to eat often?",t:"checkbox",i:8},{n:"Are you in a relationship?",t:"checkbox",i:19},{n:"Can you cook?",t:"checkbox",i:21},{n:"What time do you wake up on weekends? (in 24h time)",t:"number",i:22},{n:"How many states are there in the US? (2018)",t:"number",i:31}];
+var DamageQuests = [{n:"Do you consider yourself buff?",t:"checkbox",i:9},{n:"Do you prefer revenge over forgiveness?",t:"checkbox",i:10},{n:"How much money do you earn per hour?",t:"number",i:11},{n:"What is your gender ('male'/'female'/'neither')",t:"text",i:12},{n:"How tall are you (in ft)?",t:"number",i:17},{n:"Do you own a gun?",t:"checkbox",i:18},{n:"Do you believe in God?",t:"checkbox",i:24},{n:"Who is your favorite star wars character?",t:"text",i:32}];
+var DefenseQuests = [{n:"Do you get angry to insults?",t:"checkbox",i:13},{n:"Do you consider yourself as sexy?",t:"checkbox",i:14},{n:"How many push ups can you do in one go, no stopping?",t:"number",i:15},{n:"Are you scared of weapons / sharp tools?",t:"checkbox",i:16},{n:"Are you 'good' at chess?",t:"checkbox",i:23},{n:"Would you eat green eggs and ham?",t:"checkbox",i:25},{n:"In a shooting, would you rather run, hide, or defend?",t:"text",i:27},{n:"Do you like math?",t:"checkbox",i:29}];
 
 setTimeout(function(){
     //drawing basic stuff
