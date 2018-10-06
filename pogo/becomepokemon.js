@@ -12,7 +12,7 @@
 var outPut = document.getElementsByTagName("canvas")[0];
 var c = outPut.getContext('2d');
 
-var pokemons = ["hitmonlee","arcanine","hitmonchan"];
+var pokemons = ["hitmonlee","arcanine","hitmonchan","raikou"];
 
 pokemons = shuffle(pokemons);
 
@@ -93,7 +93,36 @@ const PokemonDB = {
             type: "third",
             t: "electric"
         }],
-        base: [100,224,211]
+        base: [100,193,212]
+    },
+    "raikou": {
+        type: "electric",
+        fast_moves: [{
+            name: "Vole Switch",
+            damage: 20,
+            t: "electric"
+        },{
+            name: "Thunder Shock",
+            damage: 5,
+            t: "electric"
+        }],
+        charge_moves: [{
+            name: "Thunder",
+            damage: 100,
+            type: "full",
+            t: "electric"
+        },{
+            name: "Wild Charge",
+            damage: 90,
+            type: "half",
+            t: "electric"
+        },{
+            name: "Thunderbolt",
+            damage: 80,
+            type: "half",
+            t: "electric"
+        }],
+        base: [100,193,212]
     },
 };
 
@@ -145,6 +174,7 @@ types.poison.src = "i/t/poison.png";
 types.electric.src = "i/t/electric.png";
 types.dark.src = "i/t/dark.png";
 types.fire.src = "i/t/fire.png";
+types.steel.src = "i/t/steel.png";
 
 const candies = {
     hitmonlee: {
@@ -158,11 +188,16 @@ const candies = {
     arcanine: {
         n: "growlithe",
         i: new Image()
+    },
+    raikou: {
+        n: "raikou",
+        i: new Image()
     }
 };
 candies.hitmonlee.i.src = "i/c/hitmonlee.png";
 candies.hitmonchan.i.src = "i/c/hitmonchan.png";
 candies.arcanine.i.src = "i/c/arcanine.png";
+candies.raikou.i.src = "i/c/raikou.png";
 
 //constant "cp" multipliers for each half pokemon level
 const CPScalarList = [0.094,0.135137432,0.16639787,0.192650919,0.21573247,0.236572661,0.25572005,0.273530381,0.29024988,0.306057377,0.3210876,0.335445036,0.34921268,0.362457751,0.37523559,0.387592406,0.39956728,0.411193551,0.42250001,0.432926419,0.44310755,0.4530599578,0.46279839,0.472336083,0.48168495,0.4908558,0.49985844,0.508701765,0.51739395,0.525942511,0.53435433,0.542635767,0.55079269,0.558830576,0.56675452,0.574569153,0.58227891,0.589887917,0.59740001,0.604818814,0.61215729,0.619399365,0.62656713,0.633644533,0.64065295,0.647576426,0.65443563,0.661214806,0.667934,0.674577537,0.68116492,0.687680648,0.69414365,0.700538673,0.70688421,0.713164996,0.71939909,0.725571552,0.7317,0.734741009,0.73776948,0.740785574,0.74378943,0.746781211,0.74976104,0.752729087,0.75568551,0.758630378,0.76156384,0.764486065,0.76739717,0.770297266,0.7731865,0.776064962,0.77893275,0.781790055,0.78463697,0.787473578,0.79030001];
