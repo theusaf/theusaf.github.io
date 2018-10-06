@@ -4,12 +4,9 @@
            - Using Hitmonlee for now.
 */
 
-
+//max image size is 236x319, located at (201,178)
 //canvas size is 640 by 1136
-//609 x 703 is the info box size (14px offset from left)
-//star is located 66px from top, 553px from left
-//563 from top, 547 from left is the gender
-//13 px left of text is the pencil, 2px up
+//563 from top, 547 from left is the gender (m)
 
 //name font size is 42.9 (42 is incorrect. the measuretext seems to take into account 2 extra pixels at the start/end of text :p)
 
@@ -53,6 +50,7 @@ const PokemonDB = {
         base: [100,224,211]
     }
 };
+//constant "cp" multipliers for each half pokemon level
 const CPScalarList = [0.094,0.135137432,0.16639787,0.192650919,0.21573247,0.236572661,0.25572005,0.273530381,0.29024988,0.306057377,0.3210876,0.335445036,0.34921268,0.362457751,0.37523559,0.387592406,0.39956728,0.411193551,0.42250001,0.432926419,0.44310755,0.4530599578,0.46279839,0.472336083,0.48168495,0.4908558,0.49985844,0.508701765,0.51739395,0.525942511,0.53435433,0.542635767,0.55079269,0.558830576,0.56675452,0.574569153,0.58227891,0.589887917,0.59740001,0.604818814,0.61215729,0.619399365,0.62656713,0.633644533,0.64065295,0.647576426,0.65443563,0.661214806,0.667934,0.674577537,0.68116492,0.687680648,0.69414365,0.700538673,0.70688421,0.713164996,0.71939909,0.725571552,0.7317,0.734741009,0.73776948,0.740785574,0.74378943,0.746781211,0.74976104,0.752729087,0.75568551,0.758630378,0.76156384,0.764486065,0.76739717,0.770297266,0.7731865,0.776064962,0.77893275,0.781790055,0.78463697,0.787473578,0.79030001];
 const StarDustCost = [200,400,600,800,1000,1300,1600,1900,2200,2500,3000,3500,4000,4500,5000,6000,7000,8000,9000,10000];
 const CandyCosts = [1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,6,6,8,8,10,10,12,12,15,15];
@@ -93,20 +91,48 @@ window.onload = window.onresize = function(evt){
 };
 
 /*global Image*/
-const images = [new Image(),new Image(),new Image()];
+const images = [new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image(),new Image()];
 images[0].src = "i/iphone_bar.png";
 images[1].src = "i/male_sig.png";
 images[2].src = "i/star.png";
+images[3].src = "i/powerup-button.png";
+images[4].src = "i/pencil.png";
+images[5].src = "i/x.png";
+images[6].src = "i/menu.png";
+images[7].src = "i/star_now.png";
+images[8].src = "i/line.png";
+images[9].src = "i/wfh.png";
+images[10].src = "i/bar_vert.png";
+images[11].src = "i/hpbar.png";
+
+const types = [];
+
+
+const candies = [];
 
 function drawStarterInfo(){
+    c.clearRect(0,0,640,1136);
     c.fillStyle = "rgb(0,157,255)";
     c.fillRect(0,0,640,1136);
-    c.fillStyle = "white";
+    c.fillStyle = "#FAFAFA";
     c.fillRect(14,443,609,703);
     c.drawImage(images[0],0,0);
-    c.drawImage(images[1],547,563);
+    //c.drawImage(images[1],547,563);
     c.drawImage(images[2],553,66);
-    c.font = "Lato";
+    c.drawImage(images[3],59,884);
+    c.fillStyle = "#E8EFE1";
+    c.fillRect(316,884,262,79);
+    c.drawImage(images[7],128,793);
+    c.drawImage(images[8],43,764);
+    c.drawImage(images[8],43,997);
+    c.drawImage(images[9],97,713);
+    c.fillStyle = "#FAFAFA";
+    c.fillRect(277,715,90,14);
+    c.drawImage(images[10],277,669);
+    c.drawImage(images[10],414,669);
+    c.drawImage(images[11],158,580);
+    //c.drawImage(images[5],279,1011);
+    //c.drawImage(images[6],495,996);
 }
 
 let pLevel = document.getElementById("lvl");
@@ -115,9 +141,17 @@ let sub = document.getElementsByTagName("button")[0];
 sub.onclick = renderPokemonStats;
 
 function renderPokemonStats(){
-    lvl = lvl.value <= 40 && lvl.value > 0 ? Number(lvl.value) : 1;
+    drawStarterInfo();
+    lvl = pLevel.value <= 40 && pLevel.value > 0 ? Number(pLevel.value) : 1;
+    c.fillStyle = "#44696C";
+    c.font = "42.8px \"Lato\", sans-serif";
+    var name = pName.value == "" ? "You" : pName.value;
+    var namex = 320 - (c.measureText(name).width / 2);
+    c.fillText(name,namex,559);
+    c.drawImage(images[4],namex + c.measureText(name).width + 13,526);
 }
 
+var gender = "female";
 var atk = 0;
 var def = 0;
 var sta = 0;
