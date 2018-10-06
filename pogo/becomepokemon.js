@@ -526,9 +526,9 @@ function renderPokemonStats(){
     c.font = "27px \"Lato\", sans-serif";
     c.fillStyle = "#466B6D";
     ax = 504.5 - (c.measureText("2.25m").width / 2);
-    c.fillText("2.25m",ax,676);
+    c.fillText("2.25m",ax,698);
     ax = 136.5 - (c.measureText("43.7kg").width / 2);
-    c.fillText("43.7kg",ax,676);
+    c.fillText("43.7kg",ax,698);
     c.font = "26px \"Lato\", sans-serif";
     c.fillStyle = "#456A6D";
     ax = 442.5 - (c.measureText("99").width / 2);
