@@ -41,3 +41,18 @@ Disclaimer: Many questions are not 100% accurate
 #39: What would you do on a day if you could do anything?
 #40: What family rule do you hate?
 #41: What causes family stress?
+#42: What do you want to be for Halloween?
+//Note that #43 - #48 may be incorrectly organized
+#43: Should High School teach the Evolution Theory?
+#44: What can you learn about your past?
+#45: What's your worst fear of getting older?
+#46: Do grades = intelligence?
+#47: Have you been a bully?
+#48: *missing / see note above*
+#49: Whats the difference between Republican and Democrat?
+#50: How can you help the country?
+#51: Whats the hardest part of learning a new language?
+#52: What stands out about you?
+#53: Do you get along with your parents?
+#54: Why is the US hated by the world?
+#55: "I cannot live without my ___"
