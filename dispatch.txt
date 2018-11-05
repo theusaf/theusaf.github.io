@@ -58,3 +58,4 @@ Disclaimer: Many questions are not 100% accurate
 #55: "I cannot live without my ___"
 #56: Are you happy about your current grades?
 #57: Who is the bigtest supporter of your dreams?
+#58: How important are the midterm elections for you?
