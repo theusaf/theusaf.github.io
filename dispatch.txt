@@ -61,3 +61,17 @@ Disclaimer: Many questions are not 100% accurate
 #58: How important are the midterm elections for you?
 #59: What good memories do you have of siblings?
 #60: What is your dream car? What is your family's current car?
+#61: Do you have any military veterans in your family?
+#62: Should California lower drinking age limit?
+#63: How was your 3 day weekend?
+#64: Were you ever part of GATE?
+#65: Should you trust someone if they are nice to you?
+#66: How often do you argue with your parents?
+#67: Why are schools still open?
+#68: What are you thankful for?
+#69: How was your short vacation?
+#70: What makes a leader?
+#71: Who is the favorite family pet?
+#72: What's your Christmas wish list?
+#73: Have you ever lost someone to cancer?
+#74: What was your best Christmas gift?
