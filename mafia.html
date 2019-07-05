@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/ico;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAABIykAIkxjACZOYAASFyAAYJCcAAABDACPsMQAAAASAAeHwgBCa24AI3iwABpITwAtXWkAHUJYAAUQHgBjnboAAxYeAAgrUwBUhKYAFyw7ADNkbAAVNTsARXiMAAoIPAAaMUEAAAAKABE9SgBSc4YAJG+WAENebAAPQU0AXW19ACR1lgAIh7oAAA0EAAAjRQAACg0AEiEkABGHsQAASXcACgUHAA9EXwAEBRkAXnGSAAENHwBOY3IAFCI5AGJ/hgBjfYkAAAk3AB5MUwBofoMASHZ+AABZjAAtNmIAZ4aJAChHVgA0YXYAa6W4AABjjwANHB8APmVnAAACCACvv8UABh09AGmKngARRE4AAAQXABouXQAAIkwANEZlACF1qQAdZG4AQ2twADdSXABXgY0AZXl+AG26ygAcRFcACgwUAAgLGgAXSV0AVY6QADQyRQBBeJcACi9hAAQhJgBAWmsAKE5aAAAFCQCMtcQAGzVGAAAGDABXdn8AACJEAHaFhwBNfJEADCYsACF2pAByh5YASoSXAEOIowB1qMIAAAoYADNAeAAADhsAAzY4ADNRbAABM0oAQEldABgdPgBjdpEAAHS6AEJziQAgSFsAPnSVAAAUNgA1ZWkADhUeABUVFQAlKzIADhokAAAlMwBNfYMAQ2FmAAAHBwBZboMAGBUeABwxTQA/ZHgAbI2gABtCSgAAaawAHUBNACQ1UAAOIz8AdJCXAHCUmgAogqUABBccAAwxRQAVLTkAPVVnAAoxVwAAGzEAn8XRABxWYgA9VXkAHTE8AABhlQAYOz8AAGuPAGqBoQAAAhQAGD1FAAslKwAFFk8AAAkOAB53qQBJg5YAOHRzAD9pdgANYZUAcYubABlHSAAmPEIACQ8OABxRVAAAHiAAWGdwADBjdwB0mbMAGhYRAB8vQAASFyYAXXF8AAADGAAMhL8AAAEkAB9BQAAAMUcAMVtgAAATGwAsYmMAHomqABaJvAAxdp4AEy8vAEuSoABke5EAMl9sACxBSQBFen0AY4GaADdnaQBMd4YAAAIEABEXHgBxgYgALEdbAFB3hgA8XnsAM2t+AA0iJAA8aHUADGqOAABRcQAFCBYANZqwAB06WQAlPEQAhairAFqDhgAIChwABBAcAFNlbAACEiIAfI+XAA8SEABhhJIAfLbMADl/lgBpfY8AcpuyABFWdwAfNTAANWdzAAoWLgAAIzEAJ09iAC9thQBUcZAAAAgOAA1IVwAnWWUAYJatACM5RQAAMUAAGhU0AEBpggAzJ0UAX3SQAEhmeQAOG08ABxAUADFcZQBTYXMAeK/KAAoSEQAiRFQAZ3qHAAg9QAAYK0AASnKLAAAAAAAAAAAA4XhT2HVSNKPebyuYgoMA7H0+Gei1BIG9H68wHUqbYY3EiyUkL0HR8WM3CUmITMtWXz+pxtlXa8Hyae1kzHy7s9cTji2/FUvDTgEp5pLCPYnl7/3I1KT7QqH5Gxqnt77fZQ9s4mrA6h4y0zOllnsWEk06ApH1Wg1yFAs4hoeQqrCgmq32GH4u/OQ5EZzzQFioIj6ZQ2cOrtVtRkRoNuN5PPh2UM/0XAUsB+5ugFuUKvB/A8V32tJxc4+T58pI6XQXT/SmrCjHHDWVR6I7l7i6VRC2nVnWySe5IbGEcAgmiiNRZvfcn+tU4M7NngpiIN20XkUxstC82/pdDGCrBoV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=">
+    <title>Mafia Assistant</title>
   </head>
   <body>
     <div>
@@ -40,6 +41,8 @@
       sometimes mafia has no mafia killing night 1
       sometimes no mafia is added at beginning
       buttons on mobile look weird.
+      TODO add witch
+      TODO add coven (MAYBE)
     </div>
     <style type="text/css">
       h4{
@@ -603,6 +606,9 @@
           }
           if(!players[turn].dead){
             string = "<o>Get yourself lynched</o>";
+            if(!players[turn].hasWon){
+              string = "<o>You failed.</o>";
+            }
           }
           break;
           case "serialkiller":
@@ -1082,6 +1088,15 @@
                 visit: true
               });
             })() : null;
+            alive[i].specialCase ? (()=>{
+              dayInfo[i].information.push({
+                type: "attack",
+                visit: false,
+                by: i,
+                message: "You have died from guilt over shooting a town member",
+                value: 3
+              });
+            })():null;
             break;
             case "blackmailer":
             alive[i].NightAction.target >= 0 ? (()=>{
@@ -1513,6 +1528,10 @@
           let av = dayInfo[i].information.filter(o=>{return o.type=="attack"||(o.type=="hunt"&&players[dayInfo[i].index].role=="vampire");});
           //jailed an executed
           if(av.filter(o=>{return o.by!=null&&players[o.by].role == "jailor";}).length){
+            let jailor = av.filter(o=>{return o.by!=null&&players[o.by].role == "jailor";})[0];
+            if(players[jailor.by].role == "jailor" && (/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].role)||/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].mrole)){
+              players[dayInfo[jailor.by].index].actionsLeft = 0;
+            }
             players[dayInfo[i].index].dead = true;
             dayInfo[i].information.push({
               type: "system",
@@ -1543,6 +1562,11 @@
                   message: "Your target was jailed"
                 });
               }else{
+                //special case if vigi
+                if(players[dayInfo[av[j].by].index].role == "vigilante" && (/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].role)||/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].mrole)){
+                  players[dayInfo[av[j].by].index].specialCase = true;
+                  players[dayInfo[av[j].by].index].actionsLeft = 0;
+                }
                 if(players[dayInfo[i].index].dead){
                   continue;
                 }
