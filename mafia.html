@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/ico;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAABIykAIkxjACZOYAASFyAAYJCcAAABDACPsMQAAAASAAeHwgBCa24AI3iwABpITwAtXWkAHUJYAAUQHgBjnboAAxYeAAgrUwBUhKYAFyw7ADNkbAAVNTsARXiMAAoIPAAaMUEAAAAKABE9SgBSc4YAJG+WAENebAAPQU0AXW19ACR1lgAIh7oAAA0EAAAjRQAACg0AEiEkABGHsQAASXcACgUHAA9EXwAEBRkAXnGSAAENHwBOY3IAFCI5AGJ/hgBjfYkAAAk3AB5MUwBofoMASHZ+AABZjAAtNmIAZ4aJAChHVgA0YXYAa6W4AABjjwANHB8APmVnAAACCACvv8UABh09AGmKngARRE4AAAQXABouXQAAIkwANEZlACF1qQAdZG4AQ2twADdSXABXgY0AZXl+AG26ygAcRFcACgwUAAgLGgAXSV0AVY6QADQyRQBBeJcACi9hAAQhJgBAWmsAKE5aAAAFCQCMtcQAGzVGAAAGDABXdn8AACJEAHaFhwBNfJEADCYsACF2pAByh5YASoSXAEOIowB1qMIAAAoYADNAeAAADhsAAzY4ADNRbAABM0oAQEldABgdPgBjdpEAAHS6AEJziQAgSFsAPnSVAAAUNgA1ZWkADhUeABUVFQAlKzIADhokAAAlMwBNfYMAQ2FmAAAHBwBZboMAGBUeABwxTQA/ZHgAbI2gABtCSgAAaawAHUBNACQ1UAAOIz8AdJCXAHCUmgAogqUABBccAAwxRQAVLTkAPVVnAAoxVwAAGzEAn8XRABxWYgA9VXkAHTE8AABhlQAYOz8AAGuPAGqBoQAAAhQAGD1FAAslKwAFFk8AAAkOAB53qQBJg5YAOHRzAD9pdgANYZUAcYubABlHSAAmPEIACQ8OABxRVAAAHiAAWGdwADBjdwB0mbMAGhYRAB8vQAASFyYAXXF8AAADGAAMhL8AAAEkAB9BQAAAMUcAMVtgAAATGwAsYmMAHomqABaJvAAxdp4AEy8vAEuSoABke5EAMl9sACxBSQBFen0AY4GaADdnaQBMd4YAAAIEABEXHgBxgYgALEdbAFB3hgA8XnsAM2t+AA0iJAA8aHUADGqOAABRcQAFCBYANZqwAB06WQAlPEQAhairAFqDhgAIChwABBAcAFNlbAACEiIAfI+XAA8SEABhhJIAfLbMADl/lgBpfY8AcpuyABFWdwAfNTAANWdzAAoWLgAAIzEAJ09iAC9thQBUcZAAAAgOAA1IVwAnWWUAYJatACM5RQAAMUAAGhU0AEBpggAzJ0UAX3SQAEhmeQAOG08ABxAUADFcZQBTYXMAeK/KAAoSEQAiRFQAZ3qHAAg9QAAYK0AASnKLAAAAAAAAAAAA4XhT2HVSNKPebyuYgoMA7H0+Gei1BIG9H68wHUqbYY3EiyUkL0HR8WM3CUmITMtWXz+pxtlXa8Hyae1kzHy7s9cTji2/FUvDTgEp5pLCPYnl7/3I1KT7QqH5Gxqnt77fZQ9s4mrA6h4y0zOllnsWEk06ApH1Wg1yFAs4hoeQqrCgmq32GH4u/OQ5EZzzQFioIj6ZQ2cOrtVtRkRoNuN5PPh2UM/0XAUsB+5ugFuUKvB/A8V32tJxc4+T58pI6XQXT/SmrCjHHDWVR6I7l7i6VRC2nVnWySe5IbGEcAgmiiNRZvfcn+tU4M7NngpiIN20XkUxstC82/pdDGCrBoV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=">
   </head>
   <body>
     <div class="wrapper">
@@ -18,43 +20,81 @@
     <div id="actionbox"></div>
     <input id="LoginBox" onkeydown="if(event.keyCode != 13){return;}document.getElementById(`LoginSumbit`).onclick()"/>
     <button id="LoginSumbit" onclick="submit(document.getElementById(`LoginBox`).value)">Done</button>
-    <div id="narrator">
-      <h2>Narrator Box</h2>
-      <div id="narrate_text"></div>
-      <button onclick="if(players.length >=5){startGame()}" id="start">Start</button>
-      <button id="next" onclick="next()">Next</button>
-      <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
-      <button id="blackmail" onclick="black()">A blackmailed player has talked</button>
+    <div>
+      <div id="narrator">
+        <h2>Narrator Box</h2>
+        <div id="narrate_text"></div>
+        <button onclick="if(players.length >=5){startGame()}" id="start">Start</button>
+        <button id="next" onclick="next()">Next</button>
+        <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
+        <button id="blackmail" onclick="black()">A blackmailed player has talked</button>
+        <button type="button" id="hideNarrator" onclick="document.getElementById('narrator').style.display = 'none';">X</button>
+      </div>
+      <button type="button" id="showNarrator" onclick="document.getElementById('narrator').style.display = 'block';">^</button>
     </div>
     <div id="bugList">
-      no bugs known currently
+      sometimes mafia has no mafia killing night 1
+      sometimes no mafia is added at beginning
     </div>
     <style type="text/css">
+      h4{
+        display: inline;
+        font-size: 150%;
+      }
+      #hideNarrator{
+        position: absolute;
+        top: 0px;
+        right: 0px;
+      }
+      #showNarrator{
+        z-index: -1;
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+      }
+      .night{
+        background: black;
+        color: white;
+      }
+      .night #narrator{
+        background: black!important;
+      }
+      body{
+        margin: 0px;
+      }
+      #team{
+        overflow: auto;
+        min-width: 10%;
+      }
+      #role{
+        width: 100%;
+        text-indent: 5%;
+        overflow: auto;
+      }
       #bugList{
         display: none;
       }
       #narrator{
-        margin-top: 20px;
+        z-index: 0;
       }
       .wrapper {
         border: 1px solid black;
         display: flex;
+        height: 37vh;
       }
       #graveyard {
         border: 1px solid black;
         width: calc(50% - 2px);
         margin-top: 0px;
         margin-bottom: 0px;
-        overflow: scroll;
-        max-height: 50vh;
+        overflow: auto;
       }
       #living {
         border: 1px solid black;
         width: calc(50% - 2px);
         margin-top: 0px;
         margin-bottom: 0px;
-        overflow: scroll;
-        max-height: 50vh;
+        overflow: auto;
       }
       #LoginBox {
         margin-top: 20px;
@@ -64,6 +104,10 @@
       }
       #narrator {
         border: 1px solid black;
+        position: fixed;
+        bottom: 0px;
+        width: 100%;
+        background: white;
       }
       #narrator > button {
         margin-left: calc(50% - 41px);
@@ -83,7 +127,6 @@
         white-space: nowrap;
         width: 40%;
         margin-left: calc(25% + (25% / 2));
-        overflow: scroll;
         max-height: 30vh;
       }
       #actionbox button{
@@ -221,7 +264,36 @@
         }
         team.innerHTML = "";
       }
-
+      //puts the text of who died and got revived and got remembered etc
+      function generateNarratorText(){
+        let str = "";
+        narrator_text.innerHTML = "";
+        action.innerHTML = "";
+        for(let i in players){
+          //if dead, and has attacks
+          if(players[i].dead && dayInfo[i].information.filter(o=>{return o.type == "attack"}).length){
+            let attacks = dayInfo[i].information.filter(o=>{return o.type == "attack"});
+            let s = [];
+            for(let j in attacks){
+              s.push(players[attacks[j].by].role);
+            }
+            str += `<p>${players[i].name} died from ${s.join(", ")}. Their role was ${players[i].mrole ? players[i].mrole : players[i].role}</p>`;
+            //if alive and has revive
+            if(!players[i].dead && dayInfo[i].information.filter(o=>{return o.type=="revive";}).length){
+              str+= `<p>${players[i].name} has been brought back to life!</p>`;
+            }
+            //if has remember
+            if(dayInfo[i].information.filter(o=>{return o.type=="remember";}).length){
+              let r = dayInfo[i].information.filter(o=>{return o.type=="remember";});
+              for(let j in r){
+                str+=`<p>${players[r[j].by].name} has remembered that they were like the ${players[i].mrole ? players[i].mrole : players[i].role}`;
+              }
+            }
+          }
+        }
+        action.innerHTML = str;
+      }
+      //creates the buttons to control the night actions
       function createActionText(role){
         if(players[turn].dead){
           return next();
@@ -374,7 +446,7 @@
             players[turn].actionsLeft = 1;
           }
           options = players.filter(function(o) {
-            return o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser" || o.role == "survivor" || o.role == "jester" || o.role == "(cleaned)" || o.role == "executioner" || o.role == "serialkiller" || o.role == "vampire" || o.role == "werewolf" || o.role == "arsonist");
+            return o.dead && !o.mrole == "cleaned" && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser" || o.role == "survivor" || o.role == "jester" || o.role == "(cleaned)" || o.role == "executioner" || o.role == "serialkiller" || o.role == "vampire" || o.role == "werewolf" || o.role == "arsonist");
           });
           if(players[turn].actionsLeft == 1){
             for(let i in options){
@@ -467,7 +539,7 @@
           break;
           case "amnesiac":
           options = players.filter(function(o) {
-            return o.dead && !(o.role == "godfather" || o.role == "mafiosos" || o.role == "retributionist" || o.role == "mayor" || o.role == "mayor (rev)" || o.role == "jailor" || o.role == "executioner" || o.role == "blackmailer");
+            return o.dead && !o.mrole == "cleaned" &&!(o.role == "godfather" || o.role == "mafioso" || o.role == "retributionist" || o.role == "mayor" || o.role == "jailor" || o.role == "executioner");
           });
           for(let i in options){
             string += `<o>${options[i].name} (${options[i].role})</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>Oh yeah! I was like the ${options[i].role}!</p>';})()"></button><br/>`;
@@ -693,6 +765,7 @@
           roleinfo.innerHTML += "<p>Kill everyone. You can attack on even nights.</p><p>-You are night immune to attacks</p><p>-If roleblocked, you will rampage at your house, killing the roleblocker.</p><p>-Your attacks are unstoppable by night immunity</p><p>If you do nothing, you will rampage at your house.</p><p>-You are not immune to other werewolves</p>";
           break;
         }
+        roleinfo.innerHTML = `<h4>Night ${night}: ${players[turn].name} - </h4>` + roleinfo.innerHTML;
       }
       //roles that have limited uses
       function hasLimitedUse(role){
@@ -705,49 +778,50 @@
       function generateResultText(){
         let str = ""
         narrator_text.innerHTML = "";
+        action.innerHTML = "";
         let activity = dayInfo[turn].information;
-        str += dayInfo[turn].main + "\n";
+        str += "<p>" + dayInfo[turn].main + "<p/>";
         for(let i in activity){
           //attacked
           if(/(attack)|(bitten)/g.test(activity[i].type)){
             //but jailed
             if(activity.filter(o=>{return o.type == "jail";}).length&&activity[i].value < 3){
-              str += "You were attacked, but you were in jail\n";
+              str += "<p>You were attacked, but you were in jail</p>";
             }else{
-              str += activity[i].message + "\n";
+              str += "<p>"+activity[i].message + "</p>";
             }
             continue;
           }
           //healed
           if(activity[i].type == "heal" && activity.filter(o=>{return o.type == "attack";}).length&&!activity.filter(o=>{return o.type == "jail";}).length){
-            str += "A doctor healed your wounds\n";
+            str += "<p>A doctor healed your wounds</p>";
             continue;
           }
           //guarded
           if(activity[i].type == "guard" && activity.filter(o=>{return o.type == "attack"&&o.visit;}).length&&!activity.filter(o=>{return o.type == "jail";}).length){
-            str += "You were attacked, but a bodyguard fought off your attacker\n";
+            str += "<p>You were attacked, but a bodyguard fought off your attacker</p>";
             continue;
           }
           //transported
           if(activity[i].type == "transport"&&!activity.filter(o=>{return o.type == "jail";}).length){
-            str += "You were transported to another location\n";
+            str += "<p>You were transported to another location</p>";
             continue;
           }
           //rb
           if(activity[i].type == "rb"&&!activity.filter(o=>{return o.type == "jail";}).length){
-            str += "You were role blocked\n";
+            str += "<p>You were role blocked</p>";
             continue;
           }
           //doused (if arso)
           if(players[turn].role == "arsonist" && activity[i].type == "douse"){
-            str += "You were doused by another arsonist\n";
+            str += "<p>You were doused by another arsonist</p>";
             continue;
           }
           if(activity[i].message){
-            str += activity[i].message + "\n";
+            str += "</p>"+activity[i].message + "</p>";
           }
         }
-        narrator_text.innerHTML = str;
+        action.innerHTML = str;
       }
       //sorts the actions of the night
       function dayUpdate(){
@@ -762,7 +836,6 @@
         }
         let alive = players.filter(o=>{return !o.dead});
         for(let i in alive){
-          console.log(alive[i]);
           switch (alive[i].role) {
             case "veteran":
             alive[i].NightAction.target >= 0 ? (()=>{
@@ -1448,6 +1521,9 @@
                   message: "Your target was jailed"
                 });
               }else{
+                if(players[dayInfo[i].index].dead){
+                  continue;
+                }
                 players[dayInfo[i].index].dead = true;
                 dayInfo[i].information.push({
                   type: "system",
@@ -1492,6 +1568,9 @@
             }
             //if mafia
             if(/(mafioso)|(janitor)|(framer)|(consort)|(consiglier)|(disguiser)|(blackmailer)/g.test(players[dayInfo[i].index].role)){
+              if(players[dayInfo[i].index].dead){
+                continue;
+              }
               players[dayInfo[i].index].dead = true;
               dayInfo[i].information.push({
                 type: "system",
@@ -1572,6 +1651,20 @@
             message: "You were promoted to mafioso!"
           });
         }
+        //mafia clean / disguise stuff
+        for(let i in dayInfo){
+          //clean
+          if(dayInfo[i].information.filter(o=>{return o.type=="clean";}).length){
+            players[i].mrole = "cleaned";
+          }
+          //disguise
+          if(dayInfo[i].information.filter(o=>{return o.type=="disguise";}).length){
+            let d = dayInfo[i].information.filter(o=>{return o.type=="disguise";});
+            for(let j in d){
+              players[d[j].by].mrole = players[i].role;
+            }
+          }
+        }
       }
       //updates numbers and stuff
       function updateStats(){
@@ -1635,6 +1728,14 @@
           break;
         }
       }
+      //vote buttons
+      function generateVoteButtons(){
+
+      }
+      //judgement buttons
+      function generateGuiltButtons(){
+
+      }
       //the turns.
       function next(){
         //update stats based on previous player, if time is night.
@@ -1645,11 +1746,18 @@
         if(turn == players.length){
           turn = 0;
           time = time == "night" ? (function(){
+            for(let i in players){
+              if(players[i].dead && players[i].mrole == "cleaned"){
+                continue;
+              }
+              players[i].mrole = "";
+            }
             dayUpdate();
             return "night2";
           })() : "day";
         }
         if(time == "night"){
+          document.body.className = "night";
           showTeam(players[turn].role);
           generateRoleText(players[turn].role);
           createActionText(players[turn].role);
@@ -1660,7 +1768,23 @@
           generateResultText();
         }
         if(time == "day"){
+          document.body.className = "";
           updatePlayerLists();
+          if(turn == 0){
+            generateNarratorText();
+          }
+          if(turn == 1){
+            generateVoteButtons();
+          }
+          if(turn == 2){
+            generateGuiltButtons();
+          }
+          if(turn == 3){
+            night++;
+            time = "night";
+            turn = -1;
+            next();
+          }
           for(let i in players){
             players[i].vvotes = 0;
           }
@@ -1669,6 +1793,12 @@
       //adding players at the start
       function submit(n){
         document.getElementById("LoginBox").value = "";
+        if(n == ""){
+          return;
+        }
+        if(players.filter(o=>{return o.name == n;}).length){
+          return;
+        }
         players.push({
           name: n,
           role: null,
@@ -1679,7 +1809,7 @@
           vvotes: 0,
           actionsLeft: -1,
           actionTarget: null,
-          doused: false
+          votes: 0
         });
         updatePlayerLists();
       }
