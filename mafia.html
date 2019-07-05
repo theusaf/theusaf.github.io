@@ -40,6 +40,10 @@
     <div id="bugList">
       sometimes mafia has no mafia killing night 1
       sometimes no mafia is added at beginning
+      when mafia gets lynched, mafia members are not immediately promoted
+      vampire youngest doesnt get updated
+      TODO add voting
+      TODO add mayor stuff
       TODO add witch
       TODO add coven (MAYBE)
     </div>
@@ -63,6 +67,8 @@
         position: absolute;
         top: 0px;
         right: 0px;
+        width: auto!important;
+        height: auto!important;
       }
       #showNarrator{
         z-index: -1;
@@ -132,9 +138,14 @@
         bottom: 0px;
         width: 100%;
         background: white;
+        text-align: center;
       }
-      #narrator > button {
-        margin-left: calc(50% - 41px);
+      #narrator button {
+        width: 50%;
+        height: 4vh;
+      }
+      #narrator h2, #narrator p, #narrator o{
+        text-align: left;
       }
       p{
         width: 100%;
@@ -479,7 +490,7 @@
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a></div>`;
           break;
           case "mayor":
-          string += `<div><o>You are an important role. Remember to reveal when the time is right.</o>`;
+          string += `<div><o>You are an important role. Remember to reveal when the time is right.</o></div>`;
           break;
           case "retributionist":
           if(players[turn].actionsLeft == -1){
@@ -657,7 +668,7 @@
           }
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a></div>`;
           if(!vampsCanAttack){
-            string = `<div><o>You have to wait before voting to bite another person</o>`;
+            string = `<div><o>You have to wait before voting to bite another person</o></div>`;
           }
           break;
           case "werewolf":
@@ -669,7 +680,7 @@
           }
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a></div>`;
           if(night % 2){
-            string = `<div><o>There is no full moon tonight.</o>`;
+            string = `<div><o>There is no full moon tonight.</o></div>`;
           }
           break;
         }
@@ -1839,8 +1850,16 @@
             generateGuiltButtons();
           }
           if(turn == 3){
+            //determine jester/executioner win
+            //reset stuff
             for(let i in players){
               players[i].NightAction = {};
+            }
+            for(let i in players){
+              players[i].vvotes = 0;
+            }
+            for(let i in players){
+              players[i].votes = 0;
             }
             for(let i in players){
               if(players[i].dead && players[i].mrole == "cleaned"){
@@ -1852,9 +1871,6 @@
             time = "night";
             turn = -1;
             next();
-          }
-          for(let i in players){
-            players[i].vvotes = 0;
           }
         }
       }
@@ -1889,7 +1905,7 @@
         document.getElementById("LoginSumbit").style.display = "none";
         document.getElementById("start").style.display = "none";
         document.getElementById("LoginBox").style.display = "none";
-        nextButton.style.display = "block";
+        nextButton.style.display = "";
         let roles = [];
         let maxMaf = Math.ceil((players.length / 3) - 1);
         let possibleRoles = {
