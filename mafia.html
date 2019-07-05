@@ -27,7 +27,7 @@
       <button id="blackmail" onclick="black()">A blackmailed player has talked</button>
     </div>
     <div id="bugList">
-
+      veteran alert issue
     </div>
     <style type="text/css">
       #bugList{
@@ -762,9 +762,10 @@
         }
         let alive = players.filter(o=>{return !o.dead});
         for(let i in alive){
+          console.log(alive[i]);
           switch (alive[i].role) {
             case "veteran":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].index].information.push({
                 type: "alert",
                 by: alive[i].index,
@@ -776,7 +777,7 @@
             if(alive.filter(o=>{return o.role == "godfather" && !o.NightAction.target2}).length){
               return;
             }
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "attack",
                 value: 1,
@@ -809,7 +810,7 @@
             })();
             break;
             case "janitor":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "clean",
                 by: alive[i].index,
@@ -818,7 +819,7 @@
             })() : null;
             break;
             case "framer":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "frame",
                 by: alive[i].index,
@@ -827,7 +828,7 @@
             })() : null;
             break;
             case "consiglier":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "investigate",
                 by: alive[i].index,
@@ -836,14 +837,22 @@
             })() : null;
             break;
             case "bodyguard":
-            alive[i].NightAction.target ? (()=>{
-              dayInfo[alive[i].NightAction.target].information.push({
-                type: "guard",
-                by: alive[i].index,
-                visit: true
-              });
+            alive[i].NightAction.target >= 0 ? (()=>{
+              if(alive[i].NightAction.target == alive[i].index){
+                dayInfo[alive[i].index].information.push({
+                  type: "vest",
+                  by: alive[i].index,
+                  visit: false
+                });
+              }else{
+                dayInfo[alive[i].NightAction.target].information.push({
+                  type: "guard",
+                  by: alive[i].index,
+                  visit: true
+                });
+              }
             })() : null;
-            alive[i].NightAction.target2 ? (()=>{
+            alive[i].NightAction.target2 >= 0 ? (()=>{
               dayInfo[alive[i].index].information.push({
                 type: "vest",
                 by: alive[i].index,
@@ -852,14 +861,14 @@
             })() : null;
             break;
             case "doctor":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "heal",
                 by: alive[i].index,
                 visit: true
               });
             })() : null;
-            alive[i].NightAction.target2 ? (()=>{
+            alive[i].NightAction.target2 >= 0 ? (()=>{
               dayInfo[alive[i].index].information.push({
                 type: "heal",
                 by: alive[i].index,
@@ -868,7 +877,7 @@
             })() : null;
             break;
             case "escort":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "rb",
                 by: alive[i].index,
@@ -877,7 +886,7 @@
             })() : null;
             break;
             case "sheriff":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "interrogate",
                 by: alive[i].index,
@@ -886,7 +895,7 @@
             })() : null;
             break;
             case "investigator":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "investigate",
                 by: alive[i].index,
@@ -895,7 +904,7 @@
             })() : null;
             break;
             case "jailor":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "jail",
                 message: "You were jailed by the jailor",
@@ -903,7 +912,7 @@
                 visit: true
               });
             })() : null;
-            alive[i].NightAction.target2 ? (()=>{
+            alive[i].NightAction.target2 >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "attack",
                 value: 3,
@@ -914,7 +923,7 @@
             })() : null;
             break;
             case "lookout":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "watch",
                 by: alive[i].index,
@@ -923,7 +932,7 @@
             })() : null;
             break;
             case "retributionist":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "revive",
                 by: alive[i].index,
@@ -932,7 +941,7 @@
             })() : null;
             break;
             case "spy":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "bug",
                 by: alive[i].index,
@@ -941,25 +950,25 @@
             })() : null;
             break;
             case "transporter":
-            alive[i].NightAction.target && alive[i].NightAction.target2 ? (()=>{
+            alive[i].NightAction.target && alive[i].NightAction.target2 >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "transport",
                 message: "You were transported to another location",
                 by: alive[i].index,
                 visit: true,
-                with: alive[i].NightAction.target
+                with: alive[i].NightAction.target2
               });
               dayInfo[alive[i].NightAction.target2].information.push({
                 type: "transport",
                 message: "You were transported to another location",
                 by: alive[i].index,
                 visit: false,
-                with: alive[i].NightAction.target2
+                with: alive[i].NightAction.target
               });
             })() : null;
             break;
             case "vampirehunter":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "hunt",
                 value: 3,
@@ -969,7 +978,7 @@
             })() : null;
             break;
             case "vigilante":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "attack",
                 value: 1,
@@ -980,7 +989,7 @@
             })() : null;
             break;
             case "blackmailer":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "blackmail",
                 message: "You have been blackmailed. You cannot speak during the day",
@@ -990,7 +999,7 @@
             })() : null;
             break;
             case "consort":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "rb",
                 by: alive[i].index,
@@ -999,7 +1008,7 @@
             })() : null;
             break;
             case "disguiser":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "disguise",
                 by: alive[i].index,
@@ -1022,7 +1031,7 @@
                 visit: false
               });
             })() : null;
-            !alive[i].NightAction.target ? (()=>{
+            !alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].index].information.push({
                 type: "clean",
                 by: alive[i].index,
@@ -1031,7 +1040,7 @@
             })() : null;
             break;
             case "jester":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "attack",
                 value: 3,
@@ -1042,7 +1051,7 @@
             })() : null;
             break;
             case "serialkiller":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "attack",
                 value: 1,
@@ -1072,7 +1081,7 @@
             })() : null;
             break;
             case "amnesiac":
-            alive[i].NightAction.target ? (()=>{
+            alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "remember",
                 visit: false,
@@ -1341,7 +1350,7 @@
                 for(let i in v){
                   visitors.push(players[v[i].by].name);
                 }
-                dayInfo[i].main = `${visitors.join(", ")} visited your target.`
+                dayInfo[i].main = `${visitors.join(", ")} visited your target.`;
               }
             }
             break;
@@ -1420,16 +1429,16 @@
           }
           let dv = dayInfo[i].information.filter(o=>{return defenseValues.evt[o.type];});
           let dv2 = 0;
-          if(defenseValues[players[dayInfo[i].index].role]){
-            dv2 = defenseValues[players[dayInfo[i].index].role];
+          if(defenseValues.basic.includes(players[dayInfo[i].index].role)){
+            dv2 = 1;
           }
           for(let j in dv){
-            if(defenseValues[dv[j].type] > dv2){
-              dv2 = defenseValues[dv[j].type];
+            if(defenseValues.evt[dv[j].type] > dv2){
+              dv2 = defenseValues.evt[dv[j].type];
             }
           }
           for(let j in av){
-            if(av[j].value <= dv2){
+            if(av[j].value > dv2){
               //if jailed
               if(dayInfo[i].information.filter(o=>{return o.type == "jail";}).length){
                 dayInfo[av[j].by].information.push({
@@ -1439,20 +1448,20 @@
                   message: "Your target was jailed"
                 });
               }else{
-                dayInfo[av[j].by].information.push({
+                players[dayInfo[i].index].dead = true;
+                dayInfo[i].information.push({
                   type: "system",
                   visit: false,
                   by: null,
-                  message: "Your target's defense is too high"
+                  message: "You have died."
                 });
               }
             }else{
-              players[dayInfo[i].index].dead = true;
-              dayInfo[i].information.push({
+              dayInfo[av[j].by].information.push({
                 type: "system",
                 visit: false,
                 by: null,
-                message: "You have died."
+                message: "Your target's defense is too high"
               });
             }
           }
@@ -1552,6 +1561,9 @@
         //mafia transformation
         if(!players.filter(o=>{return /(godfather)|(mafioso)/g.test(o.role) && !o.dead}).length){
           let m = players.filter(o=>{return !o.dead && /(janitor)|(consort)|(disguiser)|(consiglier)|(framer)|(blackmailer)/g.test(o.role)})[0];
+          if(!m){
+            return;
+          }
           m.role = "mafioso";
           dayInfo[m.index].information.push({
             type: "system",
