@@ -27,7 +27,7 @@
       <button id="blackmail" onclick="black()">A blackmailed player has talked</button>
     </div>
     <div id="bugList">
-      veteran alert issue
+      no bugs known currently
     </div>
     <style type="text/css">
       #bugList{
@@ -415,7 +415,7 @@
             players[turn].actionsLeft = 3;
           }
           options = players.filter(function(o) {
-            return o.index = turn;
+            return o.index == turn;
           });
           string += `<o>${players[turn].name}</o><button onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to alert tonight</p>';})()"></button><br/>`;
           string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
