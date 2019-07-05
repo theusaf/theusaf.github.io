@@ -1,970 +1,1866 @@
 <!DOCTYPE html>
 <html>
-    <head></head>
-    <body>
-        <div class="wrapper">
-            <ul id="graveyard">
-                <div><h3><u>Graveyard</u></h3></div>
-                <div id="grave_list"></div>
-            </ul>
-            <ol id="living">
-                <div><h3><u>Living</u></h3></div>
-                <div id="living_list"></div>
-            </ol>
-            <div id="role"></div>
-            <div id="team"></div>
-        </div>
-        <div id="actionbox"></div>
-        <input id="LoginBox"/>
-        <button id="LoginSumbit" onclick="submit(document.getElementById(`LoginBox`).value)">Done</button>
-        <div id="narrator">
-            <h2>Narrator Box</h2>
-            <div id="narrate_text"></div>
-            <button onclick="if(players.length >=5){startGame()}" id="start">Start</button>
-            <button id="next" onclick="next()">Next</button>
-            <button id="next" onclick="mayor()">The Mayor Has Revealed.</button>
-            <button id="next" onclick="black()">A blackmailed player has talked</button>
-        </div>
-        <style type="text/css">
-            #narrator{
-                margin-top: 20px;
+  <head>
+  </head>
+  <body>
+    <div class="wrapper">
+      <ul id="graveyard">
+        <div><h3><u>Graveyard</u></h3></div>
+        <div id="grave_list"></div>
+      </ul>
+      <ol id="living">
+        <div><h3><u>Living</u></h3></div>
+        <div id="living_list"></div>
+      </ol>
+      <div id="role"></div>
+      <div id="team"></div>
+    </div>
+    <div id="actionbox"></div>
+    <input id="LoginBox" onkeydown="if(event.keyCode != 13){return;}document.getElementById(`LoginSumbit`).onclick()"/>
+    <button id="LoginSumbit" onclick="submit(document.getElementById(`LoginBox`).value)">Done</button>
+    <div id="narrator">
+      <h2>Narrator Box</h2>
+      <div id="narrate_text"></div>
+      <button onclick="if(players.length >=5){startGame()}" id="start">Start</button>
+      <button id="next" onclick="next()">Next</button>
+      <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
+      <button id="blackmail" onclick="black()">A blackmailed player has talked</button>
+    </div>
+    <div id="bugList">
+
+    </div>
+    <style type="text/css">
+      #bugList{
+        display: none;
+      }
+      #narrator{
+        margin-top: 20px;
+      }
+      .wrapper {
+        border: 1px solid black;
+        display: flex;
+      }
+      #graveyard {
+        border: 1px solid black;
+        width: calc(50% - 2px);
+        margin-top: 0px;
+        margin-bottom: 0px;
+        overflow: scroll;
+        max-height: 50vh;
+      }
+      #living {
+        border: 1px solid black;
+        width: calc(50% - 2px);
+        margin-top: 0px;
+        margin-bottom: 0px;
+        overflow: scroll;
+        max-height: 50vh;
+      }
+      #LoginBox {
+        margin-top: 20px;
+        width: 50%;
+        height: 25px;
+        margin-left: calc(50% - 25%);
+      }
+      #narrator {
+        border: 1px solid black;
+      }
+      #narrator > button {
+        margin-left: calc(50% - 41px);
+      }
+      p{
+        width: 100%;
+      }
+      o{
+        display: inline-block;
+        width: 100%;
+      }
+      br{
+        height: 0px;
+      }
+      #actionbox{
+        text-align: center;
+        white-space: nowrap;
+        width: 40%;
+        margin-left: calc(25% + (25% / 2));
+        overflow: scroll;
+        max-height: 30vh;
+      }
+      #actionbox button{
+        height: 20px;
+        width: 20px;
+        margin-left: -75px;
+      }
+    </style>
+    <script>
+      //html elements
+      let nextButton = document.getElementById("next");
+      nextButton.style.display = "none";
+      let grave = document.getElementById("grave_list");
+      let citizens = document.getElementById("living_list");
+      let action = document.getElementById("actionbox");
+      let roleinfo = document.getElementById("role");
+      let team = document.getElementById("team");
+      let narrator = document.getElementById("narrator");
+      let narrator_text = document.getElementById("narrate_text");
+      //adding css when elements have stuff in it.
+      let preRes = {
+        action: false,
+        role: false,
+        team: false,
+      };
+      let checkSize = setInterval(function(){
+        /*global CustomEvent*/
+        var resEvt = new CustomEvent("resize");
+        if(roleinfo.innerText.length > 0 == preRes.role){
+          preRes.role = Boolean(Math.abs(Number(preRes.role) - 1));
+          resEvt.resizeTarget = roleinfo;
+          resEvt.resizeSize = preRes.role;
+          document.dispatchEvent(resEvt);
+        }
+        if(team.innerText.length > 0 == preRes.team){
+          preRes.team = Boolean(Math.abs(Number(preRes.team) - 1));
+          resEvt.resizeTarget = team;
+          resEvt.resizeSize = preRes.team;
+          document.dispatchEvent(resEvt);
+        }
+        if(action.innerText.length > 0 == preRes.action){
+          preRes.action = Boolean(Math.abs(Number(preRes.action) - 1));
+          resEvt.resizeTarget = action;
+          resEvt.resizeSize = preRes.action;
+          document.dispatchEvent(resEvt);
+        }
+      });
+      let night = 1;
+      let turn = -1;
+      let youngestVamp = -1;
+      let vampsCanAttack = true;
+      //night is doing actions. night2 is showing results. day is day...
+      let time = "night";
+      let dayInfo = [];
+      let fixedDayInfo = [];
+      let players = [];
+      let transportInfo = [];
+      let dousedPlayers = [];
+      let hasIgnited = false;
+      const investValues = {
+        "mafioso": "Vigilante, Veteran, Mafioso",
+        "godfather": "Bodyguard, Godfather, Arsonist",
+        "janitor": "Retributionist, Janitor",
+        "framer": "Framer, Vampire, Jester, Lookout",
+        "consiglier": "Investigator, Consigliere, Mayor",
+        "bodyguard": "Bodyguard, Godfather, Arsonist",
+        "doctor": "Doctor, Disguiser, Serial Killer",
+        "escort": "Transporter, Escort, Consort",
+        "sheriff": "Sheriff, Executioner, Werewolf",
+        "investigator": "Investigator, Consigliere, Mayor",
+        "jailor": "Spy, Blackmailer, Jailor",
+        "lookout": "Framer, Vampire, Jester, Lookout",
+        "mayor": "Investigator, Consigliere, Mayor",
+        "retributionist": "Retributionist, Janitor",
+        "spy": "Spy, Blackmailer, Jailor",
+        "transporter": "Transporter, Escort, Consort",
+        "vampirehunter": "Survivor, Vampire Hunter, Amnesiac",
+        "veteran": "Vigilante, Veteran, Mafioso",
+        "vigilante": "Vigilante, Veteran, Mafioso",
+        "blackmailer": "Spy, Blackmailer, Jailor",
+        "consort": "Transporter, Escort, Consort",
+        "disguiser": "Doctor, Disguiser, Serial Killer",
+        "amnesiac": "Survivor, Vampire Hunter, Amnesiac",
+        "arsonist": "Bodyguard, Godfather, Arsonist",
+        "executioner": "Sheriff, Executioner, Werewolf",
+        "jester": "Framer, Vampire, Jester, Lookout",
+        "serialkiller": "Doctor, Disguiser, Serial Killer",
+        "survivor": "Survivor, Vampire Hunter, Amnesiac",
+        "vampire": "Framer, Vampire, Jester, Lookout",
+        "werewolf": "Sheriff, Executioner, Werewolf",
+      };
+      const defenseValues = {
+        basic: ["serialkiller","werewolf","arsonist","executioner","godfather"],
+        evt: {
+          "vest": 1,
+          "jail": 2,
+          "heal": 2,
+          "alert": 1,
+          "guard": 2
+        }
+      };
+
+      document.addEventListener("resize",resize);
+
+      function resize(resEvt){
+        if(!resEvt.resizeSize){
+          resEvt.resizeTarget.style.display = "block";
+        }else{
+          resEvt.resizeTarget.style.display = "none";
+        }
+      }
+
+      function showTeam(role){
+        if(role == "vampire"){
+          let vamps = players.filter(function(o) {
+            return o.role == "vampire" && !o.dead;
+          });
+          let vampStr = "";
+          for(let i in vamps){
+            vampStr += `<li>${vamps[i].name}</li>`;
+          }
+          team.innerHTML = `<u>Vampires</u><ul>${vampStr}</ul>`;
+          return;
+        }
+        if(role == "mafioso" || role == "janitor" || role == "godfather" || role == "blackmailer" || role == "consort" || role == "consiglier" || role == "framer" || role == "disguiser"){
+          let maf = players.filter(function(o) {
+            return ((!o.dead) && (o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser"));
+          });
+          let mafStr = "";
+          for(let i in maf){
+            mafStr += `<li>${maf[i].name} (${maf[i].role})</li>`;
+          }
+          team.innerHTML = `<u>Mafia</u><ul>${mafStr}</ul>`;
+          return;
+        }
+        team.innerHTML = "";
+      }
+
+      function createActionText(role){
+        if(players[turn].dead){
+          return next();
+        }
+        //looks at the roles and then makes buttons and stuff.
+        let options;
+        let string = "";
+        narrator_text.innerHTML = "";
+        switch (role) {
+          case "mafioso":
+          options = players.filter(function(o) {
+            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
+          });
+          for(let i in options){
+            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You have voted to attack ${options[i].name} ${options[i].mrole}</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "godfather":
+          options = players.filter(function(o) {
+            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
+          });
+          let mafioso = players.filter(function(o) {
+            return !o.dead && o.role == "mafioso";
+          });
+          for(let i in options){
+            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You have decided to attack ${options[i].name} ${options[i].mrole}</p>';})()"></button><br/>`;
+          }
+          if(mafioso.length == 1){
+            string += `<o>${mafioso[0].name} (${mafioso[0].role})</o><button style="background: red" onclick="(function(){players[turn].NightAction.target2 = ${mafioso[0].index}; narrator_text.innerHTML='<p>You have decided to force ${mafioso[0].name} to kill your target</p>'})()"></button>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You decided not to attack, or force a mafioso to attack.</p>'})()">cancel</a>`;
+          break;
+          case "janitor":
+          if(players[turn].actionsLeft == -1){
+            players[turn].actionsLeft = 3;
+          }
+          for(let i in players){
+            string += `<o>${players[i].name} ${players[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${players[i].index}; narrator_text.innerHTML = '<p>You decide to clean ${players[i].name} ${players[i].mrole}</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          if(players[turn].actionsLeft == 0){
+            string = "<p>You cannot clean any more bodies.</p>";
+          }
+          break;
+          case "framer":
+          options = players.filter(function(o) {
+            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
+          });
+          for(let i in options){
+            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to frame ${options[i].name} ${options[i].mrole} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "consiglier":
+          options = players.filter(function(o) {
+            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
+          });
+          for(let i in options){
+            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to investigate ${options[i].name} ${options[i].mrole} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "bodyguard":
+          if(players[turn].actionsLeft == -1){
+            players[turn].actionsLeft = 1;
+          }
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to guard ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          if(players[turn].actionsLeft == 1){
+            string += `<o>${players[turn].name}</o><button style="background: lime" onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML='<p>You decide to put on your bulletproof vest</p>'})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "doctor":
+          if(players[turn].actionsLeft == -1){
+            players[turn].actionsLeft = 1;
+          }
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn && o.role != "mayor (rev)";
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to heal ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          if(players[turn].actionsLeft == 1){
+            string += `<o>${players[turn].name}</o><button style="background: lime" onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML='<p>You decide to heal yourself</p>'})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "escort":
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to escort ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "sheriff":
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to investigate ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "investigator":
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to investigate ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "jailor":
+          if(players[turn].actionsLeft == -1){
+            players[turn].actionsLeft = 1;
+          }
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to jail ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          if(players[turn].actionsLeft == 1){
+            string += `<o>${players[turn].name}</o><button style="background: lime" onclick="(function(){players[turn].NightAction.target2 = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to execute your target</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "lookout":
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to watch ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "mayor":
+          string += `<o>You are an important role. Remember to reveal when the time is right.</o>`;
+          break;
+          case "retributionist":
+          if(players[turn].actionsLeft == -1){
+            players[turn].actionsLeft = 1;
+          }
+          options = players.filter(function(o) {
+            return o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser" || o.role == "survivor" || o.role == "jester" || o.role == "(cleaned)" || o.role == "executioner" || o.role == "serialkiller" || o.role == "vampire" || o.role == "werewolf" || o.role == "arsonist");
+          });
+          if(players[turn].actionsLeft == 1){
+            for(let i in options){
+              string += `<o>${options[i].name} (${options[i].role})</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to revive ${options[i].name} (${options[i].role}) tonight</p>';})()"></button><br/>`;
             }
-            .wrapper {
-                border: 1px solid black;
-                display: flex;
-            }
-            #graveyard {
-                border: 1px solid black;
-                width: calc(50% - 2px);
-                margin-top: 0px;
-                margin-bottom: 0px;
-                overflow: scroll;
-                max-height: 50vh;
-            }
-            #living {
-                border: 1px solid black; 
-                width: calc(50% - 2px);
-                margin-top: 0px;
-                margin-bottom: 0px;
-                overflow: scroll;
-                max-height: 50vh;
-            }
-            #LoginBox {
-                margin-top: 20px;
-                width: 50%;
-                height: 25px;
-                margin-left: calc(50% - 25%);
-            }
-            #narrator {
-                border: 1px solid black;
-            }
-            #narrator > button {
-                margin-left: calc(50% - 41px);
-            }
-            p{
-                width: 100%;
-            }
-            o{
-                display: inline-block;
-                width: 100%;
-            }
-            br{
-                height: 0px;
-            }
-            #actionbox{
-                text-align: center;
-                white-space: nowrap;
-                width: 40%;
-                margin-left: calc(25% + (25% / 2));
-                overflow: scroll;
-                max-height: 30vh;
-            }
-            #actionbox button{
-                height: 20px;
-                width: 20px;
-                margin-left: -75px;
-            }
-        </style>
-        <script>
-            //html elements
-            let nextButton = document.getElementById("next");
-            nextButton.style.display = "none";
-            let grave = document.getElementById("grave_list");
-            let citizens = document.getElementById("living_list");
-            let action = document.getElementById("actionbox");
-            let roleinfo = document.getElementById("role");
-            let team = document.getElementById("team");
-            let narrator = document.getElementById("narrator");
-            let narrator_text = document.getElementById("narrate_text");
-            //adding css when elements have stuff in it.
-            let preRes = {
-                action: false,
-                role: false,
-                team: false,
-            };
-            let checkSize = setInterval(function(){
-                /*global CustomEvent*/
-                var resEvt = new CustomEvent("resize");
-                if(roleinfo.innerText.length > 0 == preRes.role){
-                    preRes.role = Boolean(Math.abs(Number(preRes.role) - 1));
-                    resEvt.resizeTarget = roleinfo;
-                    resEvt.resizeSize = preRes.role;
-                    document.dispatchEvent(resEvt);
-                }
-                if(team.innerText.length > 0 == preRes.team){
-                    preRes.team = Boolean(Math.abs(Number(preRes.team) - 1));
-                    resEvt.resizeTarget = team;
-                    resEvt.resizeSize = preRes.team;
-                    document.dispatchEvent(resEvt);
-                }
-                if(action.innerText.length > 0 == preRes.action){
-                    preRes.action = Boolean(Math.abs(Number(preRes.action) - 1));
-                    resEvt.resizeTarget = action;
-                    resEvt.resizeSize = preRes.action;
-                    document.dispatchEvent(resEvt);
-                }
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "spy":
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to bug the house of ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "transporter":
+          options = players.filter(function(o) {
+            return !o.dead;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to transport ${options[i].name} tonight</p>';})()"></button><button style="background: lime; margin-left: -75px" onclick="(function(){players[turn].NightAction.target2 = ${options[i].index}; narrator_text.innerHTML = '<p>You also decide to transport ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "vampirehunter":
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide check ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "veteran":
+          if(players[turn].actionsLeft == -1){
+            players[turn].actionsLeft = 3;
+          }
+          options = players.filter(function(o) {
+            return o.index = turn;
+          });
+          string += `<o>${players[turn].name}</o><button onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to alert tonight</p>';})()"></button><br/>`;
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          if(players[turn].actionsLeft == 0){
+            string = "<o>You do not have any more alerts left</o>";
+          }
+          break;
+          case "vigilante":
+          if(players[turn].actionsLeft == -1){
+            players[turn].actionsLeft = 3;
+          }
+          options = players.filter(function(o) {
+            return !o.dead && !(o.index == turn);
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to shoot ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          if(players[turn].actionsLeft == 0){
+            string = "<o>You do not have any more bullets left</o>";
+          }
+          break;
+          case "blackmailer":
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to blackmail ${options[i].name} ${options[i].mrole} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "consort":
+          options = players.filter(function(o) {
+            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
+          });
+          for(let i in options){
+            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to distract ${options[i].name} ${options[i].mrole} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "disguiser":
+          options = players.filter(function(o) {
+            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
+          });
+          for(let i in options){
+            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to disguise as ${options[i].name} ${options[i].mrole} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
+          break;
+          case "amnesiac":
+          options = players.filter(function(o) {
+            return o.dead && !(o.role == "godfather" || o.role == "mafiosos" || o.role == "retributionist" || o.role == "mayor" || o.role == "mayor (rev)" || o.role == "jailor" || o.role == "executioner" || o.role == "blackmailer");
+          });
+          for(let i in options){
+            string += `<o>${options[i].name} (${options[i].role})</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>Oh yeah! I was like the ${options[i].role}!</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>Actually... nevermind</p>'})()">cancel</a>`;
+          break;
+          case "arsonist":
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to douse ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<o>${players[turn].name}</o><button style="background: orange" onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to ignite your targets tonight</p>';})()"></button><br/>`;
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind, and decide to clean gas off yourself</p>'})()">cancel</a>`;
+          break;
+          case "executioner":
+          if(players[turn].actionTarget == null){
+            options = players.filter(function(o) {
+              return !o.dead
             });
-            let night = 0;
-            let turn = -1;
-            let youngestVamp = -1;
-            //night is doing actions. night2 is showing results. day is day...
-            let time = "night";
-            let players = [];
-            
-            document.addEventListener("resize",resize);
-            
-            function resize(resEvt){
-                if(!resEvt.resizeSize){
-                    resEvt.resizeTarget.style.display = "block";
-                }else{
-                    resEvt.resizeTarget.style.display = "none";
-                }
+            players[turn].actionTarget = options[Math.floor(Math.random() * options.length)].index;
+          }
+          string = `Execute your target: ${players[players[turn].actionTarget].name}`;
+          break;
+          case "jester":
+          if(players[turn].actionsLeft == -1){
+            players[turn].actionsLeft == 1;
+          }
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to haunt ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a>`;
+          if(players[turn].actionsLeft == 0){
+            string = "You are out of actions.";
+          }
+          if(!players[turn].dead){
+            string = "<o>Get yourself lynched</o>";
+          }
+          break;
+          case "serialkiller":
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to kill ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a>`;
+          break;
+          case "survivor":
+          if(players[turn].actionsLeft == -1){
+            players[turn].actionsLeft = 3;
+          }
+          string += `<o>${players[turn].name}</o><button onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to put on a belletproof vest tonight</p>';})()"></button><br/>`;
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a>`;
+          if(players[turn].actionsLeft == 0){
+            string = "<o>You do not have any bulletproof vests left</o>"
+          }
+          break;
+          case "vampire":
+          if(youngestVamp == -1){
+            youngestVamp = turn;
+          }
+          options = players.filter(function(o) {
+            return !o.dead && o.role != "vampire";
+          });
+          for(let i in options){
+            string += `<o>${options[i].name} - ${options[i].vvotes}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You vote to bite ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a>`;
+          if(!vampsCanAttack){
+            string = `<o>You have to wait before voting to bite another person</o>`;
+          }
+          break;
+          case "werewolf":
+          options = players.filter(function(o) {
+            return !o.dead && o.index != turn;
+          });
+          for(let i in options){
+            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to rampage at the house of ${options[i].name} tonight</p>';})()"></button><br/>`;
+          }
+          string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a>`;
+          if(night % 2){
+            string = `<o>There is no full moon tonight.</o>`;
+          }
+          break;
+        }
+        action.innerHTML = string;
+      }
+      //explains each role
+      function generateRoleText(role){
+        switch (role) {
+          case "mafioso":
+          roleinfo.innerHTML = "<h4 style='color:red'>Mafioso</h4>";
+          roleinfo.innerHTML += "<p>Kill players that are against the mafia. Vote to kill all players that are against the mafia and do the work for the godfather</p>";
+          break;
+          case "godfather":
+          roleinfo.innerHTML = "<h4 style='color:red'>Godfather</h4>";
+          roleinfo.innerHTML += "<p>Kill players that are against the mafia. You can force a mafioso to attack as well.</p>";
+          roleinfo.innerHTML += "<p>-You are immune from direct attacks on you.</p>";
+          break;
+          case "janitor":
+          roleinfo.innerHTML = "<h4 style='color:red'>Janitor</h4>";
+          roleinfo.innerHTML += "<p>Kill players that are against the mafia. You can decide to clean a player, or clean whatever player the mafia attacks.</p>";
+          roleinfo.innerHTML += "<p>-Cleaned players will not have their role revealed.</p>";
+          break;
+          case "framer":
+          roleinfo.innerHTML = "<h4 style='color:red'>Framer</h4>";
+          roleinfo.innerHTML += "<p>Kill players that are against the mafia. You can frame a player, making them seem guilty.</p>";
+          roleinfo.innerHTML += "<p>-Framed players will be seen as `Framer, Vampire, or Jester` to the Investigator</p>";
+          break;
+          case "consiglier":
+          roleinfo.innerHTML = "<h4 style='color:red'>Consiglier</h4>";
+          roleinfo.innerHTML += "<p>Kill players that are against the mafia. You can investigate a player and find their role.</p>";
+          break;
+          case "bodyguard":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Bodyguard</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. Protect a player from an attack. You can also protect yourself with your bulletproof vest.</p>";
+          roleinfo.innerHTML += "<p>-If your target gets attacked, you and the attcker will die</p><p>-If more than one attacker attacks your target, a random attacker will die, but your target will live.</p><p>-You can only use the bulletproof vest once</p>";
+          break;
+          case "doctor":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Doctor</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. Heal a player.</p>";
+          roleinfo.innerHTML += "<p>-You cannot heal the mayor once revealed</p><p>-You can only heal yourself once</p><p>-Healing will not work against arson.</p>";
+          break;
+          case "escort":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Escort</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. Role block a player</p>";
+          roleinfo.innerHTML += "<p>-Roleblocking a player will prevent their action.</p>";
+          break;
+          case "sheriff":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Sheriff</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. Investigate a player to see if they are evil.</p>";
+          roleinfo.innerHTML += "<p>-The Godfather will appear good.</p><p>-All mafia and neutral will appear evil.</p>";
+          break;
+          case "investigator":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Investigator</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. Investigate a player to find their roles.</p>";
+          roleinfo.innerHTML += "<p>-You will see three possible roles of the player.</p>";
+          break;
+          case "jailor":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Jailor</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. You can jail a player each night.</p>";
+          roleinfo.innerHTML += "<p>-Jailing a player will roleblock them and prevent attacks against them.</p><p>-You can only execute once.</p>";
+          break;
+          case "lookout":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Lookout</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. Watch a player's house to see who visits them.</p>";
+          break;
+          case "mayor":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Mayor</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. During the day, you can reveal that you are mayor by saying 'I reveal myself as Mayor'</p><p>-Once you do this, your votes count as 3. Also, you cannot be healed.</p>";
+          break;
+          case "retributionist":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Retributionist</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. You can revive a player.</p><p>-You can only revive once</p>";
+          break;
+          case "spy":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Spy</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. You can bug a player's home.</p><p>-You will know what happened to that player</p><p>-You will know if the player is blackmailed, roleblocked, jailed, doused, attacked</p><p>-You will know if the Arsonist cleaned gas off him if he is your target</p><p>-You will know if the Serial Killer kills his roleblocker if you bug a Serial Killer</p><p>-You will get a message like 'your target was rbd so they stayed at home' if your taget is a werewolf who was roleblocked. However, you will get mauled by the werewolf as well.</p><p>-You will know who the mafia visited</p>";
+          break;
+          case "transporter":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Transporter</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. You can transport up to two players.</p><p>-This will swap targets against them.</p><p>-You can transport yourself too.</p><p>-If a target was attacked by another target, nothing happens</p>";
+          break;
+          case "vampirehunter":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Vampire Hunter</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. Check a player to see if they are a vampire.</p><p>-If a vampire attacks you, you will kill them.</p><p>-When there are no more vampires, you will turn into a Vigilante</p>";
+          break;
+          case "veteran":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Veteran</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. You can alert at night to kill any visiters.</p><p>-You can alert 3 times maximum.</p>";
+          break;
+          case "vigilante":
+          roleinfo.innerHTML = "<h4 style='color:lime'>Vigilante</h4>";
+          roleinfo.innerHTML += "<p>Kill all evildoers. You can shoot players you think are evil.</p><p>-If you shoot a town player, you will die the next day due to guilt.</p><p>-You can only shoot 3 times.</p>";
+          break;
+          case "blackmailer":
+          roleinfo.innerHTML = "<h4 style='color:red'>Blackmailer</h4>";
+          roleinfo.innerHTML += "<p>Kill players that are against the mafia. Blackmail a player.</p><p>-That player may not speak the next day, otherwise they will be killed by embarassment from their secret information being leaked.</p>";
+          break;
+          case "consort":
+          roleinfo.innerHTML = "<h4 style='color:red'>Consort</h4>";
+          roleinfo.innerHTML += "<p>Kill players that are against the mafia. Roleblock a player.</p><p>-This will block their action.</p>";
+          break;
+          case "disguiser":
+          roleinfo.innerHTML = "<h4 style='color:red'>Disguiser</h4>";
+          roleinfo.innerHTML += "<p>Kill players that are against the mafia. Disguise as a player.</p><p>-This will make the Sheriff and the Investigator think you are that role.</p><p>-If you die, your role is announced as the role you disguised as.</p>";
+          break;
+          case "amnesiac":
+          roleinfo.innerHTML = "<h4 style='color:blue'>Amnesiac</h4>";
+          roleinfo.innerHTML += "<p>Remember that you were like a player that died.</p><p>-You will become that role.</p><p>-In this version of mafia, you can become ANY role that died.</p><p>-Becoming a godfather, will turn you into a mafioso</p>";
+          break;
+          case "arsonist":
+          roleinfo.innerHTML = "<h4 style='color:orange'>Arsonist</h4>";
+          roleinfo.innerHTML += "<p>Burn the world. You can douse a player, set all doused players on fire, or clean gas off yourself.</p><p>-If another arsonist douses you, you will be notified.</p><p>-Cleaning gas off yourself will prevent other arsonists from burning you.</p><p>-Igniting will also ignite ALL arsonist targets</p><p>-You can win with other arsonists.</p><p>-You are night immune to attacks targeing you</p>";
+          break;
+          case "executioner":
+          roleinfo.innerHTML = "<h4 style='color:grey'>Executioner</h4>";
+          roleinfo.innerHTML += "<p>Kill your target by lynching them.</p>-If your target dies by not being lynched, you become a Jester<p></p><p>-You are night immune to attacks targeing you</p>";
+          break;
+          case "jester":
+          roleinfo.innerHTML = "<h4 style='color:pink'>Jester</h4>";
+          roleinfo.innerHTML += "<p>Get lynched...</p>";
+          break;
+          case "serialkiller":
+          roleinfo.innerHTML = "<h4 style='color:blue'>Serial Killer</h4>";
+          roleinfo.innerHTML += "<p>Kill everyone.</p><p>-You are night immune from attacks against you</p><p>-If you are role blocked, you will kill the roleblocker instead of your target.</p>";
+          break;
+          case "survivor":
+          roleinfo.innerHTML = "<h4 style='color:yellow'>Surviror</h4>";
+          roleinfo.innerHTML += "<p>Survive. You can put on your bulletproof vest.</p><p>-You can only use your bulletproof vest once</p>";
+          break;
+          case "vampire":
+          roleinfo.innerHTML = "<h4 style='color:purple'>Vampire</h4>";
+          roleinfo.innerHTML += "<p>Kill and convert everyone into a vampire.</p><p>-The youngest vampire will attack.</p><p>-You can only convert every other night. If you kill, you can convert again</p><p>-If you visit a Vampire Hunter, you will die</p>";
+          break;
+          case "werewolf":
+          roleinfo.innerHTML = "<h4 style='color:brown'>Werewolf</h4>";
+          roleinfo.innerHTML += "<p>Kill everyone. You can attack on even nights.</p><p>-You are night immune to attacks</p><p>-If roleblocked, you will rampage at your house, killing the roleblocker.</p><p>-Your attacks are unstoppable by night immunity</p><p>If you do nothing, you will rampage at your house.</p><p>-You are not immune to other werewolves</p>";
+          break;
+        }
+      }
+      //roles that have limited uses
+      function hasLimitedUse(role){
+        return {
+          match: /(veteran)|(survivor)|(vigilante)|(janitor)|(retributionist)|(bodyguard)|(doctor)/g.test(role),
+          onlyIfTargetSelf: /(veteran)|(survivor)|(bodyguard)|(doctor)/g.test(role)
+        }
+      }
+      //generates the results of the night
+      function generateResultText(){
+        let str = ""
+        narrator_text.innerHTML = "";
+        let activity = dayInfo[turn].information;
+        str += dayInfo[turn].main + "\n";
+        for(let i in activity){
+          //attacked
+          if(/(attack)|(bitten)/g.test(activity[i].type)){
+            //but jailed
+            if(activity.filter(o=>{return o.type == "jail";}).length&&activity[i].value < 3){
+              str += "You were attacked, but you were in jail\n";
+            }else{
+              str += activity[i].message + "\n";
             }
-            
-            function showTeam(role){
-                if(role == "vampire"){
-                    let vamps = players.filter(function(o) {
-                        return o.role == "vampire" && !o.dead;
-                    });
-                    let vampStr = "";
-                    for(let i in vamps){
-                        vampStr += `<li>${vamps[i].name}</li>`;
-                    }
-                    team.innerHTML = `<u>Vampires</u><ul>${vampStr}</ul>`;
-                    return;
-                }
-                if(role == "mafioso" || role == "janitor" || role == "godfather" || role == "blackmailer" || role == "consort" || role == "consiglier" || role == "framer" || role == "disguiser"){
-                    let maf = players.filter(function(o) {
-                        return ((!o.dead) && (o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser"));
-                    });
-                    let mafStr = "";
-                    for(let i in maf){
-                        mafStr += `<li>${maf[i].name} (${maf[i].role})</li>`;
-                    }
-                    team.innerHTML = `<u>Mafia</u><ul>${mafStr}</ul>`;
-                    return;
-                }
-                team.innerHTML = "";
+            continue;
+          }
+          //healed
+          if(activity[i].type == "heal" && activity.filter(o=>{return o.type == "attack";}).length&&!activity.filter(o=>{return o.type == "jail";}).length){
+            str += "A doctor healed your wounds\n";
+            continue;
+          }
+          //guarded
+          if(activity[i].type == "guard" && activity.filter(o=>{return o.type == "attack"&&o.visit;}).length&&!activity.filter(o=>{return o.type == "jail";}).length){
+            str += "You were attacked, but a bodyguard fought off your attacker\n";
+            continue;
+          }
+          //transported
+          if(activity[i].type == "transport"&&!activity.filter(o=>{return o.type == "jail";}).length){
+            str += "You were transported to another location\n";
+            continue;
+          }
+          //rb
+          if(activity[i].type == "rb"&&!activity.filter(o=>{return o.type == "jail";}).length){
+            str += "You were role blocked\n";
+            continue;
+          }
+          //doused (if arso)
+          if(players[turn].role == "arsonist" && activity[i].type == "douse"){
+            str += "You were doused by another arsonist\n";
+            continue;
+          }
+          if(activity[i].message){
+            str += activity[i].message + "\n";
+          }
+        }
+        narrator_text.innerHTML = str;
+      }
+      //sorts the actions of the night
+      function dayUpdate(){
+        dayInfo = [];
+        transportInfo = [];
+        for(i in players){
+          dayInfo.push({
+            index: players[i].index,
+            information: [],
+            main: ""
+          });
+        }
+        let alive = players.filter(o=>{return !o.dead});
+        for(let i in alive){
+          switch (alive[i].role) {
+            case "veteran":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].index].information.push({
+                type: "alert",
+                by: alive[i].index,
+                visit: false
+              });
+            })() : null;
+            break;
+            case "mafioso":
+            if(alive.filter(o=>{return o.role == "godfather" && !o.NightAction.target2}).length){
+              return;
             }
-            
-            function createActionText(role){
-                //looks at the roles and then makes buttons and stuff.
-                let options;
-                let string = "";
-                narrator_text.innerHTML = "";
-                switch (role) {
-                    case "mafioso":
-                        options = players.filter(function(o) {
-                            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You have voted to attack ${options[i].name} ${options[i].mrole}</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "godfather":
-                        options = players.filter(function(o) {
-                            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
-                        });
-                        let mafioso = players.filter(function(o) {
-                            return !o.dead && o.role == "mafioso";
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You have decided to attack ${options[i].name} ${options[i].mrole}</p>';})()"></button><br/>`;
-                        }
-                        if(mafioso.length == 1){
-                            string += `<o>${mafioso[0].name} (${mafioso[0].role})</o><button style="background: red" onclick="(function(){players[turn].NightAction.target2 = ${mafioso[0].index}; narrator_text.innerHTML='<p>You have decided to force ${mafioso[0].name} to kill your target</p>'})()"></button>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You decided not to attack, or force a mafioso to attack.</p>'})()">cancel</a>`;
-                    break;
-                    case "janitor":
-                        if(players[turn].actionsLeft == -1){
-                            players[turn].actionsLeft = 3;
-                        }
-                        for(let i in players){
-                            string += `<o>${players[i].name} ${players[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${players[i].index}; narrator_text.innerHTML = '<p>You decide to clean ${players[i].name} ${players[i].mrole}</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                        if(players[turn].actionsLeft == 0){
-                            string = "<p>You cannot clean any more bodies.</p>";
-                        }
-                    break;
-                    case "framer":
-                        options = players.filter(function(o) {
-                            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to frame ${options[i].name} ${options[i].mrole} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "consiglier":
-                        options = players.filter(function(o) {
-                            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to investigate ${options[i].name} ${options[i].mrole} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "bodyguard":
-                        if(players[turn].actionsLeft == -1){
-                            players[turn].actionsLeft = 1;
-                        }
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to guard ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        if(players[turn].actionsLeft == 1){
-                            string += `<o>${players[turn].name}</o><button style="background: lime" onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML='<p>You decide to put on your bulletproof vest</p>'})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "doctor":
-                        if(players[turn].actionsLeft == -1){
-                            players[turn].actionsLeft = 1;
-                        }
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn && o.role != "mayor (rev)";
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to heal ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        if(players[turn].actionsLeft == 1){
-                            string += `<o>${players[turn].name}</o><button style="background: lime" onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML='<p>You decide to heal yourself</p>'})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "escort":
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to escort ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "sheriff":
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to investigate ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "investigator":
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to investigate ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "jailor":
-                        if(players[turn].actionsLeft == -1){
-                            players[turn].actionsLeft = 1;
-                        }
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to jail ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        if(players[turn].actionsLeft == 1){
-                            string += `<o>${players[turn].name}</o><button style="background: lime" onclick="(function(){players[turn].NightAction.target2 = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to execute your target</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "lookout":
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to watch ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "mayor":
-                        string += `<o>You are an important role. Remember to reveal when the time is right.</o>`;
-                    break;
-                    case "retributionist":
-                        if(players[turn].actionsLeft == -1){
-                            players[turn].actionsLeft = 1;
-                        }
-                        options = players.filter(function(o) {
-                            return o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser" || o.role == "survivor" || o.role == "jester" || o.role == "(cleaned)" || o.role == "executioner" || o.role == "serialkiller" || o.role == "vampire" || o.role == "werewolf" || o.role == "arsonist");
-                        });
-                        if(players[turn].actionsLeft == 1){
-                            for(let i in options){
-                                string += `<o>${options[i].name} (${options[i].role})</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to revive ${options[i].name} (${options[i].role}) tonight</p>';})()"></button><br/>`;
-                            }
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "spy":
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to bug the house of ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "transporter":
-                        options = players.filter(function(o) {
-                            return !o.dead;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to transport ${options[i].name} tonight</p>';})()"></button><button style="background: lime; margin-left: -75px" onclick="(function(){players[turn].NightAction.target2 = ${options[i].index}; narrator_text.innerHTML = '<p>You also decide to transport ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "vampirehunter":
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide check ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "veteran":
-                        if(players[turn].actionsLeft == -1){
-                            players[turn].actionsLeft = 3;
-                        }
-                        options = players.filter(function(o) {
-                            return o.index = turn;
-                        });
-                        string += `<o>${players[turn].name}</o><button onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to alert tonight</p>';})()"></button><br/>`;
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                        if(players[turn].actionsLeft == 0){
-                            string = "<o>You do not have any more alerts left</o>";
-                        }
-                    break;
-                    case "vigilante":
-                        if(players[turn].actionsLeft == -1){
-                            players[turn].actionsLeft = 3;
-                        }
-                        options = players.filter(function(o) {
-                            return !o.dead && !(o.index == turn);
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to shoot ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                        if(players[turn].actionsLeft == 0){
-                            string = "<o>You do not have any more bullets left</o>";
-                        }
-                    break;
-                    case "blackmailer":
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to blackmail ${options[i].name} ${options[i].mrole} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "consort":
-                        options = players.filter(function(o) {
-                            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to distract ${options[i].name} ${options[i].mrole} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "disguiser":
-                        options = players.filter(function(o) {
-                            return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to disguise as ${options[i].name} ${options[i].mrole} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "amnesiac":
-                        options = players.filter(function(o) {
-                            return o.dead && !(o.role == "godfather" || o.role == "mafiosos" || o.role == "retributionist" || o.role == "mayor" || o.role == "mayor (rev)" || o.role == "jailor" || o.role == "executioner" || o.role == "blackmailer");
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name} (${options[i].role})</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>Oh yeah! I was like the ${options[i].role}!</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>Actually... nevermind</p>'})()">cancel</a>`;
-                    break;
-                    case "arsonist":
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to douse ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<o>${players[turn].name}</o><button style="background: orange" onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to ignite your targets tonight</p>';})()"></button><br/>`;
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind, and decide to clean gas off yourself</p>'})()">cancel</a>`;
-                    break;
-                    case "executioner":
-                        if(players[turn].actionTarget == null){
-                            options = players.filter(function(o) {
-                                return !o.dead
-                            });
-                            players[turn].actionTarget = options[Math.floor(Math.random() * options.length)].index;
-                        }
-                        string = `Execute your target: ${players[players[turn].actionTarget].name}`;
-                    break;
-                    case "jester":
-                        if(players[turn].actionsLeft == -1){
-                            players[turn].actionsLeft == 1;
-                        }
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to haunt ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a>`;
-                        if(players[turn].actionsLeft == 0){
-                            string = "You are out of actions.";
-                        }
-                        if(!players[turn].dead){
-                            string = "<o>Get yourself lynched</o>";
-                        }
-                    break;
-                    case "serialkiller":
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to kill ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "survivor":
-                        if(players[turn].actionsLeft == -1){
-                            players[turn].actionsLeft = 3;
-                        }
-                        string += `<o>${players[turn].name}</o><button onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to put on a belletproof vest tonight</p>';})()"></button><br/>`;
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a>`;
-                        if(players[turn].actionsLeft == 0){
-                            string = "<o>You do not have any bulletproof vests left</o>"
-                        }
-                    break;
-                    case "vampire":
-                        if(youngestVamp == -1){
-                            youngestVamp = turn;
-                        }
-                        options = players.filter(function(o) {
-                            return !o.dead && o.role != "vampire";
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name} - ${options[i].vvotes}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You vote to bite ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a>`;
-                    break;
-                    case "werewolf":
-                        options = players.filter(function(o) {
-                            return !o.dead && o.index != turn;
-                        });
-                        for(let i in options){
-                            string += `<o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to rampage at the house of ${options[i].name} tonight</p>';})()"></button><br/>`;
-                        }
-                        string += `<a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a>`;
-                    break;
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "attack",
+                value: 1,
+                by: alive[i].index,
+                message: "You were attacked by a member of the mafia",
+                visit: true
+              });
+            })() : null;
+            break;
+            case "godfather":
+            alive[i].NightAction.target && !alive[i].NightAction.target2 || alive[i].NightAction.target && !alive.filter(o=>{return o.role == "mafioso"}).length ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "attack",
+                value: 1,
+                by: alive[i].index,
+                message: "You were attacked by a member of the mafia",
+                visit: true
+              });
+            })() : (()=>{
+              for(let j in alive){
+                if(alive[j].role == "mafioso"){
+                  dayInfo[alive[j].index].information.push({
+                    type: "force",
+                    by: alive[j].index,
+                    message: "The godfather forced you to attack his target!",
+                    visit: false
+                  });
                 }
-                action.innerHTML = string;
+              }
+            })();
+            break;
+            case "janitor":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "clean",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "framer":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "frame",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "consiglier":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "investigate",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "bodyguard":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "guard",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            alive[i].NightAction.target2 ? (()=>{
+              dayInfo[alive[i].index].information.push({
+                type: "vest",
+                by: alive[i].index,
+                visit: false
+              });
+            })() : null;
+            break;
+            case "doctor":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "heal",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            alive[i].NightAction.target2 ? (()=>{
+              dayInfo[alive[i].index].information.push({
+                type: "heal",
+                by: alive[i].index,
+                visit: false
+              });
+            })() : null;
+            break;
+            case "escort":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "rb",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "sheriff":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "interrogate",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "investigator":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "investigate",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "jailor":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "jail",
+                message: "You were jailed by the jailor",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            alive[i].NightAction.target2 ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "attack",
+                value: 3,
+                message: "You were executed by the jailor",
+                by: alive[i].index,
+                visit: false
+              });
+            })() : null;
+            break;
+            case "lookout":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "watch",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "retributionist":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "revive",
+                by: alive[i].index,
+                visit: false
+              });
+            })() : null;
+            break;
+            case "spy":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "bug",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "transporter":
+            alive[i].NightAction.target && alive[i].NightAction.target2 ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "transport",
+                message: "You were transported to another location",
+                by: alive[i].index,
+                visit: true,
+                with: alive[i].NightAction.target
+              });
+              dayInfo[alive[i].NightAction.target2].information.push({
+                type: "transport",
+                message: "You were transported to another location",
+                by: alive[i].index,
+                visit: false,
+                with: alive[i].NightAction.target2
+              });
+            })() : null;
+            break;
+            case "vampirehunter":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "hunt",
+                value: 3,
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "vigilante":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "attack",
+                value: 1,
+                message: "You were shot by a vigilante",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "blackmailer":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "blackmail",
+                message: "You have been blackmailed. You cannot speak during the day",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "consort":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "rb",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "disguiser":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "disguise",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "arsonist":
+            alive[i].NightAction.target && alive[i].NightAction.target != alive[i].index ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "douse",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            alive[i].NightAction.target && alive[i].NightAction.target == alive[i].index ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "ignite",
+                by: alive[i].index,
+                visit: false
+              });
+            })() : null;
+            !alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].index].information.push({
+                type: "clean",
+                by: alive[i].index,
+                visit: false
+              });
+            })() : null;
+            break;
+            case "jester":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "attack",
+                value: 3,
+                message: "You were haunted by a jester",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "serialkiller":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "attack",
+                value: 1,
+                message: "You were stabbed by a serial killer",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            break;
+            case "werewolf":
+            alive[i].NightAction.target && alive[i].NightAction.target != alive[i].index ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "attack",
+                value: 2,
+                message: "You were mauled by a werewolf",
+                by: alive[i].index,
+                visit: true
+              });
+            })() : null;
+            alive[i].NightAction.target && alive[i].NightAction.target == alive[i].index ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "attack",
+                value: 2,
+                by: alive[i].index,
+                visit: false
+              });
+            })() : null;
+            break;
+            case "amnesiac":
+            alive[i].NightAction.target ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "remember",
+                visit: false,
+                by: alive[i].index
+              });
+            })():null;
+            break;
+          }
+        }
+        //sort through all stuff and fix the day info
+        fixedDayInfo = [];
+        //vampire stuff
+        if(vampsCanAttack && players.filter(o=>{return o.role == "vampire";}).length){
+          vampsCanAttack = false;
+          let mostVoted = {
+            index: -1,
+            votes: -1
+          };
+          for(let j in players){
+            if(players[j].vvotes > mostVoted.votes){
+              mostVoted = {
+                index: players[j].index,
+                votes: players[j].vvotes
+              }
             }
-            
-            function generateRoleText(role){
-                switch (role) {
-                    case "mafioso":
-                        roleinfo.innerHTML = "<h4 style='color:red'>Mafioso</h4>";
-                        roleinfo.innerHTML += "<p>Kill players that are against the mafia. Vote to kill all players that are against the mafia and do the work for the godfather</p>";
-                    break;
-                    case "godfather":
-                        roleinfo.innerHTML = "<h4 style='color:red'>Godfather</h4>";
-                        roleinfo.innerHTML += "<p>Kill players that are against the mafia. You can force a mafioso to attack as well.</p>";
-                        roleinfo.innerHTML += "<p>-You are immune from direct attacks on you.</p>";
-                    break;
-                    case "janitor":
-                        roleinfo.innerHTML = "<h4 style='color:red'>Janitor</h4>";
-                        roleinfo.innerHTML += "<p>Kill players that are against the mafia. You can decide to clean a player, or clean whatever player the mafia attacks.</p>";
-                        roleinfo.innerHTML += "<p>-Cleaned players will not have their role revealed.</p>";
-                    break;
-                    case "framer":
-                        roleinfo.innerHTML = "<h4 style='color:red'>Framer</h4>";
-                        roleinfo.innerHTML += "<p>Kill players that are against the mafia. You can frame a player, making them seem guilty.</p>";
-                        roleinfo.innerHTML += "<p>-Framed players will be seen as `Framer, Vampire, or Jester` to the Investigator</p>";
-                    break;
-                    case "consiglier":
-                        roleinfo.innerHTML = "<h4 style='color:red'>Consiglier</h4>";
-                        roleinfo.innerHTML += "<p>Kill players that are against the mafia. You can investigate a player and find their role.</p>";
-                    break;
-                    case "bodyguard":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Bodyguard</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. Protect a player from an attack. You can also protect yourself with your bulletproof vest.</p>";
-                        roleinfo.innerHTML += "<p>-If your target gets attacked, you and the attcker will die</p><p>-If more than one attacker attacks your target, a random attacker will die, but your target will live.</p><p>-You can only use the bulletproof vest once</p>";
-                    break;
-                    case "doctor":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Doctor</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. Heal a player.</p>";
-                        roleinfo.innerHTML += "<p>-You cannot heal the mayor once revealed</p><p>-You can only heal yourself once</p><p>-Healing will not work against arson.</p>";
-                    break;
-                    case "escort":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Escort</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. Role block a player</p>";
-                        roleinfo.innerHTML += "<p>-Roleblocking a player will prevent their action.</p>";
-                    break;
-                    case "sheriff":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Sheriff</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. Investigate a player to see if they are evil.</p>";
-                        roleinfo.innerHTML += "<p>-The Godfather will appear good.</p><p>-All mafia and neutral will appear evil.</p>";
-                    break;
-                    case "investigator":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Investigator</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. Investigate a player to find their roles.</p>";
-                        roleinfo.innerHTML += "<p>-You will see three possible roles of the player.</p>";
-                    break;
-                    case "jailor":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Jailor</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. You can jail a player each night.</p>";
-                        roleinfo.innerHTML += "<p>-Jailing a player will roleblock them and prevent attacks against them.</p><p>-You can only execute once.</p>";
-                    break;
-                    case "lookout":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Lookout</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. Watch a player's house to see who visits them.</p>";
-                    break;
-                    case "mayor":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Mayor</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. During the day, you can reveal that you are mayor by saying 'I reveal myself as Mayor'</p><p>-Once you do this, your votes count as 3. Also, you cannot be healed.</p>";
-                    break;
-                    case "retributionist":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Retributionist</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. You can revive a player.</p><p>-You can only revive once</p>";
-                    break;
-                    case "spy":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Spy</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. You can bug a player's home.</p><p>-You will know what happened to that player</p><p>-You will know if the player is blackmailed, roleblocked, jailed, doused, attacked</p><p>-You will know if the Arsonist cleaned gas off him if he is your target</p><p>-You will know if the Serial Killer kills his roleblocker if you bug a Serial Killer</p><p>-You will get a message like 'your target was rbd so they stayed at home' if your taget is a werewolf who was roleblocked. However, you will get mauled by the werewolf as well.</p><p>-You will know who the mafia visited</p>";
-                    break;
-                    case "transporter":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Transporter</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. You can transport up to two players.</p><p>-This will swap targets against them.</p><p>-You can transport yourself too.</p><p>-If a target was attacked by another target, nothing happens</p>";
-                    break;
-                    case "vampirehunter":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Vampire Hunter</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. Check a player to see if they are a vampire.</p><p>-If a vampire attacks you, you will kill them.</p><p>-When there are no more vampires, you will turn into a Vigilante</p>";
-                    break;
-                    case "veteran":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Veteran</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. You can alert at night to kill any visiters.</p><p>-You can alert 3 times maximum.</p>";
-                    break;
-                    case "vigilante":
-                        roleinfo.innerHTML = "<h4 style='color:lime'>Vigilante</h4>";
-                        roleinfo.innerHTML += "<p>Kill all evildoers. You can shoot players you think are evil.</p><p>-If you shoot a town player, you will die the next day due to guilt.</p><p>-You can only shoot 3 times.</p>";
-                    break;
-                    case "blackmailer":
-                        roleinfo.innerHTML = "<h4 style='color:red'>Blackmailer</h4>";
-                        roleinfo.innerHTML += "<p>Kill players that are against the mafia. Blackmail a player.</p><p>-That player may not speak the next day, otherwise they will be killed by embarassment from their secret information being leaked.</p>";
-                    break;
-                    case "consort":
-                        roleinfo.innerHTML = "<h4 style='color:red'>Consort</h4>";
-                        roleinfo.innerHTML += "<p>Kill players that are against the mafia. Roleblock a player.</p><p>-This will block their action.</p>";
-                    break;
-                    case "disguiser":
-                        roleinfo.innerHTML = "<h4 style='color:red'>Disguiser</h4>";
-                        roleinfo.innerHTML += "<p>Kill players that are against the mafia. Disguise as a player.</p><p>-This will make the Sheriff and the Investigator think you are that role.</p><p>-If you die, your role is announced as the role you disguised as.</p>";
-                    break;
-                    case "amnesiac":
-                        roleinfo.innerHTML = "<h4 style='color:blue'>Amnesiac</h4>";
-                        roleinfo.innerHTML += "<p>Remember that you were like a player that died.</p><p>-You will become that role.</p><p>-In this version of mafia, you can become ANY role that died.</p><p>-Becoming a godfather, will turn you into a mafioso</p>";
-                    break;
-                    case "arsonist":
-                        roleinfo.innerHTML = "<h4 style='color:orange'>Arsonist</h4>";
-                        roleinfo.innerHTML += "<p>Burn the world. You can douse a player, set all doused players on fire, or clean gas off yourself.</p><p>-If another arsonist douses you, you will be notified.</p><p>-Cleaning gas off yourself will prevent other arsonists from burning you.</p><p>-Igniting will also ignite ALL arsonist targets</p><p>-You can win with other arsonists.</p><p>-You are night immune to attacks targeing you</p>";
-                    break;
-                    case "executioner":
-                        roleinfo.innerHTML = "<h4 style='color:grey'>Executioner</h4>";
-                        roleinfo.innerHTML += "<p>Kill your target by lynching them.</p>-If your target dies by not being lynched, you become a Jester<p></p><p>-You are night immune to attacks targeing you</p>";
-                    break;
-                    case "jester":
-                        roleinfo.innerHTML = "<h4 style='color:pink'>Jester</h4>";
-                        roleinfo.innerHTML += "<p>Get lynched...</p>";
-                    break;
-                    case "serialkiller":
-                        roleinfo.innerHTML = "<h4 style='color:blue'>Serial Killer</h4>";
-                        roleinfo.innerHTML += "<p>Kill everyone.</p><p>-You are night immune from attacks against you</p><p>-If you are role blocked, you will kill the roleblocker instead of your target.</p>";
-                    break;
-                    case "survivor":
-                        roleinfo.innerHTML = "<h4 style='color:yellow'>Surviror</h4>";
-                        roleinfo.innerHTML += "<p>Survive. You can put on your bulletproof vest.</p><p>-You can only use your bulletproof vest once</p>";
-                    break;
-                    case "vampire":
-                        roleinfo.innerHTML = "<h4 style='color:purple'>Vampire</h4>";
-                        roleinfo.innerHTML += "<p>Kill and convert everyone into a vampire.</p><p>-The youngest vampire will attack.</p><p>-You can only convert every other night. If you kill, you can convert again</p><p>-If you visit a Vampire Hunter, you will die</p>";
-                    break;
-                    case "werewolf":
-                        roleinfo.innerHTML = "<h4 style='color:brown'>Werewolf</h4>";
-                        roleinfo.innerHTML += "<p>Kill everyone. You can attack on even nights.</p><p>-You are night immune to attacks</p><p>-If roleblocked, you will rampage at your house, killing the roleblocker.</p><p>-Your attacks are unstoppable by night immunity</p><p>If you do nothing, you will rampage at your house.</p><p>-You are not immune to other werewolves</p>";
-                    break;
-                }
+          }
+          if(mostVoted.votes){
+            dayInfo[mostVoted.index].information.push({
+              type: "infect",
+              by: youngestVamp,
+              visit: true,
+              message: "You were bitten by a vampire"
+            });
+          }
+        }
+        //transporter stuff
+        for(let i in dayInfo){
+          if(dayInfo[i].information.filter(o=>{return o.type=="transport"&&!transportInfo.includes(o.by);}).length){
+            let transports = dayInfo[i].information.filter(o=>{return o.type=="transport"&&!transportInfo.includes(o.by);});
+            for(let j in transports){
+              transportInfo.push(transports[j].by);
+              let p1 = dayInfo[i].information.filter(o=>{return o.visit&&!/(transport)|(bug)/g.test(o.type);});
+              let p2 = dayInfo[transports[j].with].information.filter(o=>{return o.visit&&!/(transport)|(bug)/g.test(o.type);});
+              dayInfo[i].information = dayInfo[i].information.filter(o=>{return !o.visit||/(transport)|(bug)/g.test(o.type)});
+              dayInfo[transports[j].with].information = dayInfo[transports[j].with].information.filter(o=>{return !o.visit||/(transport)|(bug)/g.test(o.type)});
+              for(let l in p2){
+                dayInfo[i].information.push(p2[l]);
+              }
+              for(let l in p1){
+                dayInfo[transports[j].with].information.push(p1[l]);
+              }
             }
-            
-            function generateResultText(){
-                
+          }
+        }
+        //rb stuff
+        for(let i in dayInfo){
+          //evaluate actions. if rbd, jailed, etc, remove actions. Then get main results if applicable
+          if(dayInfo[i].information.filter(o=>{return o.type == "jailed";}).length){ //jailed
+            //go through all other players to remove any actions matching the user's id
+            for(let j in dayInfo){
+              if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index;}).length){
+                dayInfo[j].information = dayInfo[j].information.filter(o=>{return !(o.by == dayInfo[i].index);});
+              }
             }
-            
-            function dayUpdate(){
-                let investValues = {
-                    "mafioso": "Vigilante, Veteran, Mafioso",
-                    "godfather": "Bodyguard, Godfather, Arsonist",
-                    "janitor": "Retributionist, Janitor",
-                    "framer": "Framer, Vampire, Jester",
-                    "consiglier": "Investigator, Consigliere, Mayor",
-                    "bodyguard": "Bodyguard, Godfather, Arsonist",
-                    "doctor": "Doctor, Disguiser, Serial Killer",
-                    "escort": "Transporter, Escort, Consort",
-                    "sheriff": "Sheriff, Executioner, Werewolf",
-                    "investigator": "Investigator, Consigliere, Mayor",
-                    "jailor": "Spy, Blackmailer, Jailor",
-                    "lookout": "Lookout, Forger",
-                    "mayor": "Investigator, Consigliere, Mayor",
-                    "retributionist": "Retributionist, Janitor",
-                    "spy": "Spy, Blackmailer, Jailor",
-                    "transporter": "Transporter, Escort, Consort",
-                    "vampirehunter": "Survivor, Vampire Hunter, Amnesiac",
-                    "veteran": "Vigilante, Veteran, Mafioso",
-                    "vigilante": "Vigilante, Veteran, Mafioso",
-                    "blackmailer": "Spy, Blackmailer, Jailor",
-                    "consort": "Transporter, Escort, Consort",
-                    "disguiser": "Doctor, Disguiser, Serial Killer",
-                    "amnesiac": "Survivor, Vampire Hunter, Amnesiac",
-                    "arsonist": "Bodyguard, Godfather, Arsonist",
-                    "executioner": "Sheriff, Executioner, Werewolf",
-                    "jester": "Framer, Vampire, Jester",
-                    "serialkiller": "Doctor, Disguiser, Serial Killer",
-                    "survivor": "Survivor, Vampire Hunter, Amnesiac",
-                    "vampire": "Framer, Vampire, Jester",
-                    "werewolf": "Sheriff, Executioner, Werewolf",
-                };
+            //if user is sk / ww, add attack on jailor if jailor didn't execute user
+            if(/(serialkiller)|(werewolf)/g.test(players[dayInfo[i].index].role) && !dayInfo[i].information.filter(o=>{return o.type == "attack" && players[o.by].role == "jailor"}).length){
+              for(let j in dayInfo){
+                if(dayInfo[j].filter(o=>{return players[o.index].role == "jailor";}).length){
+                  if((night % 2) && players[dayInfo[i].index].role == "werewolf"){
+                    break;
+                  }
+                  dayInfo[[j].filter(o=>{return players[o.index].role == "jailor";})[0].index].information.push({
+                    type: "attack",
+                    value: 1,
+                    by: dayInfo[i].index,
+                    visit: false,
+                    message: "You were attacked by the person you jailed"
+                  });
+                }
+              }
             }
-            
-            function updateStats(){
-                let lastUser;
-                let role;
-                try{
-                    lastUser = players[turn];
-                    role = lastUser.role;
-                }catch(err){
-                    return;
+            //if user has limited uses
+            if(hasLimitedUse(players[dayInfo[i].index].role).match){
+              if(hasLimitedUse(players[dayInfo[i].index].role).onlyIfTargetSelf){
+                if(dayInfo[i].information.filter(o=>{return o.by == dayInfo[i].index;}).length){
+                  players[dayInfo[i].index].actionsLeft++;
                 }
-                switch (role) {
-                    case "janitor":
-                        if(typeof(lastUser.NightAction.target) != "undefined"){
-                            players[turn].actionsLeft--;
-                        }
-                    break;
-                    case "bodyguard":
-                        if(typeof(lastUser.NightAction.target) != "undefined"){
-                            if(lastUser.NightAction.target == lastUser.index){
-                                players[turn].actionsLeft--;
-                            }
-                        }
-                    break;
-                    case "doctor":
-                        if(typeof(lastUser.NightAction.target) != "undefined"){
-                            if(lastUser.NightAction.target == lastUser.index){
-                                players[turn].actionsLeft--;
-                            }
-                        }
-                    break;
-                    case "jailor":
-                        if(typeof(lastUser.NightAction.target2) != "undefined"){
-                            players[turn].actionsLeft--;
-                        }
-                    break;
-                    case "retributionist":
-                        if(typeof(lastUser.NightAction.target) != "undefined"){
-                            players[turn].actionsLeft--;
-                        }
-                    break;
-                    case "veteran":
-                        if(typeof(lastUser.NightAction.target) != "undefined"){
-                            players[turn].actionsLeft--;
-                        }
-                    break;
-                    case "vigilante":
-                        if(typeof(lastUser.NightAction.target) != "undefined"){
-                            players[turn].actionsLeft--;
-                        }
-                    break;
-                    case "survivor":
-                        if(typeof(lastUser.NightAction.target) != "undefined"){
-                            players[turn].actionsLeft--;
-                        }
-                    break;
-                    case "vampire":
-                        if(typeof(lastUser.NightAction.target) != "undefined"){
-                            players[lastUser.NightAction.taget].vvotes++;
-                        }
-                    break;
-                }
+              }else{
+                players[dayInfo[i].index].actionsLeft++;
+              }
             }
-            
-            //the turns.
-            function next(){
-                //update stats based on previous player, if time is night.
-                if(time == "night"){
-                    updateStats();
-                }
-                turn ++;
-                if(turn == players.length){
-                    turn = -1;
-                    time = time == "night" ? (function(){
-                        dayUpdate();
-                        return "night2";
-                    })() : "day";
-                }
-                if(time == "night"){
-                    showTeam(players[turn].role);
-                    generateRoleText(players[turn].role);
-                    createActionText(players[turn].role);
-                }
-                if(time == "night2"){
-                    
-                }
-                if(time == "day"){
-                    updatePlayerLists();
-                }
+          }
+          if(dayInfo[i].information.filter(o=>{return o.type == "rb";}).length){ //rbd
+            //go through all other players to remove any actions matching the user's id
+            for(let j in dayInfo){
+              if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index && o.visit && !/(escort)|(consort)/g.test(players[o.by].role);}).length){
+                dayInfo[j].information = dayInfo[j].information.filter(o=>{return !(o.by == dayInfo[i].index && o.visit);});
+              }
             }
-            
-            //adding players at the start
-            function submit(n){
-                players.push({
-                    name: n,
-                    role: null,
-                    dead: false,
-                    NightAction: {},
-                    index: players.length,
-                    mrole: "",
-                    vvotes: 0,
-                    actionsLeft: -1,
-                    actionTarget: null
+            //if user has limited uses
+            if(hasLimitedUse(players[dayInfo[i].index].role).match){
+              if(hasLimitedUse(players[dayInfo[i].index].role).onlyIfTargetSelf){
+                if(dayInfo[i].information.filter(o=>{return o.by == dayInfo[i].index;}).length){
+                  players[dayInfo[i].index].actionsLeft++;
+                }
+              }else{
+                players[dayInfo[i].index].actionsLeft++;
+              }
+            }
+          }
+        }
+        //special veteran stuff
+        for(let i in dayInfo){
+          if(players[dayInfo[i].index].role == "veteran" && dayInfo[i].information.filter(o=>{return o.type=="alert";}).length && !dayInfo[i].information.filter(o=>{return o.type=="jailed"}).length){
+            for(let j in dayInfo[i].information){
+              if(dayInfo[i].information[j].visit){
+                dayInfo[dayInfo[i].information[j].by].information.push({
+                  type: "attack",
+                  value: 2,
+                  visit: false,
+                  by: dayInfo[i].index,
+                  message: "You were shot by the veteran you visited"
                 });
-                updatePlayerLists();
+              }
             }
-            
-            //sets up the roles and then runs the "next" function
-            //30 total roles
-            function startGame(){
-                //hiding non-useful elements
-                document.getElementById("LoginSumbit").style.display = "none";
-                document.getElementById("start").style.display = "none";
-                document.getElementById("LoginBox").style.display = "none";
-                nextButton.style.display = "block";
-                let roles = [];
-                let maxMaf = Math.ceil((players.length / 3) - 1);
-                let possibleRoles = {
-                    "mafioso": {
-                        chance: 1,
-                        only: 1
-                    },
-                    "godfather": {
-                        chance: 1,
-                        only: 1
-                    },
-                    "janitor": {
-                        chance: 1
-                    },
-                    "framer": {
-                        chance: 1
-                    },
-                    "consiglier": {
-                        chance: 1
-                    },
-                    "bodyguard": {
-                        chance: 1
-                    },
-                    "doctor": {
-                        chance: 1
-                    },
-                    "escort": {
-                        chance: 1
-                    },
-                    "sheriff": {
-                        chance: 1
-                    },
-                    "investigator": {
-                        chance: 1
-                    },
-                    "jailor": {
-                        chance: 1,
-                        only: 1
-                    },
-                    "lookout": {
-                        chance: 1
-                    },
-                    "mayor": {
-                        chance: 1,
-                        only: 1
-                    },
-                    "retributionist": {
-                        chance: 1
-                    },
-                    "spy": {
-                        chance: 1
-                    },
-                    "transporter": {
-                        chance: 1
-                    },
-                    "vampirehunter": {
-                        chance: 1,
-                        requires: "vampire"
-                    },
-                    "veteran": {
-                        chance: 1
-                    },
-                    "vigilante": {
-                        chance: 1
-                    },
-                    "blackmailer": {
-                        chance: 1,
-                        only: 1
-                    },
-                    "consort": {
-                        chance: 1
-                    },
-                    "disguiser": {
-                        chance: 1
-                    },
-                    "amnesiac": {
-                        chance: 1
-                    },
-                    "arsonist": {
-                        chance: 1
-                    },
-                    "executioner": {
-                        chance: 1
-                    },
-                    "jester": {
-                        chance: 1
-                    },
-                    "serialkiller": {
-                        chance: 1
-                    },
-                    "survivor": {
-                        chance: 1
-                    },
-                    "vampire": {
-                        chance: 1,
-                        only: 4
-                    },
-                    "werewolf": {
-                        chance: 1
-                    }
-                };
-                //start randomizing stuff
-                while(roles.length < players.length){
-                    let choice = Math.round(Math.random() * Object.keys(possibleRoles).length);
-                    let luck = Math.random();
-                    let keys = Object.keys(possibleRoles);
-                    choice = keys[choice];
-                    if(typeof(choice) == "undefined"){
-                        console.log("choice err");
-                        continue;
-                    }
-                    if(possibleRoles[choice].chance >= luck){
-                        if(typeof(possibleRoles[choice].only) == "number"){
-                            let sameTyp = roles.filter(function(o){
-                                return o == choice;
-                            });
-                            if(sameTyp.length == possibleRoles[choice].only){
-                                continue;
-                            }
-                            roles.push(choice);
-                            possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
-                            continue;
-                        }
-                        if(typeof(possibleRoles[choice].requires) == "string"){
-                            if(!roles.includes(possibleRoles[choice].requires)){
-                                continue;
-                            }
-                            roles.push(choice);
-                            possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
-                            continue;
-                        }
-                        if(choice == "mafioso" || choice == "janitor" || choice == "godfather" || choice == "blackmailer" || choice == "consort" || choice == "consiglier" || choice == "framer" || choice == "disguiser"){
-                            let currentMafia = roles.filter(function(o) {
-                                return o == "mafioso" || o == "janitor" || o == "godfather" || o == "blackmailer" || o == "consort" || o == "consiglier" || o == "framer" || o == "disguiser";
-                            });
-                            if(currentMafia.length >= maxMaf){
-                                continue;
-                            }
-                            if(!((currentMafia.includes("mafioso") || currentMafia.includes("godfather"))) && currentMafia.length == maxMaf - 1){
-                                console.log("adding mafioso; lack of mafia killing; at number " + roles.length);
-                                roles.push("mafioso");
-                                possibleRoles["mafioso"].chance = possibleRoles["mafioso"].chance / 2;
-                                continue;
-                            }
-                            roles.push(choice);
-                            possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
-                            continue;
-                        }
-                        let mafiaCount = roles.filter(function(o) {
-                            return o == "mafioso" || o == "janitor" || o == "godfather" || o == "blackmailer" || o == "consort" || o == "consiglier" || o == "framer" || o == "disguiser";
-                        });
-                        let mafKillCount = roles.filter(function(o) {
-                            return o == "mafioso" || o == "godfather";
-                        });
-                        if(Math.ceil(maxMaf / 2) > mafiaCount.length && roles.length >= players.length - Math.ceil(maxMaf / 2)){
-                            possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
-                            console.log("Not enough mafia...");
-                            if(mafKillCount.length == 0){
-                                roles.push("mafioso");
-                                console.log("... including killing mafia");
-                            }
-                            continue;
-                        }
-                        roles.push(choice);
-                        possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
-                        continue;
-                    }
-                }
-                console.log(roles);
-                //assign roles to players...
-                for(let i in players){
-                    players[i].role = roles[i];
-                }
-                next();
+          }
+        }
+        //special bodyguard stuff
+        for(let i in dayInfo){
+          if(!dayInfo[i].information.filter(o=>{return o.type=="jail";}).length&&dayInfo[i].information.filter(o=>{return o.type=="attack" && o.visit;}).length&&dayInfo[i].information.filter(o=>{return o.type == "guard";}).length){
+            let bgs = dayInfo[i].information.filter(o=>{return o.type == "guard";});
+            for(let j in bgs){
+              dayInfo[dayInfo[i].information.filter(o=>{return o.type=="attack";})[0].by].information.push({
+                type: "attack",
+                value: 2,
+                by: bgs[j].by,
+                visit: false,
+                message: "You were attacked by a bodyguard"
+              });
+              dayInfo[bgs[j].by].information.push({
+                type: "attack",
+                value: 1,
+                by: null,
+                visit: false,
+                message: "You were attacked while defending your target"
+              });
             }
-            function updatePlayerLists(){
-                grave.innerHTML = "";
-                citizens.innerHTML = "";
-                for(let i in players){
-                    (players[i].dead ? grave : citizens).innerHTML += `<li>${players[i].name}</li>`;
+          }
+        }
+        //special werewolf stuff
+        for(let i in dayInfo){
+          //if user is werewolf and not jailed or roleblocked
+          if(players[dayInfo[i].index].role == "werewolf" && !dayInfo[i].information.filter(o=>{return o.type=="jailed"||o.type=="rb"}).length){
+            for(let j in dayInfo){
+              if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index}).length){
+                let l = dayInfo[j].information.filter(o=>{return o.by != dayInfo[i].index});
+                for(let k in l){
+                  dayInfo[l[k].by].information.push({
+                    type: "attack",
+                    value: 2,
+                    message: "You were mauled by a werewolf",
+                    visit: false,
+                    by: dayInfo[i].index
+                  });
                 }
+              }
             }
-        </script>
-    </body>
+          }
+        }
+        //arsonist clean
+        for(let i in dayInfo){
+          if(players[dayInfo[i].index].role == "arsonist" && dayInfo[i].information.filter(o=>{return o.type=="clean";}).length && !dayInfo[i].information.filter(o=>{return o.type=="jailed"||o.type=="rb";}).length){
+            dousedPlayers = dousedPlayers.filter(o=>{return o != dayInfo[i].index});
+          }
+        }
+        //arsonist douse
+        for(let i in dayInfo){
+          if(dayInfo[i].information.filter(o=>{return o.type=="douse";}).length && !dayInfo[i].information.filter(o=>{return o.type=="jailed"}).length){
+            dousedPlayers.push(dayInfo[i].index);
+          }
+        }
+        //arsonist ignite
+        for(let i in dayInfo){
+          if(dayInfo[i].information.filter(o=>{return o.type=="ignite";}).length && !dayInfo[i].information.filter(o=>{return o.type=="jailed"||o.type=="rb"}).length){
+            hasIgnited = true;
+            let igniters = dayInfo[i].information.filter(o=>{return o.type=="ignite";});
+            for(let j in igniters){
+              for(let k in dousedPlayers){
+                dayInfo[dousedPlayers[k]].information.push({
+                  type: "attack",
+                  value: 3,
+                  visit: false,
+                  by: igniters[j].by,
+                  message: "You were set on fire by an arsonist"
+                });
+              }
+            }
+          }
+        }
+        //getting main results
+        for(let i in dayInfo){
+          switch (players[dayInfo[i].index].role) {
+            case "consiglier":
+            for(let j in dayInfo){
+              if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index}).length){
+                dayInfo[i].main = `Your target's role is ${players[dayInfo[j].index].role}`;
+                break;
+              }
+            }
+            break;
+            case "sheriff":
+            for(let j in dayInfo){
+              if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index}).length){
+                //if framed
+                if(dayInfo[j].information.filter(o=>{return o.type=="frame"}).length){
+                  dayInfo[i].main = "Your target seems suspicious!"
+                }else{
+                  dayInfo[i].main = /(mafioso)|(janitor)|(framer)|(blackmailer)|(serialkiller)|(consort)|(consiglier)/g.test(players[dayInfo[j].index].role) ? "Your target seems suspicious":"You could not find any evidence of wrongdoing. Your target is not suspicious.";
+                  //special cases
+                  if(players[dayInfo[j].index].role == "disguiser"){
+                    for(let k in dayInfo){
+                      if(dayInfo[k].information.filter(o=>{return o.type == "disguise"&&o.by==dayInfo[j].index;}).length){
+                        let fakeRole = players[dayInfo[k].index].role;
+                        dayInfo[i].main = /(mafioso)|(janitor)|(framer)|(blackmailer)|(serialkiller)|(consort)|(consiglier)/g.test(fakeRole) ? "Your target seems suspicious":"You could not find any evidence of wrongdoing. Your target is not suspicious.";
+                        break;
+                      }
+                      dayInfo[i].main = "Your target seems suspicious";
+                    }
+                  }
+                }
+                break;
+              }
+            }
+            break;
+            case "investigator":
+            for(let j in dayInfo){
+              if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index}).length){
+                dayInfo[i].main = `Your target could be ${investValues[players[dayInfo[j].index].role]}`;
+                //disguiser
+                if(players[dayInfo[j].index].role == "disguiser"){
+                  for(let k in dayInfo){
+                    if(dayInfo[k].information.filter(o=>{return o.type == "disguise"&&o.by==dayInfo[j].index;}).length){
+                      let fakeRole = players[dayInfo[k].index].role;
+                      dayInfo[i].main = `Your target could be ${investValues[fakeRole]}`;
+                      break;
+                    }
+                    dayInfo[i].main = `Your target could be ${investValues["disguiser"]}`;
+                  }
+                }
+                //if framed
+                if(dayInfo[j].information.filter(o=>{return o.type=="frame"}).length){
+                  dayInfo[i].main = `Your target could be ${investValues["disguiser"]}`;
+                }
+                //if doused
+                if(dousedPlayers.includes(dayInfo[j].index)){
+                  dayInfo[i].main = `Your target could be ${investValues["arsonist"]}`;
+                }
+              }
+            }
+            break;
+            case "lookout":
+            for(let j in dayInfo){
+              if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index}).length){
+                let visitors = [];
+                let v = dayInfo[j].information.filter(o=>{return o.by != dayInfo[i].index&&o.visit;});
+                for(let i in v){
+                  visitors.push(players[v[i].by].name);
+                }
+                dayInfo[i].main = `${visitors.join(", ")} visited your target.`
+              }
+            }
+            break;
+            case "spy":
+            for(let j in dayInfo){
+              if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index}).length){
+                let str = "";
+                let d = dayInfo[j].information.filter(o=>{return o.by!=dayInfo[i].index&&o.visit});
+                let healed = d.filter(o=>{return o.type == "heal";});
+                let spied = d.filter(o=>{return o.type=="bug";});
+                let transported = d.filter(o=>{return o.type=="transport";});
+                let doused=d.filter(o=>{return o.type=="douse";});
+                let framed=d.filter(o=>{return o.type=="frame";});
+                let blackmailed=d.filter(o=>{return o.type=="blackmail";});
+                let roleblocked=d.filter(o=>{return o.type=="rb";});
+                let attacked=d.filter(o=>{return o.type=="attack";});
+                for(let k in healed){
+                  str+="A doctor attended to your target's wounds\n";
+                }
+                for(let k in spied){
+                  str+="Your target's house was bugged\n";
+                }
+                for(let k in transported){
+                  str+="Your target was transported\n";
+                }
+                for(let k in doused){
+                  str+="Your target was doused by an arsonist\n";
+                }
+                for(let k in framed){
+                  str+="Your target was framed\n";
+                }
+                for(let k in blackmailed){
+                  str+="Your target was blackmailed\n";
+                }
+                for(let k in roleblocked){
+                  str+="Your target was role blocked\n";
+                }
+                for(let k in attacked){
+                  str+=`Your target was attacked by a(n) ${players[attacked[k].by].role}\n`;
+                }
+                //mafia visits
+                let v = [];
+                let m = dayInfo.filter(o=>{
+                  return o.information.filter(k=>{
+                    return k.visit&&/(mafioso)|(godfather)|(framer)|(janitor)|(disguiser)|(consort)|(consiglier)/g.test(players[k.by].role);
+                  }).length;
+                });
+                for(let l in m){
+                  v.push(players[m[l].index].name);
+                }
+                str += `The mafia visited ${v.join(", ")}`;
+                dayInfo[i].main = str;
+              }
+            }
+            break;
+          }
+          //if target was jailed
+          if(dayInfo[i].information.filter(o=>{return o.type == "jail";}).length){
+            dayInfo[i].main = "";//Your target was jailed";
+          }
+        }
+        dousedPlayers = hasIgnited ? []:dousedPlayers;
+        //changing roles and death information
+        for(let i in dayInfo){ //killed
+          let av = dayInfo[i].information.filter(o=>{return o.type=="attack"||(o.type=="hunt"&&players[dayInfo[i].index].role=="vampire");});
+          //jailed an executed
+          if(av.filter(o=>{return o.by!=null&&players[o.by].role == "jailor";}).length){
+            players[dayInfo[i].index].dead = true;
+            dayInfo[i].information.push({
+              type: "system",
+              visit: false,
+              by: null,
+              message: "You have died."
+            });
+            continue;
+          }
+          let dv = dayInfo[i].information.filter(o=>{return defenseValues.evt[o.type];});
+          let dv2 = 0;
+          if(defenseValues[players[dayInfo[i].index].role]){
+            dv2 = defenseValues[players[dayInfo[i].index].role];
+          }
+          for(let j in dv){
+            if(defenseValues[dv[j].type] > dv2){
+              dv2 = defenseValues[dv[j].type];
+            }
+          }
+          for(let j in av){
+            if(av[j].value <= dv2){
+              //if jailed
+              if(dayInfo[i].information.filter(o=>{return o.type == "jail";}).length){
+                dayInfo[av[j].by].information.push({
+                  type: "system",
+                  visit: false,
+                  by: null,
+                  message: "Your target was jailed"
+                });
+              }else{
+                dayInfo[av[j].by].information.push({
+                  type: "system",
+                  visit: false,
+                  by: null,
+                  message: "Your target's defense is too high"
+                });
+              }
+            }else{
+              players[dayInfo[i].index].dead = true;
+              dayInfo[i].information.push({
+                type: "system",
+                visit: false,
+                by: null,
+                message: "You have died."
+              });
+            }
+          }
+        }
+        for(let i in dayInfo){ //revived
+          if(dayInfo[i].information.filter(o=>{return o.type=="revive";}).length){
+            players[dayInfo[i].index].dead = false;
+            dayInfo[i].information.push({
+              type: "system",
+              visit: false,
+              by: null,
+              message: "You were revived by a retributionist!"
+            });
+          }
+        }
+        for(let i in dayInfo){ //transformed
+          //vampires
+          if(dayInfo[i].information.filter(o=>{return o.type=="infect";}).length){
+            let dv = dayInfo[i].information.filter(o=>{return defenseValues.evt[o.type];});
+            let dv2 = 0;
+            if(defenseValues[players[dayInfo[i].index].role]){
+              dv2 = defenseValues[players[dayInfo[i].index].role];
+            }
+            for(let j in dv){
+              if(defenseValues[dv[j].type] > dv2){
+                dv2 = defenseValues[dv[j].type];
+              }
+            }
+            //if mafia
+            if(/(mafioso)|(janitor)|(framer)|(consort)|(consiglier)|(disguiser)|(blackmailer)/g.test(players[dayInfo[i].index].role)){
+              players[dayInfo[i].index].dead = true;
+              dayInfo[i].information.push({
+                type: "system",
+                message: "You have died",
+                by: null,
+                visit: false
+              });
+            }else if(dv2){ //if has defense
+              dayInfo[youngestVamp].information.push({
+                type: "system",
+                message: "Your target's defense was too high",
+                by: null,
+                visit: false
+              });
+            }else if(players[dayInfo[i].index].role == "vampirehunter"){ //if visited a vampire hunter
+              dayInfo[youngestVamp].information.push({
+                type: "system",
+                visit: false,
+                by: false,
+                message: "You were staked by a vampire hunter"
+              });
+              players[youngestVamp].dead = true;
+            }else{
+              players[dayInfo[i].index].role = "vampire";
+              dayInfo[i].information.push({
+                type: "system",
+                message: "You have become a vampire",
+                by: null,
+                visit: false
+              });
+            }
+          }
+          //executioner
+          if(players[dayInfo[i].index].role == "executioner" && !players[dayInfo[i].index].hasWon && dayInfo[i].actionTarget && players[dayInfo[i].actionTarget].dead){
+            players[dayInfo[i].index].role = "jester";
+            dayInfo[i].information.push({
+              type: "system",
+              visit: false,
+              by: null,
+              message: "You have become a jester"
+            });
+          }
+          //amnesiac
+          if(dayInfo[i].information.filter(o=>{return o.type == "remember";}).length){
+            let a = dayInfo[i].information.filter(o=>{return o.type == "remember";});
+            for(let j in a){
+              players[a[j].by].role = players[a[j].index].role;
+              dayInfo[a[j].by].information.push({
+                type: "system",
+                visit: false,
+                by: null,
+                message: `You have become a(n) ${players[a[j].by].role}`
+              });
+            }
+          }
+          //vamp hunter
+          if(players[dayInfo[i].index].role == "vampirehunter" && !players.filter(o=>{return o.role=="vampire"&&!o.dead}).length){
+            players[dayInfo[i].index].role = "vigilante";
+            dayInfo[i].information.push({
+              type: "system",
+              by: null,
+              visit: false,
+              message: "You have been promoted to vigilante"
+            });
+          }
+        }
+        //mafia transformation
+        if(!players.filter(o=>{return /(godfather)|(mafioso)/g.test(o.role) && !o.dead}).length){
+          let m = players.filter(o=>{return !o.dead && /(janitor)|(consort)|(disguiser)|(consiglier)|(framer)|(blackmailer)/g.test(o.role)})[0];
+          m.role = "mafioso";
+          dayInfo[m.index].information.push({
+            type: "system",
+            by: null,
+            visit: false,
+            message: "You were promoted to mafioso!"
+          });
+        }
+      }
+      //updates numbers and stuff
+      function updateStats(){
+        let lastUser;
+        let role;
+        try{
+          lastUser = players[turn];
+          role = lastUser.role;
+        }catch(err){
+          return;
+        }
+        switch (role) {
+          case "janitor":
+          if(typeof(lastUser.NightAction.target) != "undefined"){
+            players[turn].actionsLeft--;
+          }
+          break;
+          case "bodyguard":
+          if(typeof(lastUser.NightAction.target) != "undefined"){
+            if(lastUser.NightAction.target == lastUser.index){
+              players[turn].actionsLeft--;
+            }
+          }
+          break;
+          case "doctor":
+          if(typeof(lastUser.NightAction.target) != "undefined"){
+            if(lastUser.NightAction.target == lastUser.index){
+              players[turn].actionsLeft--;
+            }
+          }
+          break;
+          case "jailor":
+          if(typeof(lastUser.NightAction.target2) != "undefined"){
+            players[turn].actionsLeft--;
+          }
+          break;
+          case "retributionist":
+          if(typeof(lastUser.NightAction.target) != "undefined"){
+            players[turn].actionsLeft--;
+          }
+          break;
+          case "veteran":
+          if(typeof(lastUser.NightAction.target) != "undefined"){
+            players[turn].actionsLeft--;
+          }
+          break;
+          case "vigilante":
+          if(typeof(lastUser.NightAction.target) != "undefined"){
+            players[turn].actionsLeft--;
+          }
+          break;
+          case "survivor":
+          if(typeof(lastUser.NightAction.target) != "undefined"){
+            players[turn].actionsLeft--;
+          }
+          break;
+          case "vampire":
+          if(typeof(lastUser.NightAction.target) != "undefined"){
+            players[lastUser.NightAction.target].vvotes++;
+          }
+          break;
+        }
+      }
+      //the turns.
+      function next(){
+        //update stats based on previous player, if time is night.
+        if(time == "night"){
+          updateStats();
+        }
+        turn ++;
+        if(turn == players.length){
+          turn = 0;
+          time = time == "night" ? (function(){
+            dayUpdate();
+            return "night2";
+          })() : "day";
+        }
+        if(time == "night"){
+          showTeam(players[turn].role);
+          generateRoleText(players[turn].role);
+          createActionText(players[turn].role);
+        }
+        if(time == "night2"){
+          showTeam(players[turn].role);
+          generateRoleText(players[turn].role);
+          generateResultText();
+        }
+        if(time == "day"){
+          updatePlayerLists();
+          for(let i in players){
+            players[i].vvotes = 0;
+          }
+        }
+      }
+      //adding players at the start
+      function submit(n){
+        document.getElementById("LoginBox").value = "";
+        players.push({
+          name: n,
+          role: null,
+          dead: false,
+          NightAction: {},
+          index: players.length,
+          mrole: "",
+          vvotes: 0,
+          actionsLeft: -1,
+          actionTarget: null,
+          doused: false
+        });
+        updatePlayerLists();
+      }
+      //sets up the roles and then runs the "next" function
+      //30 total roles
+      function startGame(){
+        //hiding non-useful elements
+        document.getElementById("LoginSumbit").style.display = "none";
+        document.getElementById("start").style.display = "none";
+        document.getElementById("LoginBox").style.display = "none";
+        nextButton.style.display = "block";
+        let roles = [];
+        let maxMaf = Math.ceil((players.length / 3) - 1);
+        let possibleRoles = {
+          "mafioso": {
+            chance: 1,
+            only: 1
+          },
+          "godfather": {
+            chance: 1,
+            only: 1
+          },
+          "janitor": {
+            chance: 1
+          },
+          "framer": {
+            chance: 1
+          },
+          "consiglier": {
+            chance: 1
+          },
+          "bodyguard": {
+            chance: 1
+          },
+          "doctor": {
+            chance: 1
+          },
+          "escort": {
+            chance: 1
+          },
+          "sheriff": {
+            chance: 1
+          },
+          "investigator": {
+            chance: 1
+          },
+          "jailor": {
+            chance: 1,
+            only: 1
+          },
+          "lookout": {
+            chance: 1
+          },
+          "mayor": {
+            chance: 1,
+            only: 1
+          },
+          "retributionist": {
+            chance: 1
+          },
+          "spy": {
+            chance: 1
+          },
+          "transporter": {
+            chance: 1
+          },
+          "vampirehunter": {
+            chance: 1,
+            requires: "vampire"
+          },
+          "veteran": {
+            chance: 1
+          },
+          "vigilante": {
+            chance: 1
+          },
+          "blackmailer": {
+            chance: 1,
+            only: 1
+          },
+          "consort": {
+            chance: 1
+          },
+          "disguiser": {
+            chance: 1
+          },
+          "amnesiac": {
+            chance: 1
+          },
+          "arsonist": {
+            chance: 1
+          },
+          "executioner": {
+            chance: 1
+          },
+          "jester": {
+            chance: 1
+          },
+          "serialkiller": {
+            chance: 1
+          },
+          "survivor": {
+            chance: 1
+          },
+          "vampire": {
+            chance: 1,
+            only: 4
+          },
+          "werewolf": {
+            chance: 1
+          }
+        };
+        //start randomizing stuff
+        while(roles.length < players.length){
+          let choice = Math.round(Math.random() * Object.keys(possibleRoles).length);
+          let luck = Math.random();
+          let keys = Object.keys(possibleRoles);
+          choice = keys[choice];
+          if(typeof(choice) == "undefined"){
+            console.log("choice err");
+            continue;
+          }
+          if(possibleRoles[choice].chance >= luck){
+            if(typeof(possibleRoles[choice].only) == "number"){
+              let sameTyp = roles.filter(function(o){
+                return o == choice;
+              });
+              if(sameTyp.length == possibleRoles[choice].only){
+                continue;
+              }
+              roles.push(choice);
+              possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+              continue;
+            }
+            if(typeof(possibleRoles[choice].requires) == "string"){
+              if(!roles.includes(possibleRoles[choice].requires)){
+                continue;
+              }
+              roles.push(choice);
+              possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+              continue;
+            }
+            if(choice == "mafioso" || choice == "janitor" || choice == "godfather" || choice == "blackmailer" || choice == "consort" || choice == "consiglier" || choice == "framer" || choice == "disguiser"){
+              let currentMafia = roles.filter(function(o) {
+                return o == "mafioso" || o == "janitor" || o == "godfather" || o == "blackmailer" || o == "consort" || o == "consiglier" || o == "framer" || o == "disguiser";
+              });
+              if(currentMafia.length >= maxMaf){
+                continue;
+              }
+              if(!((currentMafia.includes("mafioso") || currentMafia.includes("godfather"))) && currentMafia.length == maxMaf - 1){
+                console.log("adding mafioso; lack of mafia killing; at number " + roles.length);
+                roles.push("mafioso");
+                possibleRoles["mafioso"].chance = possibleRoles["mafioso"].chance / 2;
+                continue;
+              }
+              roles.push(choice);
+              possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+              continue;
+            }
+            let mafiaCount = roles.filter(function(o) {
+              return o == "mafioso" || o == "janitor" || o == "godfather" || o == "blackmailer" || o == "consort" || o == "consiglier" || o == "framer" || o == "disguiser";
+            });
+            let mafKillCount = roles.filter(function(o) {
+              return o == "mafioso" || o == "godfather";
+            });
+            if(Math.ceil(maxMaf / 2) > mafiaCount.length && roles.length >= players.length - Math.ceil(maxMaf / 2)){
+              possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+              console.log("Not enough mafia...");
+              if(mafKillCount.length == 0){
+                roles.push("mafioso");
+                console.log("... including killing mafia");
+              }
+              continue;
+            }
+            roles.push(choice);
+            possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+            continue;
+          }
+        }
+        console.log(roles);
+        //assign roles to players...
+        for(let i in players){
+          players[i].role = roles[i];
+        }
+        next();
+      }
+      function updatePlayerLists(){
+        grave.innerHTML = "";
+        citizens.innerHTML = "";
+        for(let i in players){
+          (players[i].dead ? grave : citizens).innerHTML += `<li>${players[i].name}</li>`;
+        }
+      }
+    </script>
+  </body>
 </html>
