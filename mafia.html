@@ -1529,7 +1529,7 @@
           //jailed an executed
           if(av.filter(o=>{return o.by!=null&&players[o.by].role == "jailor";}).length){
             let jailor = av.filter(o=>{return o.by!=null&&players[o.by].role == "jailor";})[0];
-            if(players[jailor.by].role == "jailor" && (/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].role)||/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].mrole)){
+            if(players[jailor.by].role == "jailor" && (/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].role)||/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].mrole))){
               players[dayInfo[jailor.by].index].actionsLeft = 0;
             }
             players[dayInfo[i].index].dead = true;
@@ -1563,7 +1563,7 @@
                 });
               }else{
                 //special case if vigi
-                if(players[dayInfo[av[j].by].index].role == "vigilante" && (/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].role)||/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].mrole)){
+                if(players[dayInfo[av[j].by].index].role == "vigilante" && (/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].role)||/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].mrole))){
                   players[dayInfo[av[j].by].index].specialCase = true;
                   players[dayInfo[av[j].by].index].actionsLeft = 0;
                 }
