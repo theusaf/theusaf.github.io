@@ -5,18 +5,22 @@
     <link rel="icon" href="data:image/ico;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAABIykAIkxjACZOYAASFyAAYJCcAAABDACPsMQAAAASAAeHwgBCa24AI3iwABpITwAtXWkAHUJYAAUQHgBjnboAAxYeAAgrUwBUhKYAFyw7ADNkbAAVNTsARXiMAAoIPAAaMUEAAAAKABE9SgBSc4YAJG+WAENebAAPQU0AXW19ACR1lgAIh7oAAA0EAAAjRQAACg0AEiEkABGHsQAASXcACgUHAA9EXwAEBRkAXnGSAAENHwBOY3IAFCI5AGJ/hgBjfYkAAAk3AB5MUwBofoMASHZ+AABZjAAtNmIAZ4aJAChHVgA0YXYAa6W4AABjjwANHB8APmVnAAACCACvv8UABh09AGmKngARRE4AAAQXABouXQAAIkwANEZlACF1qQAdZG4AQ2twADdSXABXgY0AZXl+AG26ygAcRFcACgwUAAgLGgAXSV0AVY6QADQyRQBBeJcACi9hAAQhJgBAWmsAKE5aAAAFCQCMtcQAGzVGAAAGDABXdn8AACJEAHaFhwBNfJEADCYsACF2pAByh5YASoSXAEOIowB1qMIAAAoYADNAeAAADhsAAzY4ADNRbAABM0oAQEldABgdPgBjdpEAAHS6AEJziQAgSFsAPnSVAAAUNgA1ZWkADhUeABUVFQAlKzIADhokAAAlMwBNfYMAQ2FmAAAHBwBZboMAGBUeABwxTQA/ZHgAbI2gABtCSgAAaawAHUBNACQ1UAAOIz8AdJCXAHCUmgAogqUABBccAAwxRQAVLTkAPVVnAAoxVwAAGzEAn8XRABxWYgA9VXkAHTE8AABhlQAYOz8AAGuPAGqBoQAAAhQAGD1FAAslKwAFFk8AAAkOAB53qQBJg5YAOHRzAD9pdgANYZUAcYubABlHSAAmPEIACQ8OABxRVAAAHiAAWGdwADBjdwB0mbMAGhYRAB8vQAASFyYAXXF8AAADGAAMhL8AAAEkAB9BQAAAMUcAMVtgAAATGwAsYmMAHomqABaJvAAxdp4AEy8vAEuSoABke5EAMl9sACxBSQBFen0AY4GaADdnaQBMd4YAAAIEABEXHgBxgYgALEdbAFB3hgA8XnsAM2t+AA0iJAA8aHUADGqOAABRcQAFCBYANZqwAB06WQAlPEQAhairAFqDhgAIChwABBAcAFNlbAACEiIAfI+XAA8SEABhhJIAfLbMADl/lgBpfY8AcpuyABFWdwAfNTAANWdzAAoWLgAAIzEAJ09iAC9thQBUcZAAAAgOAA1IVwAnWWUAYJatACM5RQAAMUAAGhU0AEBpggAzJ0UAX3SQAEhmeQAOG08ABxAUADFcZQBTYXMAeK/KAAoSEQAiRFQAZ3qHAAg9QAAYK0AASnKLAAAAAAAAAAAA4XhT2HVSNKPebyuYgoMA7H0+Gei1BIG9H68wHUqbYY3EiyUkL0HR8WM3CUmITMtWXz+pxtlXa8Hyae1kzHy7s9cTji2/FUvDTgEp5pLCPYnl7/3I1KT7QqH5Gxqnt77fZQ9s4mrA6h4y0zOllnsWEk06ApH1Wg1yFAs4hoeQqrCgmq32GH4u/OQ5EZzzQFioIj6ZQ2cOrtVtRkRoNuN5PPh2UM/0XAUsB+5ugFuUKvB/A8V32tJxc4+T58pI6XQXT/SmrCjHHDWVR6I7l7i6VRC2nVnWySe5IbGEcAgmiiNRZvfcn+tU4M7NngpiIN20XkUxstC82/pdDGCrBoV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=">
   </head>
   <body>
-    <div class="wrapper">
-      <ul id="graveyard">
-        <div><h3><u>Graveyard</u></h3></div>
-        <div id="grave_list"></div>
-      </ul>
-      <ol id="living">
-        <div><h3><u>Living</u></h3></div>
-        <div id="living_list"></div>
-      </ol>
-      <div id="role"></div>
-      <div id="team"></div>
+    <div>
+      <div class="wrapper">
+        <ul id="graveyard">
+          <div><h3><u>Graveyard</u></h3></div>
+          <div id="grave_list"></div>
+        </ul>
+        <ol id="living">
+          <div><h3><u>Living</u></h3></div>
+          <div id="living_list"></div>
+        </ol>
+        <div id="role"></div>
+        <div id="team"></div>
+        <button type="button" id="hideWrapper" onclick="document.getElementsByClassName('wrapper')[0].style.display = 'none';document.getElementById('showWrapper').style.zIndex = '1';">X</button>
+      </div>
     </div>
+    <button type="button" id="showWrapper" onclick="document.getElementsByClassName('wrapper')[0].style.display = 'flex';document.getElementById('showWrapper').style.zIndex = '';">⏬</button>
     <div id="actionbox"></div>
     <input id="LoginBox" onkeydown="if(event.keyCode != 13){return;}document.getElementById(`LoginSumbit`).onclick()"/>
     <button id="LoginSumbit" onclick="submit(document.getElementById(`LoginBox`).value)">Done</button>
@@ -28,18 +32,30 @@
         <button id="next" onclick="next()">Next</button>
         <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
         <button id="blackmail" onclick="black()">A blackmailed player has talked</button>
-        <button type="button" id="hideNarrator" onclick="document.getElementById('narrator').style.display = 'none';">X</button>
+        <button type="button" id="hideNarrator" onclick="document.getElementById('narrator').style.display = 'none';document.getElementById('showNarrator').style.zIndex = '1';">X</button>
       </div>
-      <button type="button" id="showNarrator" onclick="document.getElementById('narrator').style.display = 'block';">^</button>
+      <button type="button" id="showNarrator" onclick="document.getElementById('narrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
     </div>
     <div id="bugList">
       sometimes mafia has no mafia killing night 1
       sometimes no mafia is added at beginning
+      buttons on mobile look weird.
     </div>
     <style type="text/css">
       h4{
         display: inline;
         font-size: 150%;
+      }
+      #hideWrapper{
+        position: absolute;
+        bottom: 64vh;
+        left: 1vw;
+      }
+      #showWrapper{
+        position: fixed;
+        z-index: -1;
+        top: 0px;
+        left: 0px;
       }
       #hideNarrator{
         position: absolute;
@@ -59,8 +75,12 @@
       .night #narrator{
         background: black!important;
       }
+      .night .wrapper{
+        background: black!important;
+      }
       body{
         margin: 0px;
+        min-height: 100vh;
       }
       #team{
         overflow: auto;
@@ -81,6 +101,8 @@
         border: 1px solid black;
         display: flex;
         height: 37vh;
+        background: white;
+        z-index: 0;
       }
       #graveyard {
         border: 1px solid black;
@@ -982,7 +1004,7 @@
                 type: "jail",
                 message: "You were jailed by the jailor",
                 by: alive[i].index,
-                visit: true
+                visit: false
               });
             })() : null;
             alive[i].NightAction.target2 >= 0 ? (()=>{
@@ -1106,7 +1128,7 @@
             })() : null;
             !alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].index].information.push({
-                type: "clean",
+                type: "remove",
                 by: alive[i].index,
                 visit: false
               });
@@ -1326,7 +1348,7 @@
         }
         //arsonist clean
         for(let i in dayInfo){
-          if(players[dayInfo[i].index].role == "arsonist" && dayInfo[i].information.filter(o=>{return o.type=="clean";}).length && !dayInfo[i].information.filter(o=>{return o.type=="jailed"||o.type=="rb";}).length){
+          if(players[dayInfo[i].index].role == "arsonist" && dayInfo[i].information.filter(o=>{return o.type=="remove";}).length && !dayInfo[i].information.filter(o=>{return o.type=="jailed"||o.type=="rb";}).length){
             dousedPlayers = dousedPlayers.filter(o=>{return o != dayInfo[i].index});
           }
         }
@@ -1730,7 +1752,11 @@
       }
       //vote buttons
       function generateVoteButtons(){
+        let requiredVotes = Math.ceil((players.filter(o=>{return !o.dead;}).length + 1) / 2);
+        let alive = players.filter(o=>{return !o.dead;});
+        for(let i in alive){
 
+        }
       }
       //judgement buttons
       function generateGuiltButtons(){
@@ -1746,12 +1772,6 @@
         if(turn == players.length){
           turn = 0;
           time = time == "night" ? (function(){
-            for(let i in players){
-              if(players[i].dead && players[i].mrole == "cleaned"){
-                continue;
-              }
-              players[i].mrole = "";
-            }
             dayUpdate();
             return "night2";
           })() : "day";
@@ -1780,6 +1800,15 @@
             generateGuiltButtons();
           }
           if(turn == 3){
+            for(let i in players){
+              players[i].NightAction = {};
+            }
+            for(let i in players){
+              if(players[i].dead && players[i].mrole == "cleaned"){
+                continue;
+              }
+              players[i].mrole = "";
+            }
             night++;
             time = "night";
             turn = -1;
@@ -1793,6 +1822,7 @@
       //adding players at the start
       function submit(n){
         document.getElementById("LoginBox").value = "";
+        n = n.replace(/['"`]/g,"");
         if(n == ""){
           return;
         }
