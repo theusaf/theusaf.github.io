@@ -2239,6 +2239,7 @@
           }
         }
         if(typeof(oldAudio) != "undefined"){
+          oldAudio.oncanplaythrough = null;
           oldAudio.pause();
           oldAudio = undefined;
         }
