@@ -32,7 +32,7 @@
         <button onclick="if(players.length >=5){startGame()}" id="start">Start</button>
         <button id="next" onclick="next()">Next</button>
         <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
-        <button id="blackmail" onclick="black()">A blackmailed player has talked</button>
+        <button id="blackmail" onclick="black()">A blackmailed player has talked / Manual kill</button>
         <button type="button" id="hideNarrator" onclick="document.getElementById('narrator').style.display = 'none';document.getElementById('showNarrator').style.zIndex = '1';">X</button>
       </div>
       <button type="button" id="showNarrator" onclick="document.getElementById('narrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
@@ -181,6 +181,22 @@
       }
       #actionbox a{
         text-decoration: overline underline;
+      }
+      #black{
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        background: white;
+        z-index: 10;
+        display: flex;
+        flex-flow: column wrap;
+        overflow-x: auto;
+      }
+      #bremove{
+        position: absolute;
+        top: 0px;
+        right: 1vw;
+        z-index: 11;
       }
     </style>
     <script>
@@ -339,7 +355,7 @@
             let attacks = dayInfo[i].information.filter(o=>{return o.type == "attack"});
             let s = [];
             for(let j in attacks){
-              if(!attacks[j].by){
+              if(!(attacks[j].by >= 0)){
                 continue;
               }
               s.push(players[attacks[j].by].role);
@@ -1407,6 +1423,18 @@
             }
           }
         }
+        //special death
+        for(let i in dayInfo){
+          if(players[i].specialDeath){
+            dayInfo[i].information.push({
+              type: "attack",
+              by: null,
+              visit: false,
+              value: 3,
+              message: "You were killed for blackmail or other reasons"
+            });
+          }
+        }
         //arsonist clean
         for(let i in dayInfo){
           if(players[dayInfo[i].index].role == "arsonist" && dayInfo[i].information.filter(o=>{return o.type=="remove";}).length && !dayInfo[i].information.filter(o=>{return o.type=="jailed"||o.type=="rb";}).length){
@@ -1600,7 +1628,7 @@
           for(let j in av){
             if(av[j].value > dv2){
               //if jailed
-              if(dayInfo[i].information.filter(o=>{return o.type == "jail";}).length){
+              if(av[j].value != 3&&dayInfo[i].information.filter(o=>{return o.type == "jail";}).length){
                 dayInfo[av[j].by].information.push({
                   type: "system",
                   visit: false,
@@ -1851,6 +1879,8 @@
         let b3 = document.createElement("button"); b3.innerHTML = "Execute/Spare"; b3.onclick = ()=>{
           if(players[data].votes > 0){
             next(data);
+          }else{
+            next();
           }
         };
         action.append(r,b1,b2,b3);
@@ -1923,6 +1953,9 @@
             }
             for(let i in players){
               players[i].votes = 0;
+            }
+            for(let i in players){
+              players[i].specialDeath = false;
             }
             for(let i in players){
               if(players[i].dead && players[i].mrole == "cleaned"){
@@ -2149,6 +2182,28 @@
         for(let i in players){
           (players[i].dead ? grave : citizens).innerHTML += `<li>${players[i].name}</li>`;
         }
+      }
+      //blackmail / manual killing
+      function black(){
+        let d = document.createElement("div"); d.id = "black";
+        let a = players.filter(o=>{return !o.dead;});
+        for(let i in a){
+          let e = document.createElement("div");
+          let t = document.createElement("button"); t.innerHTML = a[i].name;
+          t.onclick = ()=>{
+            players[a[i].index].specialDeath = !players[a[i].index].specialDeath;
+          };
+          e.append(t);
+          d.append(e);
+        }
+        let b = document.createElement("button");
+        b.innerHTML = "X";
+        b.id = "bremove";
+        b.onclick = ()=>{
+          d.outerHTML = "";
+        }
+        d.append(b);
+        document.body.append(d);
       }
     </script>
   </body>
