@@ -44,6 +44,7 @@
       sometimes no mafia is added at beginning
       when mafia gets lynched, mafia members are not immediately promoted
       if vigilante gets converted, the death log says that they were killed by vampire
+      mafia being bitten are not revealed at day
       TODO add witch
       TODO add win condition check
       TODO add coven (MAYBE)
@@ -1275,59 +1276,6 @@
         }
         //sort through all stuff and fix the day info
         fixedDayInfo = [];
-        //transporter stuff
-        for(let i in dayInfo){
-          if(dayInfo[i].information.filter(o=>{return o.type=="transport"&&!transportInfo.includes(o.by);}).length){
-            let transports = dayInfo[i].information.filter(o=>{return o.type=="transport"&&!transportInfo.includes(o.by);});
-            for(let j in transports){
-              transportInfo.push(transports[j].by);
-              let p1 = dayInfo[i].information.filter(o=>{return o.visit&&!/(transport)|(bug)/g.test(o.type);});
-              let p2 = dayInfo[transports[j].with].information.filter(o=>{return o.visit&&!/(transport)|(bug)/g.test(o.type);});
-              dayInfo[i].information = dayInfo[i].information.filter(o=>{return !o.visit||/(transport)|(bug)/g.test(o.type)});
-              dayInfo[transports[j].with].information = dayInfo[transports[j].with].information.filter(o=>{return !o.visit||/(transport)|(bug)/g.test(o.type)});
-              for(let l in p2){
-                dayInfo[i].information.push(p2[l]);
-              }
-              for(let l in p1){
-                dayInfo[transports[j].with].information.push(p1[l]);
-              }
-            }
-          }
-        }
-
-        //vampire stuff
-        if(vampsCanAttack && players.filter(o=>{return !o.dead && o.role == "vampire";}).length){
-          if(players[youngestVamp].dead){
-            youngestVamp = players.filter(o=>{return !o.dead && o.role == "vampire";})[0].index;
-          }
-          if(dayInfo[youngestVamp].information.filter(o=>{return o.type == "jail";}).length || dayInfo[youngestVamp].information.filter(o=>{return o.type == "rb";}).length){
-            //do nothing, cuz vampire was rbd
-          }else{
-            vampsCanAttack = false;
-            let mostVoted = {
-              index: -1,
-              votes: -1
-            };
-            for(let j in players){
-              if(players[j].vvotes > mostVoted.votes){
-                mostVoted = {
-                  index: players[j].index,
-                  votes: players[j].vvotes
-                }
-              }
-            }
-            if(mostVoted.votes){
-              dayInfo[mostVoted.index].information.push({
-                type: "infect",
-                by: youngestVamp,
-                visit: true,
-                message: "You were bitten by a vampire"
-              });
-            }
-          }
-        }else{
-          vampsCanAttack = true;
-        }
         //rb stuff
         for(let i in dayInfo){
           //evaluate actions. if rbd, jailed, etc, remove actions. Then get main results if applicable
@@ -1384,6 +1332,59 @@
               }
             }
           }
+        }
+        //transporter stuff
+        for(let i in dayInfo){
+          if(dayInfo[i].information.filter(o=>{return o.type=="transport"&&!transportInfo.includes(o.by);}).length){
+            let transports = dayInfo[i].information.filter(o=>{return o.type=="transport"&&!transportInfo.includes(o.by);});
+            for(let j in transports){
+              transportInfo.push(transports[j].by);
+              let p1 = dayInfo[i].information.filter(o=>{return o.visit&&!/(transport)|(bug)/g.test(o.type);});
+              let p2 = dayInfo[transports[j].with].information.filter(o=>{return o.visit&&!/(transport)|(bug)/g.test(o.type);});
+              dayInfo[i].information = dayInfo[i].information.filter(o=>{return !o.visit||/(transport)|(bug)/g.test(o.type)});
+              dayInfo[transports[j].with].information = dayInfo[transports[j].with].information.filter(o=>{return !o.visit||/(transport)|(bug)/g.test(o.type)});
+              for(let l in p2){
+                dayInfo[i].information.push(p2[l]);
+              }
+              for(let l in p1){
+                dayInfo[transports[j].with].information.push(p1[l]);
+              }
+            }
+          }
+        }
+
+        //vampire stuff
+        if(vampsCanAttack && players.filter(o=>{return !o.dead && o.role == "vampire";}).length){
+          if(players[youngestVamp].dead){
+            youngestVamp = players.filter(o=>{return !o.dead && o.role == "vampire";})[0].index;
+          }
+          if(dayInfo[youngestVamp].information.filter(o=>{return o.type == "jail";}).length || dayInfo[youngestVamp].information.filter(o=>{return o.type == "rb";}).length){
+            //do nothing, cuz vampire was rbd
+          }else{
+            vampsCanAttack = false;
+            let mostVoted = {
+              index: -1,
+              votes: -1
+            };
+            for(let j in players){
+              if(players[j].vvotes > mostVoted.votes){
+                mostVoted = {
+                  index: players[j].index,
+                  votes: players[j].vvotes
+                }
+              }
+            }
+            if(mostVoted.votes){
+              dayInfo[mostVoted.index].information.push({
+                type: "infect",
+                by: youngestVamp,
+                visit: true,
+                message: "You were bitten by a vampire"
+              });
+            }
+          }
+        }else{
+          vampsCanAttack = true;
         }
         //special veteran stuff
         for(let i in dayInfo){
@@ -1698,12 +1699,12 @@
           if(dayInfo[i].information.filter(o=>{return o.type=="infect";}).length){
             let dv = dayInfo[i].information.filter(o=>{return defenseValues.evt[o.type];});
             let dv2 = 0;
-            if(defenseValues[players[dayInfo[i].index].role]){
-              dv2 = defenseValues[players[dayInfo[i].index].role];
+            if(defenseValues.basic[players[dayInfo[i].index].role]){
+              dv2 = defenseValues.basic[players[dayInfo[i].index].role];
             }
             for(let j in dv){
-              if(defenseValues[dv[j].type] > dv2){
-                dv2 = defenseValues[dv[j].type];
+              if(defenseValues.evt[dv[j].type] > dv2){
+                dv2 = defenseValues.evt[dv[j].type];
               }
             }
             //if mafia
