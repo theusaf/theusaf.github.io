@@ -43,6 +43,7 @@
       sometimes no mafia is added at beginning
       when mafia gets lynched, mafia members are not immediately promoted
       if vigilante gets converted, the death log says that they were killed by vampire
+      music played multiple times
       TODO add witch
       TODO add win condition check
       TODO add coven (MAYBE)
@@ -871,7 +872,7 @@
       }
       //generates the results of the night
       function generateResultText(){
-        if(dayInfo[turn].information.length == 0){
+        if(dayInfo[turn].information.length == 0 && !players[turn].dead){
           return next();
         }
         let str = ""
@@ -1122,7 +1123,7 @@
             })() : null;
             break;
             case "transporter":
-            alive[i].NightAction.target && alive[i].NightAction.target2 >= 0 ? (()=>{
+            alive[i].NightAction.target >= 0 && alive[i].NightAction.target2 >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "transport",
                 message: "You were transported to another location",
@@ -2203,7 +2204,7 @@
         grave.innerHTML = "";
         citizens.innerHTML = "";
         for(let i in players){
-          (players[i].dead ? grave : citizens).innerHTML += `<li>${players[i].name}</li> ${showRoles ? `(${players[i].role})` : ""}`;
+          (players[i].dead ? grave : citizens).innerHTML += `<li>${players[i].name} ${showRoles ? `(${players[i].role})` : ""}</li>`;
         }
       }
       //blackmail / manual killing
@@ -2265,6 +2266,7 @@
             a = new Audio(music.voting[Math.floor(Math.random() * music.voting.length)]);
             break;
             default:
+            console.log("g");
             a = new Audio(music.day[Math.floor(Math.random() * music.day.length)]);
             break;
           }
