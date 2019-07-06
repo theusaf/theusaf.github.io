@@ -41,9 +41,10 @@
       sometimes mafia has no mafia killing night 1
       sometimes no mafia is added at beginning
       when mafia gets lynched, mafia members are not immediately promoted
-      vampire youngest gets updated, but the developer was too lazy and youngest is just added randomly
-      godfather doesn't attack
-      TODO add voting
+      strange glitches with godfather and mafioso?
+      if vigilante gets converted, the death log says that they were killed by vampire
+      vigilante can cause other players to die from guilt
+      strange voting issues
       TODO add mayor stuff
       TODO add witch
       TODO add coven (MAYBE)
@@ -167,6 +168,7 @@
       }
       #actionbox r{
         font-size: 2vw!important;
+        display: block;
       }
       #actionbox div{
         min-width: calc(24vw - 4px);
@@ -363,7 +365,7 @@
       }
       //creates the buttons to control the night actions
       function createActionText(role){
-        if(players[turn].dead){
+        if(players[turn].dead && !(players[turn].role == "jester" && players[turn].hasWon && players[turn].actionsLeft > 0)){
           return next();
         }
         //looks at the roles and then makes buttons and stuff.
@@ -627,7 +629,7 @@
           case "executioner":
           if(players[turn].actionTarget == null){
             options = players.filter(function(o) {
-              return !o.dead
+              return !o.dead && o.index != turn;
             });
             players[turn].actionTarget = options[Math.floor(Math.random() * options.length)].index;
           }
@@ -635,7 +637,7 @@
           break;
           case "jester":
           if(players[turn].actionsLeft == -1){
-            players[turn].actionsLeft == 1;
+            players[turn].actionsLeft = 1;
           }
           options = players.filter(function(o) {
             return !o.dead && o.index != turn;
@@ -896,6 +898,7 @@
       }
       //sorts the actions of the night
       function dayUpdate(){
+        hasIgnited = false;
         dayInfo = [];
         transportInfo = [];
         for(i in players){
@@ -905,7 +908,7 @@
             main: ""
           });
         }
-        let alive = players.filter(o=>{return !o.dead});
+        let alive = players.filter(o=>{return !o.dead || (o.role == "jester" && o.hasWon)});
         for(let i in alive){
           switch (alive[i].role) {
             case "veteran":
@@ -1170,14 +1173,14 @@
             })() : null;
             break;
             case "arsonist":
-            alive[i].NightAction.target && alive[i].NightAction.target != alive[i].index ? (()=>{
+            alive[i].NightAction.target >= 0 && alive[i].NightAction.target != alive[i].index ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "douse",
                 by: alive[i].index,
                 visit: true
               });
             })() : null;
-            alive[i].NightAction.target && alive[i].NightAction.target == alive[i].index ? (()=>{
+            alive[i].NightAction.target >= 0 && alive[i].NightAction.target == alive[i].index ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "ignite",
                 by: alive[i].index,
@@ -1215,7 +1218,7 @@
             })() : null;
             break;
             case "werewolf":
-            alive[i].NightAction.target && alive[i].NightAction.target != alive[i].index ? (()=>{
+            alive[i].NightAction.target >= 0 && alive[i].NightAction.target != alive[i].index ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "attack",
                 value: 2,
@@ -1224,7 +1227,7 @@
                 visit: true
               });
             })() : null;
-            alive[i].NightAction.target && alive[i].NightAction.target == alive[i].index ? (()=>{
+            alive[i].NightAction.target >= 0 && alive[i].NightAction.target == alive[i].index ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "attack",
                 value: 2,
@@ -1568,7 +1571,7 @@
             dayInfo[i].main = "";//Your target was jailed";
           }
         }
-        dousedPlayers = hasIgnited ? []:dousedPlayers;
+        dousedPlayers = hasIgnited ? [] : dousedPlayers;
         //changing roles and death information
         for(let i in dayInfo){ //killed
           let av = dayInfo[i].information.filter(o=>{return o.type=="attack"||(o.type=="hunt"&&players[dayInfo[i].index].role=="vampire");});
@@ -1687,6 +1690,7 @@
               players[youngestVamp].dead = true;
             }else{
               players[dayInfo[i].index].role = "vampire";
+              youngestVamp = players[dayInfo[i].index].index;
               dayInfo[i].information.push({
                 type: "system",
                 message: "You have become a vampire",
@@ -1696,7 +1700,7 @@
             }
           }
           //executioner
-          if(players[dayInfo[i].index].role == "executioner" && !players[dayInfo[i].index].hasWon && dayInfo[i].actionTarget && players[dayInfo[i].actionTarget].dead){
+          if(players[dayInfo[i].index].role == "executioner" && !players[dayInfo[i].index].hasWon && players[dayInfo[i].index].actionTarget >= 0 && players[players[dayInfo[i].index].actionTarget].dead){
             players[dayInfo[i].index].role = "jester";
             dayInfo[i].information.push({
               type: "system",
@@ -1822,19 +1826,40 @@
       }
       //vote buttons
       function generateVoteButtons(){
+        action.innerHTML = "";
         let requiredVotes = Math.ceil((players.filter(o=>{return !o.dead;}).length + 1) / 2);
         let alive = players.filter(o=>{return !o.dead;});
-        let str = "";
+        action.innerHTML = `<r>${requiredVotes} votes are required to put someone on trial</r>`;
+        function a(index){ //determine whether player has enough votes
+          if(players[index].votes >= requiredVotes){
+            next(index);
+          }
+        }
         for(let i in alive){
-          str += `<div><o>${alive[i].name}</o><button onclick="">+</button><button onclick="">-</button></div>`;
+          let div = document.createElement("div");
+          let o = document.createElement("o"); o.innerHTML = `${alive[i].name} (0)`;
+          let b1 = document.createElement("button"); b1.innerHTML = "+"; b1.onclick = ()=>{o.innerHTML = `${alive[i].name} (${++players[alive[i].index].votes})`;a(alive[i].index)};
+          let b2 = document.createElement("button"); b2.innerHTML = "-"; b2.onclick = ()=>{o.innerHTML = `${alive[i].name} (${--players[alive[i].index].votes})`;};
+          div.append(o,b1,b2);
+          action.append(div);
         }
       }
       //judgement buttons
-      function generateGuiltButtons(){
-
+      function generateGuiltButtons(data){
+        action.innerHTML = "";
+        players[data].votes = 0;
+        let r = document.createElement("r"); r.innerHTML = `${players[data].name} (0)`;
+        let b1 = document.createElement("button"); b1.innerHTML = "+"; b1.onclick = ()=>{r.innerHTML = `${players[data].name} (${++players[data].votes})`;};
+        let b2 = document.createElement("button"); b2.innerHTML = "-"; b2.onclick = ()=>{r.innerHTML = `${players[data].name} (${--players[data].votes})`;};
+        let b3 = document.createElement("button"); b3.innerHTML = "Execute/Spare"; b3.onclick = ()=>{
+          if(players[data].votes > 0){
+            next(data);
+          }
+        };
+        action.append(r,b1,b2,b3);
       }
       //the turns.
-      function next(){
+      function next(data){
         //update stats based on previous player, if time is night.
         if(time == "night"){
           updateStats();
@@ -1848,6 +1873,7 @@
           })() : "day";
         }
         if(time == "night"){
+          action.innerHTML = "";
           document.body.className = "night";
           showTeam(players[turn].role);
           generateRoleText(players[turn].role);
@@ -1859,6 +1885,8 @@
           generateResultText();
         }
         if(time == "day"){
+          roleinfo.innerHTML = "";
+          team.innerHTML = "";
           document.body.className = "";
           updatePlayerLists();
           if(turn == 0){
@@ -1868,10 +1896,27 @@
             generateVoteButtons();
           }
           if(turn == 2){
-            generateGuiltButtons();
+            if(!data){
+              return next();
+            }
+            generateGuiltButtons(data);
           }
           if(turn == 3){
-            //determine jester/executioner win
+            action.innerHTML = "no day deaths";
+            //show role of executed person
+            if(data >= 0){ //determine exe/jest win
+              console.log("data found");
+              if(players[data].role == "jester"){
+                players[data].hasWon = true;
+              }
+              let exe = players.filter(o=>{return o.role == "executioner" && !o.dead && o.actionTarget == data;});
+              for(let i in exe){
+                players[exe[i].index].hasWon = true;
+              }
+              players[data].dead = true;
+              players[data].mrole = players[data].mrole == "cleaned" ? "" : players[data].mrole;
+              action.innerHTML = `${players[data].name} was lynched by the town. Their role was ${players[data].mrole ? players[data].mrole : players[data].role}`;
+            }
             //reset stuff
             for(let i in players){
               players[i].NightAction = {};
@@ -1891,7 +1936,6 @@
             night++;
             time = "night";
             turn = -1;
-            next();
           }
         }
       }
