@@ -33,7 +33,8 @@
         <button id="next" onclick="next()">Next</button>
         <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
         <button id="blackmail" onclick="black()">A blackmailed player has talked / Manual kill</button>
-        <button id="disableMusic" onclick="playMusic(true)">Start / Stop Music</button>
+        <button id="disableMusic" onclick="playMusic(true)">Start / Stop Music. If doesn't work, play the audio below.</button>
+        <audio controls src="LoginMusicCoven.mp3" onplay="this.pause();"></audio>
         <button type="button" id="hideNarrator" onclick="document.getElementById('narrator').style.display = 'none';document.getElementById('showNarrator').style.zIndex = '1';">X</button>
       </div>
       <button type="button" id="showNarrator" onclick="document.getElementById('narrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
@@ -43,7 +44,6 @@
       sometimes no mafia is added at beginning
       when mafia gets lynched, mafia members are not immediately promoted
       if vigilante gets converted, the death log says that they were killed by vampire
-      music played multiple times
       TODO add witch
       TODO add win condition check
       TODO add coven (MAYBE)
@@ -141,7 +141,7 @@
         background: white;
         text-align: center;
       }
-      #narrator button {
+      #narrator button, #narrator audio{
         width: 50%;
         height: 4vh;
       }
