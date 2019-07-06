@@ -1272,6 +1272,15 @@
               });
             })():null;
             break;
+            case "survivor":
+            alive[i].NightAction.target >= 0 ? (()=>{
+              dayInfo[alive[i].index].information.push({
+                type: "vest",
+                visit: false,
+                by: alive[i].index
+              });
+            })():null
+            break;
           }
         }
         //sort through all stuff and fix the day info
@@ -1699,14 +1708,15 @@
           if(dayInfo[i].information.filter(o=>{return o.type=="infect";}).length){
             let dv = dayInfo[i].information.filter(o=>{return defenseValues.evt[o.type];});
             let dv2 = 0;
-            if(defenseValues.basic[players[dayInfo[i].index].role]){
-              dv2 = defenseValues.basic[players[dayInfo[i].index].role];
+            if(defenseValues.basic.includes(players[dayInfo[i].index].role)){
+              dv2 = 1;
             }
             for(let j in dv){
               if(defenseValues.evt[dv[j].type] > dv2){
                 dv2 = defenseValues.evt[dv[j].type];
               }
             }
+            console.log(dv2);
             //if mafia
             if(/(mafioso)|(janitor)|(framer)|(consort)|(consiglier)|(disguiser)|(blackmailer)/g.test(players[dayInfo[i].index].role)){
               if(players[dayInfo[i].index].dead){
