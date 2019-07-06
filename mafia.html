@@ -43,9 +43,6 @@
       when mafia gets lynched, mafia members are not immediately promoted
       strange glitches with godfather and mafioso?
       if vigilante gets converted, the death log says that they were killed by vampire
-      vigilante can cause other players to die from guilt
-      strange voting issues
-      TODO add mayor stuff
       TODO add witch
       TODO add coven (MAYBE)
     </div>
@@ -1135,7 +1132,7 @@
               });
             })() : null;
             alive[i].specialCase ? (()=>{
-              dayInfo[i].information.push({
+              dayInfo[alive[i].index].information.push({
                 type: "attack",
                 visit: false,
                 by: alive[i].index,
@@ -1896,7 +1893,7 @@
             generateVoteButtons();
           }
           if(turn == 2){
-            if(!data){
+            if(!(data >= 0)){
               return next();
             }
             generateGuiltButtons(data);
