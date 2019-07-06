@@ -530,7 +530,7 @@
             players[turn].actionsLeft = 1;
           }
           options = players.filter(function(o) {
-            return o.dead && !o.mrole == "cleaned" && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser" || o.role == "survivor" || o.role == "jester" || o.role == "(cleaned)" || o.role == "executioner" || o.role == "serialkiller" || o.role == "vampire" || o.role == "werewolf" || o.role == "arsonist");
+            return o.dead && !(o.mrole == "cleaned") && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser" || o.role == "survivor" || o.role == "jester" || o.role == "executioner" || o.role == "serialkiller" || o.role == "vampire" || o.role == "werewolf" || o.role == "arsonist");
           });
           if(players[turn].actionsLeft == 1){
             for(let i in options){
@@ -623,7 +623,7 @@
           break;
           case "amnesiac":
           options = players.filter(function(o) {
-            return o.dead && !o.mrole == "cleaned" &&!(o.role == "godfather" || o.role == "mafioso" || o.role == "retributionist" || o.role == "mayor" || o.role == "jailor" || o.role == "executioner");
+            return o.dead && !(o.mrole == "cleaned") &&!(o.role == "godfather" || o.role == "mafioso" || o.role == "retributionist" || o.role == "mayor" || o.role == "jailor" || o.role == "executioner");
           });
           for(let i in options){
             string += `<div><o>${options[i].name} (${options[i].role})</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>Oh yeah! I was like the ${options[i].role}!</p>';})()"></button></div>`;
