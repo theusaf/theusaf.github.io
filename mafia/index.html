@@ -33,6 +33,7 @@
         <button id="next" onclick="next()">Next</button>
         <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
         <button id="blackmail" onclick="black()">A blackmailed player has talked / Manual kill</button>
+        <button id="disableMusic" onclick="(()=>{playMusic = ()=>{};oldAudio.pause();})()">Disable Music (unreversable)</button>
         <button type="button" id="hideNarrator" onclick="document.getElementById('narrator').style.display = 'none';document.getElementById('showNarrator').style.zIndex = '1';">X</button>
       </div>
       <button type="button" id="showNarrator" onclick="document.getElementById('narrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
@@ -1890,6 +1891,9 @@
         //update stats based on previous player, if time is night.
         if(time == "night"){
           updateStats();
+          if(turn == -1){
+            playMusic();
+          }
         }
         turn ++;
         if(turn == players.length){
@@ -1918,8 +1922,10 @@
           updatePlayerLists();
           if(turn == 0){
             generateNarratorText();
+            playMusic();
           }
           if(turn == 1){
+            playMusic();
             generateVoteButtons();
           }
           if(turn == 2){
@@ -2207,10 +2213,49 @@
       }
       //music cuz who doesn't like music?
       function playMusic(){
-        let music = {
-          lobby: ["HomepageMusic.mp3","LobbyMusic.mp3","LoginMusicCoven.mp3","SelectionMusic.mp3"]
+        window.removeEventListener("click",playMusic);
+        if(typeof(oldAudio) != "undefined"){
+          oldAudio.pause();
         }
+        let music = {
+          lobby: ["HomepageMusic.mp3","LobbyMusic.mp3","LoginMusicCoven.mp3","SelectionMusic.mp3"],
+          day: ["DayMusic.mp3","DiscussionMusic.mp3","VotingMusic.mp3"],
+          night: ["NightMusic.mp3"],
+          voting: ["VotingMusic.mp3","Judgement.mp3"]
+        }
+        let a;
+        switch (time) {
+          case "night":
+          case "night2":
+          if(turn == -1){
+            a = new Audio(music.lobby[Math.floor(Math.random() * music.lobby.length)]);
+          }else{
+            a = new Audio(music.night[Math.floor(Math.random() * music.night.length)]);
+          }
+          break;
+          case "day":
+          switch (turn) {
+            case 1:
+            case 2:
+            case 3:
+            a = new Audio(music.voting[Math.floor(Math.random() * music.voting.length)]);
+            break;
+            default:
+            a = new Audio(music.day[Math.floor(Math.random() * music.day.length)]);
+            break;
+          }
+          break;
+        }
+        a.oncanplaythrough = ()=>{
+          a.play();
+        }
+        a.onended = ()=>{
+          playMusic();
+        }
+        window.oldAudio = a;
+        return a;
       }
+      window.addEventListener("click",playMusic);
     </script>
   </body>
 </html>
