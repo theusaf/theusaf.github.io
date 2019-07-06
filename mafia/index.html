@@ -1275,33 +1275,6 @@
         }
         //sort through all stuff and fix the day info
         fixedDayInfo = [];
-        //vampire stuff
-        if(vampsCanAttack && players.filter(o=>{return !o.dead && o.role == "vampire";}).length){
-          if(players[youngestVamp].dead){
-            youngestVamp = players.filter(o=>{return !o.dead && o.role == "vampire";})[0].index;
-          }
-          vampsCanAttack = false;
-          let mostVoted = {
-            index: -1,
-            votes: -1
-          };
-          for(let j in players){
-            if(players[j].vvotes > mostVoted.votes){
-              mostVoted = {
-                index: players[j].index,
-                votes: players[j].vvotes
-              }
-            }
-          }
-          if(mostVoted.votes){
-            dayInfo[mostVoted.index].information.push({
-              type: "infect",
-              by: youngestVamp,
-              visit: true,
-              message: "You were bitten by a vampire"
-            });
-          }
-        }
         //transporter stuff
         for(let i in dayInfo){
           if(dayInfo[i].information.filter(o=>{return o.type=="transport"&&!transportInfo.includes(o.by);}).length){
@@ -1318,6 +1291,38 @@
               for(let l in p1){
                 dayInfo[transports[j].with].information.push(p1[l]);
               }
+            }
+          }
+        }
+
+        //vampire stuff
+        if(vampsCanAttack && players.filter(o=>{return !o.dead && o.role == "vampire";}).length){
+          if(players[youngestVamp].dead){
+            youngestVamp = players.filter(o=>{return !o.dead && o.role == "vampire";})[0].index;
+          }
+          if(dayInfo[youngestVamp].information.filter(o=>{return o.type == "jail";}).length || dayInfo[youngestVamp].information.filter(o=>{return o.type == "rb";}).length){
+            //do nothing, cuz vampire was rbd
+          }else{
+            vampsCanAttack = false;
+            let mostVoted = {
+              index: -1,
+              votes: -1
+            };
+            for(let j in players){
+              if(players[j].vvotes > mostVoted.votes){
+                mostVoted = {
+                  index: players[j].index,
+                  votes: players[j].vvotes
+                }
+              }
+            }
+            if(mostVoted.votes){
+              dayInfo[mostVoted.index].information.push({
+                type: "infect",
+                by: youngestVamp,
+                visit: true,
+                message: "You were bitten by a vampire"
+              });
             }
           }
         }
