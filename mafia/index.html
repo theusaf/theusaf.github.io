@@ -33,8 +33,8 @@
         <button id="next" onclick="next()">Next</button>
         <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
         <button id="blackmail" onclick="black()">A blackmailed player has talked / Manual kill</button>
-        <button id="disableMusic" onclick="playMusic(true)">Start / Stop Music. If doesn't work, play the audio below.</button>
-        <audio controls src="boop.wav"></audio>
+        <!--button id="disableMusic" onclick="playMusic(true)">Start / Stop Music. If doesn't work, play the audio below.</button-->
+        <audio id="disableMusic" controls autoplay src="boop.wav" onended="playMusic()"></audio>
         <button type="button" id="hideNarrator" onclick="document.getElementById('narrator').style.display = 'none';document.getElementById('showNarrator').style.zIndex = '1';">X</button>
       </div>
       <button type="button" id="showNarrator" onclick="document.getElementById('narrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
@@ -2231,7 +2231,7 @@
       }
       //music cuz who doesn't like music?
       function playMusic(toggle){
-        if(toggle){
+        /*if(toggle){
           if(typeof(oldAudio) != "undefined"){
             oldAudio.pause();
             oldAudio = undefined;
@@ -2242,7 +2242,7 @@
           oldAudio.oncanplaythrough = null;
           oldAudio.pause();
           oldAudio = undefined;
-        }
+        }*/
         let music = {
           lobby: ["HomepageMusic.mp3","LobbyMusic.mp3","LoginMusicCoven.mp3","SelectionMusic.mp3"],
           day: ["DayMusic.mp3","DiscussionMusic.mp3","VotingMusic.mp3"],
@@ -2254,9 +2254,9 @@
           case "night":
           case "night2":
           if(turn == -1){
-            a = new Audio(music.night[Math.floor(Math.random() * music.night.length)]);
+            mus.src = /*a = new Audio(*/music.night[Math.floor(Math.random() * music.night.length)];//);
           }else{
-            a = new Audio(music.night[Math.floor(Math.random() * music.night.length)]);
+            mus.src = /*a = new Audio(*/music.night[Math.floor(Math.random() * music.night.length)];//);
           }
           break;
           case "day":
@@ -2264,22 +2264,22 @@
             case 1:
             case 2:
             case 3:
-            a = new Audio(music.voting[Math.floor(Math.random() * music.voting.length)]);
+            mus.src = /*a = new Audio(*/music.voting[Math.floor(Math.random() * music.voting.length)];//);
             break;
             default:
-            a = new Audio(music.day[Math.floor(Math.random() * music.day.length)]);
+            mus.src = /*a = new Audio(*/music.day[Math.floor(Math.random() * music.day.length)];//);
             break;
           }
           break;
         }
-        a.oncanplaythrough = ()=>{
+        /*a.oncanplaythrough = ()=>{
           a.play();
-        }
-        a.onended = ()=>{
+        }*/
+        /*a.onended = ()=>{
           playMusic();
-        }
-        window.oldAudio = a;
-        return a;
+        }*/
+        /*window.oldAudio = a;
+        return a;*/
       }
     </script>
   </body>
