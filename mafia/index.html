@@ -40,14 +40,15 @@
       <button type="button" id="showNarrator" onclick="document.getElementById('narrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
     </div>
     <div id="bugList">
-      sometimes mafia has no mafia killing night 1
-      sometimes no mafia is added at beginning
-      when mafia gets lynched, mafia members are not immediately promoted
-      if vigilante gets converted, the death log says that they were killed by vampire
-      mafia being bitten die even if healed
-      TODO add witch
-      TODO add win condition check
+      sometimes mafia has no mafia killing night 1 (MEDIUM PRIORITY)
+      sometimes no mafia is added at beginning (its a feature?)
+      when mafia gets lynched, mafia members are not immediately promoted (BIG PRIORITY)
+      if vigilante gets converted, the death log says that they were killed by vampire (SMALL PRIORITY)
+      mafia being bitten die even if healed (MEDIUM PRIORITY)
+      TODO add witch (SMALL PRIORITY)
+      TODO add win condition check (UNLIKELY)
       TODO add coven (MAYBE)
+      TODO add custom role list support (MEDIUM PRIORITY)
     </div>
     <style type="text/css">
       h4{
@@ -171,9 +172,13 @@
       }
       #actionbox div{
         min-width: calc(24vw - 4px);
+        max-width: 25vw;
         min-height: 10vh;
         border: solid grey 2px;
         overflow-x: auto;
+      }
+      #actionbox .ok{
+        max-width: none!important;
       }
       #actionbox button{
         height: 5vh;
@@ -385,7 +390,7 @@
             str += `<r>${players[i].name} has been brought back from the dead!</r>`;
           }
         }
-        action.innerHTML = "<div>" + str + "</div>";
+        action.innerHTML = "<div class='ok'>" + str + "</div>";
       }
       //creates the buttons to control the night actions
       function createActionText(role){
@@ -430,7 +435,7 @@
           }
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a></div>`;
           if(players[turn].actionsLeft == 0){
-            string = "<p>You cannot clean any more bodies.</p>";
+            string = "<div class='ok'><p>You cannot clean any more bodies.</p></div>";
           }
           break;
           case "framer":
@@ -533,7 +538,7 @@
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a></div>`;
           break;
           case "mayor":
-          string += `<div><o>You are an important role. Remember to reveal when the time is right.</o></div>`;
+          string += `<div class='ok'><o>You are an important role. Remember to reveal when the time is right.</o></div>`;
           break;
           case "retributionist":
           if(players[turn].actionsLeft == -1){
@@ -586,7 +591,7 @@
           string += `<div><o>${players[turn].name}</o><button onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to alert tonight</p>';})()"></button></div>`;
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a></div>`;
           if(players[turn].actionsLeft == 0){
-            string = "<div><o>You do not have any more alerts left</o>";
+            string = "<div class='ok'><o>You do not have any more alerts left</o>";
           }
           break;
           case "vigilante":
@@ -601,7 +606,7 @@
           }
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a></div>`;
           if(players[turn].actionsLeft == 0){
-            string = "<div><o>You do not have any more bullets left</o>";
+            string = "<div class='ok'><o>You do not have any more bullets left</o>";
           }
           break;
           case "blackmailer":
@@ -657,7 +662,7 @@
             });
             players[turn].actionTarget = options[Math.floor(Math.random() * options.length)].index;
           }
-          string = `<div><o>Execute your target: ${players[players[turn].actionTarget].name}<o></div>`;
+          string = `<div class='ok'><o>Execute your target: ${players[players[turn].actionTarget].name}<o></div>`;
           break;
           case "jester":
           if(players[turn].actionsLeft == -1){
@@ -671,13 +676,13 @@
           }
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a></div>`;
           if(players[turn].actionsLeft == 0){
-            string = "You are out of actions.";
+            string = "<div class='ok'>You are out of actions.</div>";
           }
           if(!players[turn].hasWon){
-            string = "<div><o>You failed.</o>";
+            string = "<div class='ok'><o>You failed.</o>";
           }
           if(!players[turn].dead){
-            string = "<div><o>Get yourself lynched</o>";
+            string = "<div class='ok'><o>Get yourself lynched</o>";
           }
           break;
           case "serialkiller":
@@ -696,7 +701,7 @@
           string += `<div><o>${players[turn].name}</o><button onclick="(function(){players[turn].NightAction.target = ${players[turn].index}; narrator_text.innerHTML = '<p>You decide to put on a belletproof vest tonight</p>';})()"></button></div>`;
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a></div>`;
           if(players[turn].actionsLeft == 0){
-            string = "<div><o>You do not have any bulletproof vests left</o>"
+            string = "<div class='ok'><o>You do not have any bulletproof vests left</o>"
           }
           break;
           case "vampire":
@@ -711,7 +716,7 @@
           }
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a></div>`;
           if(!vampsCanAttack){
-            string = `<div><o>You have to wait before voting to bite another person</o></div>`;
+            string = `<div class='ok'><o>You have to wait before voting to bite another person</o></div>`;
           }
           break;
           case "werewolf":
@@ -723,7 +728,7 @@
           }
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You change your mind</p>'})()">cancel</a></div>`;
           if(night % 2){
-            string = `<div><o>There is no full moon tonight.</o></div>`;
+            string = `<div class='ok'><o>There is no full moon tonight.</o></div>`;
           }
           break;
         }
@@ -921,7 +926,7 @@
             str += "</r>"+activity[i].message + "</r>";
           }
         }
-        action.innerHTML = "<div>" + str.replace("<r></r>","") + "</div>";
+        action.innerHTML = "<div class='ok'>" + str.replace("<r></r>","") + "</div>";
       }
       //sorts the actions of the night
       function dayUpdate(){
@@ -948,7 +953,7 @@
             })() : null;
             break;
             case "mafioso":
-            if(alive.filter(o=>{return o.role == "godfather" && !o.NightAction.target2}).length){
+            if(alive.filter(o=>{return o.role == "godfather" && !(o.NightAction.target2 >= 0)}).length){
               break;
             }
             alive[i].NightAction.target >= 0 ? (()=>{
@@ -960,6 +965,18 @@
                 visit: true
               });
             })() : null;
+            if(dayInfo[alive[i].index].information.filter(o=>{return o.type == "force";}).length){
+              let target = players[dayInfo[alive[i].index].information.filter(o=>{return o.type == "force";})[0].by].NightAction.target;
+              if(target >= 0){
+                dayInfo[target].information.push({
+                  type: "attack",
+                  value: 1,
+                  visit: true,
+                  by: alive[i].index,
+                  message: "You were attacked by a member of the mafia"
+                });
+              }
+            }
             break;
             case "godfather":
             (alive[i].NightAction.target >= 0 && !(alive[i].NightAction.target2 >= 0)) || (alive[i].NightAction.target >= 0 && !alive.filter(o=>{return o.role == "mafioso"}).length) ? (()=>{
@@ -975,7 +992,7 @@
                 if(alive[j].role == "mafioso"){
                   dayInfo[alive[j].index].information.push({
                     type: "force",
-                    by: alive[j].index,
+                    by: alive[i].index,
                     message: "The godfather forced you to attack his target!",
                     visit: false
                   });
