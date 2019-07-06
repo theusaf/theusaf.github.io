@@ -357,7 +357,7 @@
             let attacks = dayInfo[i].information.filter(o=>{return o.type == "attack"});
             let s = [];
             for(let j in attacks){
-              if(!(attacks[j].by >= 0)){
+              if(!(attacks[j].by >= 0) && attacks[j].by != null){
                 continue;
               }
               s.push(players[attacks[j].by].role);
