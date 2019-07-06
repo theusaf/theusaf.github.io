@@ -2214,6 +2214,7 @@
       //music cuz who doesn't like music?
       function playMusic(){
         window.removeEventListener("click",playMusic);
+        window.removeEventListener("touchend",playMusic);
         if(typeof(oldAudio) != "undefined"){
           oldAudio.pause();
         }
@@ -2256,6 +2257,7 @@
         return a;
       }
       window.addEventListener("click",playMusic);
+      window.addEventListener("touchend",playMusic);
     </script>
   </body>
 </html>
