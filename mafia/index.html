@@ -872,7 +872,7 @@
       }
       //generates the results of the night
       function generateResultText(){
-        if(dayInfo[turn].information.length == 0 && !players[turn].dead){
+        if(dayInfo[turn].information.length == 0 && players[turn].dead){
           return next();
         }
         let str = ""
@@ -2266,7 +2266,6 @@
             a = new Audio(music.voting[Math.floor(Math.random() * music.voting.length)]);
             break;
             default:
-            console.log("g");
             a = new Audio(music.day[Math.floor(Math.random() * music.day.length)]);
             break;
           }
