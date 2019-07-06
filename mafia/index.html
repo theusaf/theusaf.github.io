@@ -44,7 +44,6 @@
       sometimes no mafia is added at beginning
       when mafia gets lynched, mafia members are not immediately promoted
       if vigilante gets converted, the death log says that they were killed by vampire
-      mafia being bitten are not revealed at day
       mafia being bitten die even if healed
       TODO add witch
       TODO add win condition check
@@ -355,11 +354,11 @@
         action.innerHTML = "";
         for(let i in players){
           //if dead, and has attacks
-          if(players[i].dead && dayInfo[i].information.filter(o=>{return o.type == "attack"}).length){
-            let attacks = dayInfo[i].information.filter(o=>{return o.type == "attack"});
+          if(players[i].dead && dayInfo[i].information.filter(o=>{return o.type == "attack"||o.type == "infect"}).length){
+            let attacks = dayInfo[i].information.filter(o=>{return o.type == "attack"||o.type == "infect"});
             let s = [];
             for(let j in attacks){
-              if(!(attacks[j].by >= 0) && attacks[j].by != null){
+              if(!(attacks[j].by >= 0) && attacks[j].by == null){
                 continue;
               }
               s.push(players[attacks[j].by].role);
@@ -1439,8 +1438,8 @@
           //if user is werewolf and not jailed or roleblocked
           if(players[dayInfo[i].index].role == "werewolf" && !dayInfo[i].information.filter(o=>{return o.type=="jailed"||o.type=="rb"}).length){
             for(let j in dayInfo){
-              if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index}).length){
-                let l = dayInfo[j].information.filter(o=>{return o.by != dayInfo[i].index});
+              if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index && o.visit}).length){
+                let l = dayInfo[j].information.filter(o=>{return o.by != dayInfo[i].index && o.visit});
                 for(let k in l){
                   dayInfo[l[k].by].information.push({
                     type: "attack",
@@ -1485,6 +1484,9 @@
             let igniters = dayInfo[i].information.filter(o=>{return o.type=="ignite";});
             for(let j in igniters){
               for(let k in dousedPlayers){
+                if(players[dousedPlayers[k]].dead){
+                  continue;
+                }
                 dayInfo[dousedPlayers[k]].information.push({
                   type: "attack",
                   value: 3,
@@ -2004,6 +2006,7 @@
             night++;
             time = "night";
             turn = -1;
+            updatePlayerLists();
           }
           if(turn == 4){
             time = "night";
