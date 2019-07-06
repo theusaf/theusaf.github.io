@@ -45,6 +45,7 @@
       when mafia gets lynched, mafia members are not immediately promoted
       if vigilante gets converted, the death log says that they were killed by vampire
       mafia being bitten are not revealed at day
+      mafia being bitten die even if healed
       TODO add witch
       TODO add win condition check
       TODO add coven (MAYBE)
@@ -243,7 +244,7 @@
         }
       });
       let night = 1;
-      let turn = 3;
+      let turn = 4;
       let youngestVamp = -1;
       let vampsCanAttack = true;
       //night is doing actions. night2 is showing results. day is day...
@@ -2216,6 +2217,7 @@
         for(let i in players){
           players[i].role = roles[i];
         }
+        turn = 3;
         next();
       }
       function updatePlayerLists(showRoles){
@@ -2283,6 +2285,9 @@
             case 2:
             case 3:
             mus.src = /*a = new Audio(*/music.voting[Math.floor(Math.random() * music.voting.length)];//);
+            break;
+            case 4:
+            mus.src = /*a = new Audio(*/music.lobby[Math.floor(Math.random() * music.lobby.length)];//);
             break;
             default:
             mus.src = /*a = new Audio(*/music.day[Math.floor(Math.random() * music.day.length)];//);
