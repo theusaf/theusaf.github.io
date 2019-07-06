@@ -41,9 +41,9 @@
       sometimes mafia has no mafia killing night 1
       sometimes no mafia is added at beginning
       when mafia gets lynched, mafia members are not immediately promoted
-      strange glitches with godfather and mafioso?
       if vigilante gets converted, the death log says that they were killed by vampire
       TODO add witch
+      TODO add win condition check
       TODO add coven (MAYBE)
     </div>
     <style type="text/css">
@@ -919,7 +919,7 @@
             break;
             case "mafioso":
             if(alive.filter(o=>{return o.role == "godfather" && !o.NightAction.target2}).length){
-              return;
+              break;
             }
             alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
@@ -932,7 +932,7 @@
             })() : null;
             break;
             case "godfather":
-            alive[i].NightAction.target >= 0 && !alive[i].NightAction.target2 || (alive[i].NightAction.target >= 0 && !alive.filter(o=>{return o.role == "mafioso"}).length) ? (()=>{
+            (alive[i].NightAction.target >= 0 && !(alive[i].NightAction.target2 >= 0)) || (alive[i].NightAction.target >= 0 && !alive.filter(o=>{return o.role == "mafioso"}).length) ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
                 type: "attack",
                 value: 1,
