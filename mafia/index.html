@@ -160,7 +160,6 @@
         display: flex;
         flex-flow: row wrap;
         white-space: nowrap;
-        max-height: 30vh;
         font-size: 5vw;
         overflow-y: auto;
       }
@@ -242,11 +241,11 @@
         }
       });
       let night = 1;
-      let turn = -1;
+      let turn = 3;
       let youngestVamp = -1;
       let vampsCanAttack = true;
       //night is doing actions. night2 is showing results. day is day...
-      let time = "night";
+      let time = "day";
       let dayInfo = [];
       let fixedDayInfo = [];
       let players = [];
@@ -1973,6 +1972,11 @@
             night++;
             time = "night";
             turn = -1;
+          }
+          if(turn == 4){
+            time = "night";
+            turn = -1;
+            next();
           }
         }
       }
