@@ -374,6 +374,14 @@
               }
             }
           }
+          //if remembered
+          if(dayInfo[i].information.filter(o=>{return o.type == "remember";}).length){
+            str += `<r>An amnesiac has remembered that they were like the ${players[i].role}</r>`;
+          }
+          //if revived
+          if(dayInfo[i].information.filter(o=>{return o.type == "revive";}).length){
+            str += `<r>${players[i].name} has been brought back from the dead!</r>`;
+          }
         }
         action.innerHTML = "<div>" + str + "</div>";
       }
@@ -863,6 +871,9 @@
       }
       //generates the results of the night
       function generateResultText(){
+        if(dayInfo[turn].information.length == 0){
+          return next();
+        }
         let str = ""
         narrator_text.innerHTML = "";
         action.innerHTML = "";
@@ -1739,12 +1750,12 @@
           if(dayInfo[i].information.filter(o=>{return o.type == "remember";}).length){
             let a = dayInfo[i].information.filter(o=>{return o.type == "remember";});
             for(let j in a){
-              players[a[j].by].role = players[a[j].index].role;
+              players[a[j].by].role = players[dayInfo[i].index].role;
               dayInfo[a[j].by].information.push({
                 type: "system",
                 visit: false,
                 by: null,
-                message: `You have become a(n) ${players[a[j].by].role}`
+                message: `You have become a(n) ${players[dayInfo[i].index].role}`
               });
             }
           }
@@ -1921,6 +1932,7 @@
           document.body.className = "";
           updatePlayerLists();
           if(turn == 0){
+            updatePlayerLists(true);
             generateNarratorText();
             playMusic();
           }
@@ -2187,11 +2199,11 @@
         }
         next();
       }
-      function updatePlayerLists(){
+      function updatePlayerLists(showRoles){
         grave.innerHTML = "";
         citizens.innerHTML = "";
         for(let i in players){
-          (players[i].dead ? grave : citizens).innerHTML += `<li>${players[i].name}</li>`;
+          (players[i].dead ? grave : citizens).innerHTML += `<li>${players[i].name}</li> ${showRoles ? `(${players[i].role})` : ""}`;
         }
       }
       //blackmail / manual killing
