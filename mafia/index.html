@@ -429,7 +429,7 @@
         }
       };
       document.addEventListener("resize",resize);
-      let chosenRoles = [];
+      let choseRoles = [];
       toggleRoleChooser.onclick = ()=>{
         if(showRoleChoose.style.display == "flex"){
           showRoleChoose.style.display = "none";
@@ -450,18 +450,18 @@
       }
       //adds the role to the list
       function addRole(role){
-        if(chooseableRoles[role].only && chosenRoles.includes(role)){
+        if(chooseableRoles[role].only && choseRoles.includes(role)){
           return;
         }
-        chosenRoles.push(role);
+        choseRoles.push(role);
         updateRoleList();
       }
       //updates the role chosen list
       function updateRoleList(){
         roleChoosenRoles.innerHTML = "";
-        for(let i in chosenRoles){
+        for(let i in choseRoles){
           let l = document.createElement("li");
-          l.innerHTML = chosenRoles[i];
+          l.innerHTML = choseRoles[i];
           roleChoosenRoles.append(l);
         }
       }
@@ -2330,7 +2330,7 @@
           }
         };
         //if roles are chosen
-        if(chosenRoles.length < players.length){
+        if(choseRoles.length < players.length){
           //start randomizing stuff
           while(roles.length < players.length){
             let choice = Math.round(Math.random() * Object.keys(possibleRoles).length);
@@ -2400,7 +2400,7 @@
           }
           console.log(roles);
         }else{
-          roles = shuffle(chosenRoles);
+          roles = shuffle(choseRoles);
         }
         //assign roles to players...
         for(let i in players){
