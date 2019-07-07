@@ -17,7 +17,7 @@
           <div id="living_list"></div>
         </ol>
         <div id="role"></div>
-        <div id="team"></div>
+        <div id="teams"></div>
         <button type="button" id="hideWrapper" onclick="document.getElementsByClassName('wrapper')[0].style.display = 'none';document.getElementById('showWrapper').style.zIndex = '1';">X</button>
       </div>
     </div>
@@ -128,7 +128,7 @@
         margin: 0px;
         min-height: 100vh;
       }
-      #team{
+      #teams{
         overflow: auto;
         min-width: 10%;
       }
@@ -250,7 +250,7 @@
       let citizens = document.getElementById("living_list");
       let action = document.getElementById("actionbox");
       let roleinfo = document.getElementById("role");
-      let team = document.getElementById("team");
+      let team = document.getElementById("teams");
       let narrator = document.getElementById("anarrator");
       let narrator_text = document.getElementById("narrate_text");
       let may = document.getElementById("mayor");
