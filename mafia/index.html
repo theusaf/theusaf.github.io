@@ -33,7 +33,7 @@
       </div>
     </div>
     <div>
-      <div id="narrator">
+      <div id="anarrator">
         <h2>Narrator Box</h2>
         <div id="narrate_text"></div>
         <button onclick="if(players.length >=5){startGame()}" id="start">Start</button>
@@ -118,7 +118,7 @@
         background: black;
         color: white;
       }
-      .night #narrator{
+      .night #anarrator{
         background: black!important;
       }
       .night .wrapper{
@@ -140,7 +140,7 @@
       #bugList{
         display: none;
       }
-      #narrator{
+      #anarrator{
         z-index: 0;
       }
       .wrapper {
@@ -170,7 +170,7 @@
         height: 25px;
         margin-left: calc(50% - 25%);
       }
-      #narrator {
+      #anarrator {
         border: 1px solid black;
         position: fixed;
         bottom: 0px;
@@ -178,11 +178,11 @@
         background: white;
         text-align: center;
       }
-      #narrator button, #narrator audio{
+      #anarrator button, #anarrator audio{
         width: 50%;
         height: 4vh;
       }
-      #narrator h2, #narrator p, #narrator o{
+      #anarrator h2, #anarrator p, #anarrator o{
         text-align: left;
       }
       p{
@@ -251,7 +251,7 @@
       let action = document.getElementById("actionbox");
       let roleinfo = document.getElementById("role");
       let team = document.getElementById("team");
-      let narrator = document.getElementById("narrator");
+      let narrator = document.getElementById("anarrator");
       let narrator_text = document.getElementById("narrate_text");
       let may = document.getElementById("mayor");
       let blk = document.getElementById("blackmail");
