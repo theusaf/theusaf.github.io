@@ -523,7 +523,8 @@
             let attacks = dayInfo[i].information.filter(o=>{return o.type == "attack"||o.type == "infect"});
             let s = [];
             for(let j in attacks){
-              if(!(attacks[j].by >= 0) && attacks[j].by == null){
+              if(attacks[j].by === null || attacks[j].by === undefined){
+                s.push("other");
                 continue;
               }
               s.push(players[attacks[j].by].role);
