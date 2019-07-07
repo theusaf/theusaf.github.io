@@ -58,6 +58,9 @@
       TODO add coven (MAYBE)
     </div>
     <style type="text/css">
+      #blackmail, #mayor{
+        display: none;
+      }
       #roleMaker{
         display: none;
         position: fixed;
@@ -251,6 +254,7 @@
       let narrator = document.getElementById("narrator");
       let narrator_text = document.getElementById("narrate_text");
       let may = document.getElementById("mayor");
+      let blk = document.getElementById("blackmail");
       let showRoleChoose = document.getElementById("roleMaker");
       let roleChooserRoles = document.getElementById("roleList");
       let roleChoosenRoles = document.getElementById("chosenRoles");
@@ -2215,6 +2219,8 @@
       //sets up the roles and then runs the "next" function
       //30 total roles
       function startGame(){
+        may.style.display = "inline-block";
+        blk.style.display = "inline-block";
         showRoleChoose.style.display = "none";
         toggleRoleChooser.style.display = "none";
         //hiding non-useful elements
