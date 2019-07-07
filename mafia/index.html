@@ -25,11 +25,19 @@
     <div id="actionbox"></div>
     <input id="LoginBox" onkeydown="if(event.keyCode != 13){return;}document.getElementById(`LoginSumbit`).onclick()"/>
     <button id="LoginSumbit" onclick="submit(document.getElementById(`LoginBox`).value)">Done</button>
+    <div id="roleMaker">
+      <div id="roleList">
+
+      </div>
+      <div id="chosenRoles">
+      </div>
+    </div>
     <div>
       <div id="narrator">
         <h2>Narrator Box</h2>
         <div id="narrate_text"></div>
         <button onclick="if(players.length >=5){startGame()}" id="start">Start</button>
+        <button id="setRoles">Set Role List (wip)</button>
         <button id="next" onclick="next()">Next</button>
         <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
         <button id="blackmail" onclick="black()">A blackmailed player has talked / Manual kill</button>
@@ -48,9 +56,33 @@
       TODO add witch (SMALL PRIORITY)
       TODO add win condition check (UNLIKELY)
       TODO add coven (MAYBE)
-      TODO add custom role list support (MEDIUM PRIORITY)
     </div>
     <style type="text/css">
+      #roleMaker{
+        display: none;
+        position: fixed;
+        width: 100vw;
+        height: 50vh;
+        overflow: auto;
+      }
+      #roleMaker button{
+        min-width: 5vw;
+        height: 2vw;
+      }
+      #chosenRoles{
+        display: flex;
+        flex-flow: column wrap;
+        max-height: 27vh;
+        overflow: auto;
+        width: 100%;
+        border: solid 1px black;
+        counter-reset: list;
+        list-style: none;
+      }
+      #chosenRoles li::before{
+        counter-increment: list;
+        content: counter(list)". ";
+      }
       h4{
         display: inline;
         font-size: 150%;
@@ -219,11 +251,83 @@
       let narrator = document.getElementById("narrator");
       let narrator_text = document.getElementById("narrate_text");
       let may = document.getElementById("mayor");
+      let showRoleChoose = document.getElementById("roleMaker");
+      let roleChooserRoles = document.getElementById("roleList");
+      let roleChoosenRoles = document.getElementById("chosenRoles");
+      let toggleRoleChooser = document.getElementById("setRoles");
       //adding css when elements have stuff in it.
       let preRes = {
         action: false,
         role: false,
         team: false,
+      };
+      let chooseableRoles = {
+        "mafioso": {
+          only: 1
+        },
+        "godfather": {
+          only: 1
+        },
+        "janitor": {
+        },
+        "framer": {
+        },
+        "consiglier": {
+        },
+        "bodyguard": {
+        },
+        "doctor": {
+        },
+        "escort": {
+        },
+        "sheriff": {
+        },
+        "investigator": {
+        },
+        "jailor": {
+          only: 1
+        },
+        "lookout": {
+        },
+        "mayor": {
+          only: 1
+        },
+        "retributionist": {
+        },
+        "spy": {
+        },
+        "transporter": {
+        },
+        "vampirehunter": {
+        },
+        "veteran": {
+        },
+        "vigilante": {
+        },
+        "blackmailer": {
+          only: 1
+        },
+        "consort": {
+        },
+        "disguiser": {
+        },
+        "amnesiac": {
+        },
+        "arsonist": {
+        },
+        "executioner": {
+        },
+        "jester": {
+        },
+        "serialkiller": {
+        },
+        "survivor": {
+        },
+        "vampire": {
+          only: 4
+        },
+        "werewolf": {
+        }
       };
       let checkSize = setInterval(function(){
         /*global CustomEvent*/
@@ -251,6 +355,24 @@
       let turn = 4;
       let youngestVamp = -1;
       let vampsCanAttack = true;
+      function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+
+          // Pick a remaining element...
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+
+          // And swap it with the current element.
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+      }
       //night is doing actions. night2 is showing results. day is day...
       let time = "day";
       let dayInfo = [];
@@ -302,13 +424,47 @@
           "guard": 2
         }
       };
-
       document.addEventListener("resize",resize);
-
+      let chosenRoles = [];
+      toggleRoleChooser.onclick = ()=>{
+        if(showRoleChoose.style.display == "flex"){
+          showRoleChoose.style.display = "none";
+          return;
+        }
+        showRoleChooser();
+      }
+      //allows the narrator to choose the roles
+      function showRoleChooser(){
+        showRoleChoose.style.display = "flex";
+        roleChooserRoles.innerHTML = "";
+        for(let i in Object.keys(chooseableRoles)){
+          let b = document.createElement("button"); b.innerHTML = Object.keys(chooseableRoles)[i];
+          b.onclick = ()=>{addRole(Object.keys(chooseableRoles)[i])};
+          roleChooserRoles.append(b);
+          roleChooserRoles.append(document.createElement("br"));
+        }
+      }
+      //adds the role to the list
+      function addRole(role){
+        if(chooseableRoles[role].only && chosenRoles.includes(role)){
+          return;
+        }
+        chosenRoles.push(role);
+        updateRoleList();
+      }
+      //updates the role chosen list
+      function updateRoleList(){
+        roleChoosenRoles.innerHTML = "";
+        for(let i in chosenRoles){
+          let l = document.createElement("li");
+          l.innerHTML = chosenRoles[i];
+          roleChoosenRoles.append(l);
+        }
+      }
       const resizeStuff = {
         actionbox: "flex"
       }
-
+      //css stuff
       function resize(resEvt){
         //console.log(resEvt);
         if(!resEvt.resizeSize){
@@ -2059,6 +2215,8 @@
       //sets up the roles and then runs the "next" function
       //30 total roles
       function startGame(){
+        showRoleChoose.style.display = "none";
+        toggleRoleChooser.style.display = "none";
         //hiding non-useful elements
         document.getElementById("LoginSumbit").style.display = "none";
         document.getElementById("start").style.display = "none";
@@ -2165,74 +2323,79 @@
             chance: 1
           }
         };
-        //start randomizing stuff
-        while(roles.length < players.length){
-          let choice = Math.round(Math.random() * Object.keys(possibleRoles).length);
-          let luck = Math.random();
-          let keys = Object.keys(possibleRoles);
-          choice = keys[choice];
-          if(typeof(choice) == "undefined"){
-            console.log("choice err");
-            continue;
-          }
-          if(possibleRoles[choice].chance >= luck){
-            if(typeof(possibleRoles[choice].only) == "number"){
-              let sameTyp = roles.filter(function(o){
-                return o == choice;
-              });
-              if(sameTyp.length == possibleRoles[choice].only){
-                continue;
-              }
-              roles.push(choice);
-              possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+        //if roles are chosen
+        if(chosenRoles.length < players.length){
+          //start randomizing stuff
+          while(roles.length < players.length){
+            let choice = Math.round(Math.random() * Object.keys(possibleRoles).length);
+            let luck = Math.random();
+            let keys = Object.keys(possibleRoles);
+            choice = keys[choice];
+            if(typeof(choice) == "undefined"){
+              console.log("choice err");
               continue;
             }
-            if(typeof(possibleRoles[choice].requires) == "string"){
-              if(!roles.includes(possibleRoles[choice].requires)){
+            if(possibleRoles[choice].chance >= luck){
+              if(typeof(possibleRoles[choice].only) == "number"){
+                let sameTyp = roles.filter(function(o){
+                  return o == choice;
+                });
+                if(sameTyp.length == possibleRoles[choice].only){
+                  continue;
+                }
+                roles.push(choice);
+                possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
                 continue;
               }
-              roles.push(choice);
-              possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
-              continue;
-            }
-            if(choice == "mafioso" || choice == "janitor" || choice == "godfather" || choice == "blackmailer" || choice == "consort" || choice == "consiglier" || choice == "framer" || choice == "disguiser"){
-              let currentMafia = roles.filter(function(o) {
+              if(typeof(possibleRoles[choice].requires) == "string"){
+                if(!roles.includes(possibleRoles[choice].requires)){
+                  continue;
+                }
+                roles.push(choice);
+                possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+                continue;
+              }
+              if(choice == "mafioso" || choice == "janitor" || choice == "godfather" || choice == "blackmailer" || choice == "consort" || choice == "consiglier" || choice == "framer" || choice == "disguiser"){
+                let currentMafia = roles.filter(function(o) {
+                  return o == "mafioso" || o == "janitor" || o == "godfather" || o == "blackmailer" || o == "consort" || o == "consiglier" || o == "framer" || o == "disguiser";
+                });
+                if(currentMafia.length >= maxMaf){
+                  continue;
+                }
+                if(!((currentMafia.includes("mafioso") || currentMafia.includes("godfather"))) && currentMafia.length == maxMaf - 1){
+                  console.log("adding mafioso; lack of mafia killing; at number " + roles.length);
+                  roles.push("mafioso");
+                  possibleRoles["mafioso"].chance = possibleRoles["mafioso"].chance / 2;
+                  continue;
+                }
+                roles.push(choice);
+                possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+                continue;
+              }
+              let mafiaCount = roles.filter(function(o) {
                 return o == "mafioso" || o == "janitor" || o == "godfather" || o == "blackmailer" || o == "consort" || o == "consiglier" || o == "framer" || o == "disguiser";
               });
-              if(currentMafia.length >= maxMaf){
-                continue;
-              }
-              if(!((currentMafia.includes("mafioso") || currentMafia.includes("godfather"))) && currentMafia.length == maxMaf - 1){
-                console.log("adding mafioso; lack of mafia killing; at number " + roles.length);
-                roles.push("mafioso");
-                possibleRoles["mafioso"].chance = possibleRoles["mafioso"].chance / 2;
+              let mafKillCount = roles.filter(function(o) {
+                return o == "mafioso" || o == "godfather";
+              });
+              if(Math.ceil(maxMaf / 2) > mafiaCount.length && roles.length >= players.length - Math.ceil(maxMaf / 2)){
+                possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+                console.log("Not enough mafia...");
+                if(mafKillCount.length == 0){
+                  roles.push("mafioso");
+                  console.log("... including killing mafia");
+                }
                 continue;
               }
               roles.push(choice);
               possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
               continue;
             }
-            let mafiaCount = roles.filter(function(o) {
-              return o == "mafioso" || o == "janitor" || o == "godfather" || o == "blackmailer" || o == "consort" || o == "consiglier" || o == "framer" || o == "disguiser";
-            });
-            let mafKillCount = roles.filter(function(o) {
-              return o == "mafioso" || o == "godfather";
-            });
-            if(Math.ceil(maxMaf / 2) > mafiaCount.length && roles.length >= players.length - Math.ceil(maxMaf / 2)){
-              possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
-              console.log("Not enough mafia...");
-              if(mafKillCount.length == 0){
-                roles.push("mafioso");
-                console.log("... including killing mafia");
-              }
-              continue;
-            }
-            roles.push(choice);
-            possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
-            continue;
           }
+          console.log(roles);
+        }else{
+          roles = shuffle(chosenRoles);
         }
-        console.log(roles);
         //assign roles to players...
         for(let i in players){
           players[i].role = roles[i];
