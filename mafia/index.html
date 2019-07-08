@@ -4,59 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/ico;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAABIykAIkxjACZOYAASFyAAYJCcAAABDACPsMQAAAASAAeHwgBCa24AI3iwABpITwAtXWkAHUJYAAUQHgBjnboAAxYeAAgrUwBUhKYAFyw7ADNkbAAVNTsARXiMAAoIPAAaMUEAAAAKABE9SgBSc4YAJG+WAENebAAPQU0AXW19ACR1lgAIh7oAAA0EAAAjRQAACg0AEiEkABGHsQAASXcACgUHAA9EXwAEBRkAXnGSAAENHwBOY3IAFCI5AGJ/hgBjfYkAAAk3AB5MUwBofoMASHZ+AABZjAAtNmIAZ4aJAChHVgA0YXYAa6W4AABjjwANHB8APmVnAAACCACvv8UABh09AGmKngARRE4AAAQXABouXQAAIkwANEZlACF1qQAdZG4AQ2twADdSXABXgY0AZXl+AG26ygAcRFcACgwUAAgLGgAXSV0AVY6QADQyRQBBeJcACi9hAAQhJgBAWmsAKE5aAAAFCQCMtcQAGzVGAAAGDABXdn8AACJEAHaFhwBNfJEADCYsACF2pAByh5YASoSXAEOIowB1qMIAAAoYADNAeAAADhsAAzY4ADNRbAABM0oAQEldABgdPgBjdpEAAHS6AEJziQAgSFsAPnSVAAAUNgA1ZWkADhUeABUVFQAlKzIADhokAAAlMwBNfYMAQ2FmAAAHBwBZboMAGBUeABwxTQA/ZHgAbI2gABtCSgAAaawAHUBNACQ1UAAOIz8AdJCXAHCUmgAogqUABBccAAwxRQAVLTkAPVVnAAoxVwAAGzEAn8XRABxWYgA9VXkAHTE8AABhlQAYOz8AAGuPAGqBoQAAAhQAGD1FAAslKwAFFk8AAAkOAB53qQBJg5YAOHRzAD9pdgANYZUAcYubABlHSAAmPEIACQ8OABxRVAAAHiAAWGdwADBjdwB0mbMAGhYRAB8vQAASFyYAXXF8AAADGAAMhL8AAAEkAB9BQAAAMUcAMVtgAAATGwAsYmMAHomqABaJvAAxdp4AEy8vAEuSoABke5EAMl9sACxBSQBFen0AY4GaADdnaQBMd4YAAAIEABEXHgBxgYgALEdbAFB3hgA8XnsAM2t+AA0iJAA8aHUADGqOAABRcQAFCBYANZqwAB06WQAlPEQAhairAFqDhgAIChwABBAcAFNlbAACEiIAfI+XAA8SEABhhJIAfLbMADl/lgBpfY8AcpuyABFWdwAfNTAANWdzAAoWLgAAIzEAJ09iAC9thQBUcZAAAAgOAA1IVwAnWWUAYJatACM5RQAAMUAAGhU0AEBpggAzJ0UAX3SQAEhmeQAOG08ABxAUADFcZQBTYXMAeK/KAAoSEQAiRFQAZ3qHAAg9QAAYK0AASnKLAAAAAAAAAAAA4XhT2HVSNKPebyuYgoMA7H0+Gei1BIG9H68wHUqbYY3EiyUkL0HR8WM3CUmITMtWXz+pxtlXa8Hyae1kzHy7s9cTji2/FUvDTgEp5pLCPYnl7/3I1KT7QqH5Gxqnt77fZQ9s4mrA6h4y0zOllnsWEk06ApH1Wg1yFAs4hoeQqrCgmq32GH4u/OQ5EZzzQFioIj6ZQ2cOrtVtRkRoNuN5PPh2UM/0XAUsB+5ugFuUKvB/A8V32tJxc4+T58pI6XQXT/SmrCjHHDWVR6I7l7i6VRC2nVnWySe5IbGEcAgmiiNRZvfcn+tU4M7NngpiIN20XkUxstC82/pdDGCrBoV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=">
     <title>Mafia Assistant</title>
-  </head>
-  <body>
-    <div>
-      <div class="wrapper">
-        <ul id="graveyard">
-          <div><h3><u>Graveyard</u></h3></div>
-          <div id="grave_list"></div>
-        </ul>
-        <ol id="living">
-          <div><h3><u>Living</u></h3></div>
-          <div id="living_list"></div>
-        </ol>
-        <div id="role"></div>
-        <div id="teams"></div>
-        <button type="button" id="hideWrapper" onclick="document.getElementsByClassName('wrapper')[0].style.display = 'none';document.getElementById('showWrapper').style.zIndex = '1';">X</button>
-      </div>
-    </div>
-    <button type="button" id="showWrapper" onclick="document.getElementsByClassName('wrapper')[0].style.display = 'flex';document.getElementById('showWrapper').style.zIndex = '';">⏬</button>
-    <div id="actionbox"></div>
-    <input id="LoginBox" onkeydown="if(event.keyCode != 13){return;}document.getElementById(`LoginSumbit`).onclick()"/>
-    <button id="LoginSumbit" onclick="submit(document.getElementById(`LoginBox`).value)">Done</button>
-    <div id="roleMaker">
-      <div id="roleList">
-
-      </div>
-      <div id="chosenRoles">
-      </div>
-    </div>
-    <div>
-      <div id="anarrator">
-        <h2>Narrator Box</h2>
-        <div id="narrate_text"></div>
-        <button onclick="if(players.length >=5){startGame()}" id="start">Start</button>
-        <button id="setRoles">Set Role List (wip)</button>
-        <button id="next" onclick="next()">Next</button>
-        <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
-        <button id="blackmail" onclick="black()">A blackmailed player has talked / Manual kill</button>
-        <!--button id="disableMusic" onclick="playMusic(true)">Start / Stop Music. If doesn't work, play the audio below.</button-->
-        <audio id="disableMusic" controls autoplay src="boop.wav" onended="playMusic()"></audio>
-        <button type="button" id="hideNarrator" onclick="document.getElementById('anarrator').style.display = 'none';document.getElementById('showNarrator').style.zIndex = '1';">X</button>
-      </div>
-      <button type="button" id="showNarrator" onclick="document.getElementById('anarrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
-    </div>
-    <div id="bugList">
-      sometimes mafia has no mafia killing night 1 (MEDIUM PRIORITY)
-      sometimes no mafia is added at beginning (its a feature?)
-      when mafia gets lynched, mafia members are not immediately promoted (BIG PRIORITY)
-      if vigilante gets converted, the death log says that they were killed by vampire (SMALL PRIORITY)
-      mafia being bitten die even if healed (MEDIUM PRIORITY)
-      TODO add witch (SMALL PRIORITY)
-      TODO add win condition check (UNLIKELY)
-      TODO add coven (MAYBE)
-    </div>
     <style type="text/css">
       #blackmail, #mayor{
         display: none;
@@ -241,6 +188,61 @@
         z-index: 11;
       }
     </style>
+  </head>
+  <body>
+    <div>
+      <div class="wrapper">
+        <ul id="graveyard">
+          <div><h3><u>Graveyard</u></h3></div>
+          <div id="grave_list"></div>
+        </ul>
+        <ol id="living">
+          <div><h3><u>Living</u></h3></div>
+          <div id="living_list"></div>
+        </ol>
+        <div id="role"></div>
+        <div id="teams"></div>
+        <button type="button" id="hideWrapper" onclick="document.getElementsByClassName('wrapper')[0].style.display = 'none';document.getElementById('showWrapper').style.zIndex = '1';">X</button>
+      </div>
+    </div>
+    <button type="button" id="showWrapper" onclick="document.getElementsByClassName('wrapper')[0].style.display = 'flex';document.getElementById('showWrapper').style.zIndex = '';">⏬</button>
+    <div id="actionbox"></div>
+    <input id="LoginBox" onkeydown="if(event.keyCode != 13){return;}document.getElementById(`LoginSumbit`).onclick()"/>
+    <button id="LoginSumbit" onclick="submit(document.getElementById(`LoginBox`).value)">Done</button>
+    <div id="roleMaker">
+      <div id="roleList">
+
+      </div>
+      <div id="chosenRoles">
+      </div>
+    </div>
+    <div>
+      <div id="anarrator">
+        <h2>Narrator Box</h2>
+        <div id="narrate_text"></div>
+        <button onclick="if(players.length >=5){startGame()}" id="start">Start</button>
+        <button id="setRoles">Set Role List (wip)</button>
+        <button id="next" onclick="next()">Next</button>
+        <button id="mayor" onclick="mayor()">The Mayor Has Revealed.</button>
+        <button id="blackmail" onclick="black()">A blackmailed player has talked / Manual kill</button>
+        <!--button id="disableMusic" onclick="playMusic(true)">Start / Stop Music. If doesn't work, play the audio below.</button-->
+        <audio id="disableMusic" controls autoplay src="boop.wav" onended="playMusic()"></audio>
+        <button type="button" id="hideNarrator" onclick="document.getElementById('anarrator').style.display = 'none';document.getElementById('showNarrator').style.zIndex = '1';">X</button>
+      </div>
+      <button type="button" id="showNarrator" onclick="document.getElementById('anarrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
+    </div>
+    <div id="bugList">
+      sometimes mafia has no mafia killing night 1 (MEDIUM PRIORITY)
+      sometimes no mafia is added at beginning (its a feature?)
+      witch can't be jailed/rbd to prevent witch effect (sorry, can't do much about this)
+      when mafia gets lynched, mafia members are not immediately promoted (BIG PRIORITY)
+      if vigilante gets converted, the death log says that they were killed by vampire (SMALL PRIORITY)
+      mafia being bitten die even if healed (MEDIUM PRIORITY)
+      TODO add win condition check (UNLIKELY)
+      TODO add coven (MAYBE)
+      TODO add "star-crossed lovers" (MAYBE)
+      TODO add random functions [RT,TK,TP,NK,NE,MK,etc.] (SMALL PRIORITY)
+    </div>
     <script>
       //html elements
       let mus = document.getElementById("disableMusic");
@@ -267,71 +269,142 @@
       };
       const chooseableRoles = {
         "mafioso": {
-          only: 1
+          chance: 1,
+          only: 1,
+          message: "Your target likes to work for the mafia. They must be a mafioso."
         },
         "godfather": {
-          only: 1
+          chance: 1,
+          only: 1,
+          message: "Your target is the boss of organized crime. They must be a godfather."
         },
         "janitor": {
+          chance: 1,
+          message: "Your target cleans bodies for the mafia. They must be a janitor."
         },
         "framer": {
+          chance: 1,
+          message: "Your target has a desire to decieve. They must be a framer."
         },
         "consiglier": {
+          chance: 1,
+          message: "Your target gathers information for the mafia. They must be a consigliere."
         },
         "bodyguard": {
+          chance: 1,
+          message: "Your target sells protection at unreasonable prices. They must be a bodyguard."
         },
         "doctor": {
+          chance: 1,
+          message: "Your target has earned the first aid merit badge. They must be a doctor."
         },
         "escort": {
+          chance: 1,
+          message: "Your target is a beautiful person working with the town. They must be a escort."
         },
         "sheriff": {
+          chance: 1,
+          message: "Your target hunts down bad guys. They must be a sheriff."
         },
         "investigator": {
+          chance: 1,
+          message: "Your target likes analyzing stuff. They must be a investigator."
         },
         "jailor": {
-          only: 1
+          chance: 1,
+          only: 1,
+          message: "Your target lives alone in front of bars. They must be a jailor."
         },
         "lookout": {
+          chance: 1,
+          message: "Your target likes spying on people's houses. They must be a lookout."
         },
         "mayor": {
-          only: 1
+          chance: 1,
+          only: 1,
+          message: "Your target is the rich politician. They must be a mayor."
         },
         "retributionist": {
+          chance: 1,
+          message: "Your target has the ability to bring back the dead. They must be a retributionist."
         },
         "spy": {
+          chance: 1,
+          message: "Your target enjoys listening to private conversations. They must be a spy."
         },
         "transporter": {
+          chance: 1,
+          message: "Your target owns seven taxi cabs. They must be a transporter."
         },
         "vampirehunter": {
+          chance: 1,
+          requires: "vampire",
+          message: "Your target has garlic breath. They must be a vampire hunter."
         },
         "veteran": {
+          chance: 1,
+          message: "Your target is a paranoid war hero. They must be a veteran."
         },
         "vigilante": {
+          chance: 1,
+          message: "Your target wants justice to be served. They must be a vigilante."
         },
         "blackmailer": {
-          only: 1
+          chance: 1,
+          only: 1,
+          message: "Your target knows your deepest secrets. They must be a blackmailer."
         },
         "consort": {
+          chance: 1,
+          message: "Your target is an expert in distraction. They must be a consort."
         },
         "disguiser": {
+          chance: 1,
+          message: "Your target has a huge wardrobe. They must be a disguiser."
         },
         "amnesiac": {
+          chance: 1,
+          message: "Your target has no idea what they are. They must be a amnesiac."
         },
         "arsonist": {
+          chance: 1,
+          message: "Your target loves to burn things. They must be a arsonist."
         },
         "executioner": {
+          chance: 1,
+          message: "Your target wants to execute someone. They must be a executioner."
         },
         "jester": {
+          chance: 1,
+          message: "Your target is a crazy lunatic. They must be a jester."
         },
         "serialkiller": {
+          chance: 1,
+          message: "Your target enjoys playing with bloody knives. They must be a serialkiller."
         },
         "survivor": {
+          chance: 1,
+          message: "Your target wants to live. They must be a survivor."
         },
         "vampire": {
-          only: 4
+          chance: 1,
+          only: 4,
+          message: "Your target thirsts for blood. They must be a vampire."
         },
         "werewolf": {
-        }
+          chance: 1,
+          message: "Your target has nightmares during the full moon. They must be a werewolf."
+        }, //currently work in progress
+        "witch": {
+          chance: 1,
+          message: "Your target tampers with magic. They must be a witch."
+        }/*,
+        "lovers": {
+          chance: 1,
+          only: 2,
+          min: 2,
+          message: "Your target is in love with someone. They must be a star-crossed lover."
+        }*/
       };
       let checkSize = setInterval(function(){
         /*global CustomEvent*/
@@ -390,7 +463,7 @@
         "mafioso": "Vigilante, Veteran, Mafioso",
         "godfather": "Bodyguard, Godfather, Arsonist",
         "janitor": "Retributionist, Janitor",
-        "framer": "Framer, Vampire, Jester, Lookout",
+        "framer": "Framer, Vampire, Jester",
         "consiglier": "Investigator, Consigliere, Mayor",
         "bodyguard": "Bodyguard, Godfather, Arsonist",
         "doctor": "Doctor, Disguiser, Serial Killer",
@@ -398,7 +471,7 @@
         "sheriff": "Sheriff, Executioner, Werewolf",
         "investigator": "Investigator, Consigliere, Mayor",
         "jailor": "Spy, Blackmailer, Jailor",
-        "lookout": "Framer, Vampire, Jester, Lookout",
+        "lookout": "Lookout, Witch",
         "mayor": "Investigator, Consigliere, Mayor",
         "retributionist": "Retributionist, Janitor",
         "spy": "Spy, Blackmailer, Jailor",
@@ -412,10 +485,11 @@
         "amnesiac": "Survivor, Vampire Hunter, Amnesiac",
         "arsonist": "Bodyguard, Godfather, Arsonist",
         "executioner": "Sheriff, Executioner, Werewolf",
-        "jester": "Framer, Vampire, Jester, Lookout",
+        "jester": "Framer, Vampire, Jester",
         "serialkiller": "Doctor, Disguiser, Serial Killer",
         "survivor": "Survivor, Vampire Hunter, Amnesiac",
-        "vampire": "Framer, Vampire, Jester, Lookout",
+        "vampire": "Framer, Vampire, Jester",
+        "witch": "Lookout, Witch",
         "werewolf": "Sheriff, Executioner, Werewolf",
       };
       const defenseValues = {
@@ -563,6 +637,19 @@
         let string = "";
         narrator_text.innerHTML = "";
         switch (role) {
+          case "witch":
+          options = players.filter(o=>{
+            return !o.dead;
+          });
+          for(let i in options){
+            if(options[i].index == turn){
+              string += `<div><o>${options[i].name}</o><button style="background: purple; margin-left: 5px" onclick="(function(){players[turn].NightAction.target2 = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to make your target target yourself tonight</p>';})()"></button></div>`;
+              continue;
+            }
+            string += `<div><o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to control ${options[i].name} tonight</p>';})()"></button><button style="background: purple; margin-left: 5px" onclick="(function(){players[turn].NightAction.target2 = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to make your target target ${options[i].name} tonight</p>';})()"></button></div>`;
+          }
+          string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a></div>`;
+          break;
           case "mafioso":
           options = players.filter(function(o) {
             return !o.dead && !(o.role == "mafioso" || o.role == "janitor" || o.role == "godfather" || o.role == "blackmailer" || o.role == "consort" || o.role == "consiglier" || o.role == "framer" || o.role == "disguiser");
@@ -591,8 +678,9 @@
           if(players[turn].actionsLeft == -1){
             players[turn].actionsLeft = 3;
           }
-          for(let i in players){
-            string += `<div><o>${players[i].name} ${players[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${players[i].index}; narrator_text.innerHTML = '<p>You decide to clean ${players[i].name} ${players[i].mrole}</p>';})()"></button></div>`;
+          options = players.filter(o=>{return !o.dead && o.index != turn;});
+          for(let i in options){
+            string += `<div><o>${options[i].name} ${options[i].mrole}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to clean ${options[i].name} ${options[i].mrole}</p>';})()"></button></div>`;
           }
           string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a></div>`;
           if(players[turn].actionsLeft == 0){
@@ -898,6 +986,11 @@
       //explains each role
       function generateRoleText(role){
         switch (role) {
+          case "witch":
+          roleinfo.innerHTML = "<h4 style='color:purple'>Witch</h4>";
+          roleinfo.innerHTML += "<p>Work with the evildoers to kill the town.</p>";
+          roleinfo.innerHTML += "<p>Control a player to target another player.</p>";
+          break;
           case "mafioso":
           roleinfo.innerHTML = "<h4 style='color:red'>Mafioso</h4>";
           roleinfo.innerHTML += "<p>Kill players that are against the mafia. Vote to kill all players that are against the mafia and do the work for the godfather</p>";
@@ -1102,8 +1195,38 @@
           });
         }
         let alive = players.filter(o=>{return !o.dead || (o.role == "jester" && o.hasWon)});
+        //witch stuff
+        for(let i in alive){
+          if(alive[i].role == "witch"){
+            //if no target
+            if(!(alive[i].NightAction.target >= 0)){
+              continue;
+            }
+            //if transporter retri amne jailor or witch, skip
+            if(/(transporter)|(witch)|(retributionist)|(amnesiac)|(jailor)/.test(players[alive[i].NightAction.target].role)){
+              continue;
+            }
+            if(!(alive[i].NightAction.target2 >= 0)){
+              continue;
+            }
+            players[alive[i].NightAction.target].NightAction = {
+              target: alive[i].NightAction.target2
+            };
+          }
+        }
+        //main setters
         for(let i in alive){
           switch (alive[i].role) {
+            case "witch":
+            alive[i].NightAction.target >= 0 ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "witch",
+                visit: true,
+                by: alive[i].index,
+                message: "You were witched!"
+              });
+            })():null;
+            break;
             case "veteran":
             alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].index].information.push({
@@ -1463,7 +1586,7 @@
         }
         //sort through all stuff and fix the day info
         fixedDayInfo = [];
-        //rb stuff
+        //rb stuff (witches will know they are rbd, but they can use magic to do their action anyways. at least, that's the explanation i have for my laziness)
         for(let i in dayInfo){
           //evaluate actions. if rbd, jailed, etc, remove actions. Then get main results if applicable
           if(dayInfo[i].information.filter(o=>{return o.type == "jailed";}).length){ //jailed
@@ -1539,7 +1662,6 @@
             }
           }
         }
-
         //vampire stuff
         if(vampsCanAttack && players.filter(o=>{return !o.dead && o.role == "vampire";}).length){
           if(players[youngestVamp].dead){
@@ -1680,9 +1802,10 @@
         for(let i in dayInfo){
           switch (players[dayInfo[i].index].role) {
             case "consiglier":
+            case "witch":
             for(let j in dayInfo){
               if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index}).length){
-                dayInfo[i].main = `Your target's role is ${players[dayInfo[j].index].role}`;
+                dayInfo[i].main = chooseableRoles[players[dayInfo[j].index].role].message;//`Your target's role is ${players[dayInfo[j].index].role}`;
                 break;
               }
             }
@@ -1804,7 +1927,7 @@
           }
           //if target was jailed
           if(dayInfo[i].information.filter(o=>{return o.type == "jail";}).length){
-            dayInfo[i].main = "";//Your target was jailed";
+            dayInfo[i].main = "Your target was jailed";
           }
         }
         dousedPlayers = hasIgnited ? [] : dousedPlayers;
@@ -2231,135 +2354,36 @@
         nextButton.style.display = "";
         let roles = [];
         let maxMaf = Math.ceil((players.length / 3) - 1);
-        let possibleRoles = {
-          "mafioso": {
-            chance: 1,
-            only: 1
-          },
-          "godfather": {
-            chance: 1,
-            only: 1
-          },
-          "janitor": {
-            chance: 1
-          },
-          "framer": {
-            chance: 1
-          },
-          "consiglier": {
-            chance: 1
-          },
-          "bodyguard": {
-            chance: 1
-          },
-          "doctor": {
-            chance: 1
-          },
-          "escort": {
-            chance: 1
-          },
-          "sheriff": {
-            chance: 1
-          },
-          "investigator": {
-            chance: 1
-          },
-          "jailor": {
-            chance: 1,
-            only: 1
-          },
-          "lookout": {
-            chance: 1
-          },
-          "mayor": {
-            chance: 1,
-            only: 1
-          },
-          "retributionist": {
-            chance: 1
-          },
-          "spy": {
-            chance: 1
-          },
-          "transporter": {
-            chance: 1
-          },
-          "vampirehunter": {
-            chance: 1,
-            requires: "vampire"
-          },
-          "veteran": {
-            chance: 1
-          },
-          "vigilante": {
-            chance: 1
-          },
-          "blackmailer": {
-            chance: 1,
-            only: 1
-          },
-          "consort": {
-            chance: 1
-          },
-          "disguiser": {
-            chance: 1
-          },
-          "amnesiac": {
-            chance: 1
-          },
-          "arsonist": {
-            chance: 1
-          },
-          "executioner": {
-            chance: 1
-          },
-          "jester": {
-            chance: 1
-          },
-          "serialkiller": {
-            chance: 1
-          },
-          "survivor": {
-            chance: 1
-          },
-          "vampire": {
-            chance: 1,
-            only: 4
-          },
-          "werewolf": {
-            chance: 1
-          }
-        };
         //if roles are chosen
         if(choseRoles.length < players.length){
           //start randomizing stuff
           while(roles.length < players.length){
-            let choice = Math.round(Math.random() * Object.keys(possibleRoles).length);
+            let choice = Math.round(Math.random() * Object.keys(chooseableRoles).length);
             let luck = Math.random();
-            let keys = Object.keys(possibleRoles);
+            let keys = Object.keys(chooseableRoles);
             choice = keys[choice];
             if(typeof(choice) == "undefined"){
               console.log("choice err");
               continue;
             }
-            if(possibleRoles[choice].chance >= luck){
-              if(typeof(possibleRoles[choice].only) == "number"){
+            if(chooseableRoles[choice].chance >= luck){
+              if(typeof(chooseableRoles[choice].only) == "number"){
                 let sameTyp = roles.filter(function(o){
                   return o == choice;
                 });
-                if(sameTyp.length == possibleRoles[choice].only){
+                if(sameTyp.length == chooseableRoles[choice].only){
                   continue;
                 }
                 roles.push(choice);
-                possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+                chooseableRoles[choice].chance = chooseableRoles[choice].chance / 2;
                 continue;
               }
-              if(typeof(possibleRoles[choice].requires) == "string"){
-                if(!roles.includes(possibleRoles[choice].requires)){
+              if(typeof(chooseableRoles[choice].requires) == "string"){
+                if(!roles.includes(chooseableRoles[choice].requires)){
                   continue;
                 }
                 roles.push(choice);
-                possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+                chooseableRoles[choice].chance = chooseableRoles[choice].chance / 2;
                 continue;
               }
               if(choice == "mafioso" || choice == "janitor" || choice == "godfather" || choice == "blackmailer" || choice == "consort" || choice == "consiglier" || choice == "framer" || choice == "disguiser"){
@@ -2372,11 +2396,11 @@
                 if(!((currentMafia.includes("mafioso") || currentMafia.includes("godfather"))) && currentMafia.length == maxMaf - 1){
                   console.log("adding mafioso; lack of mafia killing; at number " + roles.length);
                   roles.push("mafioso");
-                  possibleRoles["mafioso"].chance = possibleRoles["mafioso"].chance / 2;
+                  chooseableRoles["mafioso"].chance = chooseableRoles["mafioso"].chance / 2;
                   continue;
                 }
                 roles.push(choice);
-                possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+                chooseableRoles[choice].chance = chooseableRoles[choice].chance / 2;
                 continue;
               }
               let mafiaCount = roles.filter(function(o) {
@@ -2386,7 +2410,7 @@
                 return o == "mafioso" || o == "godfather";
               });
               if(Math.ceil(maxMaf / 2) > mafiaCount.length && roles.length >= players.length - Math.ceil(maxMaf / 2)){
-                possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+                chooseableRoles[choice].chance = chooseableRoles[choice].chance / 2;
                 console.log("Not enough mafia...");
                 if(mafKillCount.length == 0){
                   roles.push("mafioso");
@@ -2395,7 +2419,7 @@
                 continue;
               }
               roles.push(choice);
-              possibleRoles[choice].chance = possibleRoles[choice].chance / 2;
+              chooseableRoles[choice].chance = chooseableRoles[choice].chance / 2;
               continue;
             }
           }
