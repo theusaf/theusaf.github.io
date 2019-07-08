@@ -43,9 +43,9 @@
         <button id="blackmail" onclick="black()">A blackmailed player has talked / Manual kill</button>
         <!--button id="disableMusic" onclick="playMusic(true)">Start / Stop Music. If doesn't work, play the audio below.</button-->
         <audio id="disableMusic" controls autoplay src="boop.wav" onended="playMusic()"></audio>
-        <button type="button" id="hideNarrator" onclick="document.getElementById('narrator').style.display = 'none';document.getElementById('showNarrator').style.zIndex = '1';">X</button>
+        <button type="button" id="hideNarrator" onclick="document.getElementById('anarrator').style.display = 'none';document.getElementById('showNarrator').style.zIndex = '1';">X</button>
       </div>
-      <button type="button" id="showNarrator" onclick="document.getElementById('narrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
+      <button type="button" id="showNarrator" onclick="document.getElementById('anarrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
     </div>
     <div id="bugList">
       sometimes mafia has no mafia killing night 1 (MEDIUM PRIORITY)
@@ -265,7 +265,7 @@
         role: false,
         team: false,
       };
-      let chooseableRoles = {
+      const chooseableRoles = {
         "mafioso": {
           only: 1
         },
@@ -450,7 +450,7 @@
       }
       //adds the role to the list
       function addRole(role){
-        if(chooseableRoles[role].only && choseRoles.includes(role)){
+        if(chooseableRoles[role].only <= choseRoles.filter(o=>{return o == role;}).length && choseRoles.includes(role)){
           return;
         }
         choseRoles.push(role);
