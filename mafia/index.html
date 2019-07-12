@@ -210,6 +210,10 @@
     <input id="LoginBox" onkeydown="if(event.keyCode != 13){return;}document.getElementById(`LoginSumbit`).onclick()"/>
     <button id="LoginSumbit" onclick="submit(document.getElementById(`LoginBox`).value)">Done</button>
     <div id="roleMaker">
+      <div>
+        <p>Randomize Roles</p>
+        <input type="checkbox" id="randomizeChosenRoles" checked/>
+      </div>
       <div id="roleList">
 
       </div>
@@ -2570,7 +2574,11 @@
           }
           console.log(roles);
         }else{
-          roles = shuffle(choseRoles);
+          if(document.getElementById("randomizeChosenRoles").checked){
+            roles = shuffle(choseRoles);
+          }else{
+            roles = choseRoles;
+          }
         }
         //assign roles to players...
         for(let i in players){
@@ -2579,6 +2587,7 @@
         turn = 3;
         next();
       }
+      //update the player list
       function updatePlayerLists(showRoles){
         grave.innerHTML = "";
         citizens.innerHTML = "";
