@@ -153,8 +153,8 @@
         display: block;
       }
       #actionbox div{
-        min-width: calc(24vw - 4px);
-        max-width: 25vw;
+        min-width: 23vw;
+        max-width: 24vw;
         min-height: 10vh;
         border: solid grey 2px;
         overflow-x: auto;
@@ -1974,9 +1974,9 @@
             }
             break;
             case "spy":
+            let str = "";
             for(let j in dayInfo){
               if(dayInfo[j].information.filter(o=>{return o.by == dayInfo[i].index}).length){
-                let str = "";
                 let d = dayInfo[j].information.filter(o=>{return o.by!=dayInfo[i].index&&o.visit});
                 let healed = d.filter(o=>{return o.type == "heal";});
                 let spied = d.filter(o=>{return o.type=="bug";});
