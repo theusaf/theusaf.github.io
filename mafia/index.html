@@ -238,10 +238,8 @@
       when mafia gets lynched, mafia members are not immediately promoted (BIG PRIORITY)
       if vigilante gets converted, the death log says that they were killed by vampire (SMALL PRIORITY)
       mafia being bitten die even if healed (MEDIUM PRIORITY)
-      godfather forces mafia to attack when godfather doesn't do any actions (BIG PRIORITY)
       TODO add win condition check (UNLIKELY)
       TODO add coven (MAYBE)
-      TODO add "star-crossed lovers" (MAYBE)
       TODO add random functions [RT,TK,TP,NK,NE,MK,etc.] (SMALL PRIORITY)
     </div>
     <script>
@@ -399,13 +397,13 @@
         "witch": {
           chance: 1,
           message: "Your target tampers with magic. They must be a witch."
-        }/*,
-        "lovers": {
+        },
+        "lover": {
           chance: 1,
           only: 2,
           min: 2,
           message: "Your target is in love with someone. They must be a star-crossed lover."
-        }*/
+        }
       };
       let checkSize = setInterval(function(){
         /*global CustomEvent*/
@@ -529,6 +527,11 @@
           return;
         }
         choseRoles.push(role);
+        if(chooseableRoles[role].min){
+          for(let i = 0;i<chooseableRoles[role].min - 1;i++){
+            choseRoles.push(role);
+          }
+        }
         updateRoleList();
       }
       //updates the role chosen list
@@ -638,6 +641,21 @@
         let string = "";
         narrator_text.innerHTML = "";
         switch (role) {
+          case "lover":
+          if(players[turn].specialCase){
+            options = players.filter(o=>{return !o.dead && o.index != turn && o.role != "lover";});
+          }else{
+            options = players.filter(o=>{return !o.dead && o.index != turn;});
+          }
+          for(let i in options){
+            if(players[turn].specialCase){
+              string += `<div><o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You decide to attack ${options[i].name}</p>';})()"></button></div>`;
+            }else{
+              string += `<div><o>${options[i].name}</o><button onclick="(function(){players[turn].NightAction.target = ${options[i].index}; narrator_text.innerHTML = '<p>You think ${options[i].name} is your true love</p>';})()"></button></div>`;
+            }
+          }
+          string += `<div><a onclick="(function(){players[turn].NightAction = {}; narrator_text.innerHTML = '<p>You changed your mind</p>'})()">cancel</a></div>`;
+          break;
           case "witch":
           options = players.filter(o=>{
             return !o.dead;
@@ -991,6 +1009,11 @@
       //explains each role
       function generateRoleText(role){
         switch (role) {
+          case "lover":
+          roleinfo.innerHTML = "<h4 style='color:pink'>Star-Crossed Lover</h4>";
+          roleinfo.innerHTML += "<p>Find and survive with your lover</p>";
+          roleinfo.innerHTML += "<p>Search a player each night to determine if they are your lover. If you find them, or they find you, you will be able to attack other players with a powerful attack.</p>";
+          break;
           case "witch":
           roleinfo.innerHTML = "<h4 style='color:purple'>Witch</h4>";
           roleinfo.innerHTML += "<p>Work with the evildoers to kill the town.</p>";
@@ -1222,6 +1245,36 @@
         //main setters
         for(let i in alive){
           switch (alive[i].role) {
+            case "lover":
+            if(alive[i].specialCase2){
+              dayInfo[alive[i].index].information.push({
+                type: "attack",
+                by: null,
+                value: 3,
+                message: "You could not get over your true love's death."
+              });
+              break;
+            }
+            if(alive[i].specialCase){
+              alive[i].NightAction.target >= 0 ? (()=>{
+                dayInfo[alive[i].NightAction.target].information.push({
+                  type: "attack",
+                  by: alive[i].index,
+                  visit: true,
+                  value: 2,
+                  message: "A star-crossed lover attacked you"
+                });
+              })() : null;
+            }else{
+              alive[i].NightAction.target >= 0 ? (()=>{
+                dayInfo[alive[i].NightAction.target].information.push({
+                  type: "lovecheck",
+                  by: alive[i].index,
+                  visit: true
+                });
+              })() : null;
+            }
+            break;
             case "witch":
             alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
@@ -1242,7 +1295,7 @@
             })() : null;
             break;
             case "mafioso":
-            if(alive.filter(o=>{return o.role == "godfather" && !(o.NightAction.target2 >= 0)}).length){
+            if(alive.filter(o=>{return o.role == "godfather" && !(o.NightAction.target2 >= 0)}).length && o.NightAction.target >= 0){
               break;
             }
             alive[i].NightAction.target >= 0 ? (()=>{
@@ -1823,6 +1876,28 @@
         //getting main results
         for(let i in dayInfo){
           switch (players[dayInfo[i].index].role) {
+            case "lover":
+            if(players[dayInfo[i].index].specialCase){
+              break;
+            }
+            for(let k in dayInfo){
+              if(dayInfo[k].information.filter(o=>{return o.by == dayInfo[i].index}).length){
+                if(players[dayInfo[k].index].role == "lover"){
+                  dayInfo[i].main = "Your target has an attractive air about them. You have found your true love!";
+                  players[dayInfo[k].index].specialCase = true;
+                  players[dayInfo[i].index].specialCase = true;
+                  dayInfo[k].information.push({
+                    type: "system",
+                    visit: false,
+                    by: dayInfo[i].index,
+                    message: `You have been found by ${players[dayInfo[i].index].name}!`
+                  });
+                }else{
+                  dayInfo[i].main = "You do not find your target attractive. They are not your true love.";
+                }
+              }
+            }
+            break;
             case "consiglier":
             case "witch":
             for(let j in dayInfo){
@@ -1967,6 +2042,14 @@
             if(players[jailor.by].role == "jailor" && (/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].role)||/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].mrole))){
               players[dayInfo[jailor.by].index].actionsLeft = 0;
             }
+            //special case if lover
+            if(players[dayInfo[i].index].role == "lover"){
+              for(let k in players){
+                if(players[k].role == "lover" && players[k].index != dayInfo[i].index){
+                  players[k].specialCase2 = true;
+                }
+              }
+            }
             players[dayInfo[i].index].dead = true;
             dayInfo[i].information.push({
               type: "system",
@@ -2001,6 +2084,14 @@
                 if(av[j].by != null && players[dayInfo[av[j].by].index].role == "vigilante" && (/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].role)||/(investigator)|(lookout)|(sheriff)|(spy)|(jailor)|(vampirehunter)|(veteran)|(vigilante)|(bodyguard)|(doctor)|(escort)|(mayor)|(medium)|(retributionist)|(transporter)/g.test(players[dayInfo[i].index].mrole))){
                   players[dayInfo[av[j].by].index].specialCase = true;
                   players[dayInfo[av[j].by].index].actionsLeft = 0;
+                }
+                //special case if lover
+                if(av[j].by != null && players[dayInfo[i].index].role == "lover"){
+                  for(let k in players){
+                    if(players[dayInfo[i].index].mrole != "cleaned" && players[k].role == "lover" && players[k].index != dayInfo[i].index){
+                      players[k].specialCase2 = true;
+                    }
+                  }
                 }
                 if(players[dayInfo[i].index].dead){
                   continue;
@@ -2300,7 +2391,7 @@
           if(turn == 3){
             action.innerHTML = "no day deaths";
             //show role of executed person
-            if(data >= 0){ //determine exe/jest win
+            if(data >= 0){ //determine exe/jest win and lover lose
               console.log("data found");
               if(players[data].role == "jester"){
                 players[data].hasWon = true;
@@ -2312,6 +2403,14 @@
               players[data].dead = true;
               players[data].mrole = players[data].mrole == "cleaned" ? "" : players[data].mrole;
               action.innerHTML = `${players[data].name} was lynched by the town. Their role was ${players[data].mrole ? players[data].mrole : players[data].role}`;
+              //special case if lover
+              if(players[data].role == "lover"){
+                for(let k in players){
+                  if(players[data].mrole != "cleaned" && players[k].role == "lover" && players[k].index != data){
+                    players[k].specialCase2 = true;
+                  }
+                }
+              }
             }
             //reset stuff
             for(let i in players){
@@ -2402,7 +2501,25 @@
                 if(sameTyp.length == chooseableRoles[choice].only){
                   continue;
                 }
+                if(typeof(chooseableRoles[choice].min) == "number"){
+                  if(players.length < roles.length + chooseableRoles[choice].min){
+                    continue;
+                  }
+                  for(let i = 0;i<chooseableRoles[choice].min - 1;i++){
+                    roles.push(choice);
+                  }
+                }
                 roles.push(choice);
+                chooseableRoles[choice].chance = chooseableRoles[choice].chance / 2;
+                continue;
+              }
+              if(typeof(chooseableRoles[choice].min) == "number"){
+                if(players.length < roles.length + chooseableRoles[choice].min){
+                  continue;
+                }
+                for(let i = 0;i<chooseableRoles[choice].min;i++){
+                  roles.push(choice);
+                }
                 chooseableRoles[choice].chance = chooseableRoles[choice].chance / 2;
                 continue;
               }
