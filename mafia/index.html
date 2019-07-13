@@ -236,15 +236,15 @@
       <button type="button" id="showNarrator" onclick="document.getElementById('anarrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
     </div>
     <div id="bugList">
-      sometimes mafia has no mafia killing night 1 (MEDIUM PRIORITY)
-      sometimes no mafia is added at beginning (its a feature?)
-      witch can't be jailed to prevent witch effect (sorry, can't do much about this)
-      when mafia gets lynched, mafia members are not immediately promoted (BIG PRIORITY)
-      if vigilante gets converted, the death log says that they were killed by vampire (SMALL PRIORITY)
-      mafia being bitten die even if healed (MEDIUM PRIORITY)
-      TODO add win condition check (UNLIKELY)
-      TODO add coven (MAYBE)
-      TODO add random functions [RT,TK,TP,NK,NE,MK,etc.] (SMALL PRIORITY)
+      <!-- BUG: sometimes mafia has no mafia killing night 1 (MEDIUM PRIORITY) -->
+      sometimes no mafia is added at beginning (TIS A FEATURE NOW)
+      <!-- BUG: witch can't be jailed to prevent witch effect (SMALL PRIORITY) -->
+      <!-- BUG: if vigilante gets converted, the death log says that they were killed by vampire (SMALL PRIORITY) -->
+      <!-- BUG: mafia being bitten die even if healed (MEDIUM PRIORITY) -->
+      <!-- TODO: add win condition check (UNLIKELY) -->
+      <!-- TODO: add coven (MAYBE) -->
+      <!-- TODO: add random functions [RT,TK,TP,NK,NE,MK,etc.] (SMALL PRIORITY) -->
+      <!-- TODO: overwrite css -->
     </div>
     <script>
       //html elements
@@ -2415,6 +2415,14 @@
                     players[k].specialCase2 = true;
                   }
                 }
+              }
+              //mafia transformation
+              if(!players.filter(o=>{return /(godfather)|(mafioso)/g.test(o.role) && !o.dead}).length){
+                let m = players.filter(o=>{return !o.dead && /(janitor)|(consort)|(disguiser)|(consiglier)|(framer)|(blackmailer)/g.test(o.role)})[0];
+                if(!m){
+                  return;
+                }
+                m.role = "mafioso";
               }
             }
             //reset stuff
