@@ -1299,18 +1299,9 @@
             })() : null;
             break;
             case "mafioso":
-            if(alive.filter(o=>{return o.role == "godfather" && !(o.NightAction.target2 >= 0)}).length && o.NightAction.target >= 0){
+            if(alive.filter(o=>{return o.role == "godfather" && !(o.NightAction.target2 >= 0) && o.NightAction.target >= 0}).length){ //godfather is attacking target
               break;
             }
-            alive[i].NightAction.target >= 0 ? (()=>{
-              dayInfo[alive[i].NightAction.target].information.push({
-                type: "attack",
-                value: 1,
-                by: alive[i].index,
-                message: "You were attacked by a member of the mafia",
-                visit: true
-              });
-            })() : null;
             if(dayInfo[alive[i].index].information.filter(o=>{return o.type == "force";}).length){
               let target = players[dayInfo[alive[i].index].information.filter(o=>{return o.type == "force";})[0].by].NightAction.target;
               if(target >= 0){
@@ -1322,7 +1313,17 @@
                   message: "You were attacked by a member of the mafia"
                 });
               }
+              break;
             }
+            alive[i].NightAction.target >= 0 ? (()=>{
+              dayInfo[alive[i].NightAction.target].information.push({
+                type: "attack",
+                value: 1,
+                by: alive[i].index,
+                message: "You were attacked by a member of the mafia",
+                visit: true
+              });
+            })() : null;
             break;
             case "godfather":
             (alive[i].NightAction.target >= 0 && !(alive[i].NightAction.target2 >= 0)) || (alive[i].NightAction.target >= 0 && !alive.filter(o=>{return o.role == "mafioso"}).length) ? (()=>{
