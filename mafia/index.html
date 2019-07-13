@@ -1312,8 +1312,8 @@
                   by: alive[i].index,
                   message: "You were attacked by a member of the mafia"
                 });
+                break;
               }
-              break;
             }
             alive[i].NightAction.target >= 0 ? (()=>{
               dayInfo[alive[i].NightAction.target].information.push({
