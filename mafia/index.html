@@ -787,7 +787,7 @@
           break;
           case "jailor":
           if(players[turn].actionsLeft == -1){
-            players[turn].actionsLeft = 1;
+            players[turn].actionsLeft = 3;
           }
           options = players.filter(function(o) {
             return !o.dead && o.index != turn;
@@ -1074,7 +1074,7 @@
           case "jailor":
           roleinfo.innerHTML = "<h4 style='color:lime'>Jailor</h4>";
           roleinfo.innerHTML += "<p>Kill all evildoers. You can jail a player each night.</p>";
-          roleinfo.innerHTML += "<p>-Jailing a player will roleblock them and prevent attacks against them.</p><p>-You can only execute once.</p>";
+          roleinfo.innerHTML += "<p>-Jailing a player will roleblock them and prevent attacks against them.</p><p>-You can only execute three times.</p>";
           break;
           case "lookout":
           roleinfo.innerHTML = "<h4 style='color:lime'>Lookout</h4>";
@@ -1142,7 +1142,7 @@
           break;
           case "survivor":
           roleinfo.innerHTML = "<h4 style='color:yellow'>Surviror</h4>";
-          roleinfo.innerHTML += "<p>Survive. You can put on your bulletproof vest.</p><p>-You can only use your bulletproof vest once</p>";
+          roleinfo.innerHTML += "<p>Survive. You can put on your bulletproof vest.</p><p>-You can only use your bulletproof vest three times</p>";
           break;
           case "vampire":
           roleinfo.innerHTML = "<h4 style='color:purple'>Vampire</h4>";
@@ -2032,7 +2032,7 @@
               return o.by != dayInfo[i].index && o.visit && o.type != "jail";
             });
             for(let j in ppl){
-              dayInfo[ppl[j].by].main += "Your target was jailed."
+              dayInfo[ppl[j].by].main = "Your target was jailed.";
             }
           }
         }
@@ -2572,6 +2572,7 @@
               continue;
             }
           }
+          roles = shuffle(roles);
           console.log(roles);
         }else{
           if(document.getElementById("randomizeChosenRoles").checked){
