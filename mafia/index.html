@@ -2,6 +2,9 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A mafia assistant. Play a Town of Salem like mafia game with your friends ">
+    <meta name="keywords" content="Mafia,Assistant,Town of Salem,game,offline,irl,in real life">
+    <meta name="author" content="theusaf">
     <link rel="icon" href="data:image/ico;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAABIykAIkxjACZOYAASFyAAYJCcAAABDACPsMQAAAASAAeHwgBCa24AI3iwABpITwAtXWkAHUJYAAUQHgBjnboAAxYeAAgrUwBUhKYAFyw7ADNkbAAVNTsARXiMAAoIPAAaMUEAAAAKABE9SgBSc4YAJG+WAENebAAPQU0AXW19ACR1lgAIh7oAAA0EAAAjRQAACg0AEiEkABGHsQAASXcACgUHAA9EXwAEBRkAXnGSAAENHwBOY3IAFCI5AGJ/hgBjfYkAAAk3AB5MUwBofoMASHZ+AABZjAAtNmIAZ4aJAChHVgA0YXYAa6W4AABjjwANHB8APmVnAAACCACvv8UABh09AGmKngARRE4AAAQXABouXQAAIkwANEZlACF1qQAdZG4AQ2twADdSXABXgY0AZXl+AG26ygAcRFcACgwUAAgLGgAXSV0AVY6QADQyRQBBeJcACi9hAAQhJgBAWmsAKE5aAAAFCQCMtcQAGzVGAAAGDABXdn8AACJEAHaFhwBNfJEADCYsACF2pAByh5YASoSXAEOIowB1qMIAAAoYADNAeAAADhsAAzY4ADNRbAABM0oAQEldABgdPgBjdpEAAHS6AEJziQAgSFsAPnSVAAAUNgA1ZWkADhUeABUVFQAlKzIADhokAAAlMwBNfYMAQ2FmAAAHBwBZboMAGBUeABwxTQA/ZHgAbI2gABtCSgAAaawAHUBNACQ1UAAOIz8AdJCXAHCUmgAogqUABBccAAwxRQAVLTkAPVVnAAoxVwAAGzEAn8XRABxWYgA9VXkAHTE8AABhlQAYOz8AAGuPAGqBoQAAAhQAGD1FAAslKwAFFk8AAAkOAB53qQBJg5YAOHRzAD9pdgANYZUAcYubABlHSAAmPEIACQ8OABxRVAAAHiAAWGdwADBjdwB0mbMAGhYRAB8vQAASFyYAXXF8AAADGAAMhL8AAAEkAB9BQAAAMUcAMVtgAAATGwAsYmMAHomqABaJvAAxdp4AEy8vAEuSoABke5EAMl9sACxBSQBFen0AY4GaADdnaQBMd4YAAAIEABEXHgBxgYgALEdbAFB3hgA8XnsAM2t+AA0iJAA8aHUADGqOAABRcQAFCBYANZqwAB06WQAlPEQAhairAFqDhgAIChwABBAcAFNlbAACEiIAfI+XAA8SEABhhJIAfLbMADl/lgBpfY8AcpuyABFWdwAfNTAANWdzAAoWLgAAIzEAJ09iAC9thQBUcZAAAAgOAA1IVwAnWWUAYJatACM5RQAAMUAAGhU0AEBpggAzJ0UAX3SQAEhmeQAOG08ABxAUADFcZQBTYXMAeK/KAAoSEQAiRFQAZ3qHAAg9QAAYK0AASnKLAAAAAAAAAAAA4XhT2HVSNKPebyuYgoMA7H0+Gei1BIG9H68wHUqbYY3EiyUkL0HR8WM3CUmITMtWXz+pxtlXa8Hyae1kzHy7s9cTji2/FUvDTgEp5pLCPYnl7/3I1KT7QqH5Gxqnt77fZQ9s4mrA6h4y0zOllnsWEk06ApH1Wg1yFAs4hoeQqrCgmq32GH4u/OQ5EZzzQFioIj6ZQ2cOrtVtRkRoNuN5PPh2UM/0XAUsB+5ugFuUKvB/A8V32tJxc4+T58pI6XQXT/SmrCjHHDWVR6I7l7i6VRC2nVnWySe5IbGEcAgmiiNRZvfcn+tU4M7NngpiIN20XkUxstC82/pdDGCrBoV6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=">
     <title>Mafia Assistant</title>
     <style type="text/css">
@@ -236,15 +239,15 @@
       <button type="button" id="showNarrator" onclick="document.getElementById('anarrator').style.display = 'block';document.getElementById('showNarrator').style.zIndex = '';">⏫</button>
     </div>
     <div id="bugList">
+      <!-- XXX: sometimes no mafia is added at beginning (TIS A FEATURE NOW) -->
       <!-- BUG: sometimes mafia has no mafia killing night 1 (MEDIUM PRIORITY) -->
-      sometimes no mafia is added at beginning (TIS A FEATURE NOW)
       <!-- BUG: witch can't be jailed to prevent witch effect (SMALL PRIORITY) -->
       <!-- BUG: if vigilante gets converted, the death log says that they were killed by vampire (SMALL PRIORITY) -->
       <!-- BUG: mafia being bitten die even if healed (MEDIUM PRIORITY) -->
       <!-- TODO: add win condition check (UNLIKELY) -->
       <!-- TODO: add coven (MAYBE) -->
       <!-- TODO: add random functions [RT,TK,TP,NK,NE,MK,etc.] (SMALL PRIORITY) -->
-      <!-- TODO: overwrite css -->
+      <!-- TODO: overwrite css (SMALL PRIORITY) -->
     </div>
     <script>
       //html elements
