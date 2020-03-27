@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Lato');
 
+body{
+  font-size: 1.5rem;
+}
+h1{
+  margin: 0;
+}
 canvas{
     position: fixed;
     top: 0;

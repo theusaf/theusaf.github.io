@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="index.css" type="text/css" />
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    </head>
-    <body>
-        <div class="half">
-            <p class="question">What trainer level are you?</p><input type="number" id="lvl"/>
-            <br/>
-            <p class="question">What is your name?</p><input type="text" id="name"/>
-            <br/>
-            <p class="question">Pick a random number from 0 to 6</p><input type="number" id="pokeid"/>
-            <div id="questions"></div>
-            <button>Submit</button><input type="file" id="pic"/>
-        </div>
-        <div class="half">
-            <p id="appraisal"></p>
-            <p id="appraisal2"></p>
-            <p id="appraisal3"></p>
-        </div>
-        <canvas width=640 height=1136></canvas>
-        <script type="text/javascript" src="becomepokemon.js"></script>
-    </body>
+<head>
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body>
+  <div class="half">
+    <h1>Create a 'Pokémon'</h1>
+    <br>
+    <input type="file" id="pic"/>
+    <hr>
+    <p class="question">What trainer level are you?</p><input type="number" id="lvl"/>
+    <br/>
+    <p class="question">What is your character's name?</p><input type="text" id="name"/>
+    <br/>
+    <p class="question">Pick a random number from 0 to 6</p><input type="number" id="pokeid"/>
+    <div id="questions"></div>
+    <button>Submit</button>
+  </div>
+  <div class="half">
+    <p id="appraisal"></p>
+    <p id="appraisal2"></p>
+    <p id="appraisal3"></p>
+  </div>
+  <canvas width=640 height=1136></canvas>
+  <script type="text/javascript" src="becomepokemon.js"></script>
+</body>
 </html>
