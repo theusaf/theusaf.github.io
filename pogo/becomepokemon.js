@@ -194,7 +194,7 @@ const PokemonDB = {
     },{
       name: "Extrasensory",
       damage: 12,
-      t: "phychic"
+      t: "psychic"
     }],
     charge_moves: [{
       name: "Hydro Pump",
