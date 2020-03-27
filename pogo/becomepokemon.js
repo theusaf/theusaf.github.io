@@ -752,7 +752,7 @@ function calculateValues(pLevel){
       break;
       case "33":
       if(ans[i].value > 8){
-        sta += 15;
+        sta += 11;
         def += 4;
         atk -= 1;
       }else if(ans[i].value > 4){
