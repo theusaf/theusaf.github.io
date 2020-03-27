@@ -9,6 +9,7 @@
 10/06/2018 - "fininshed", may add more pokemon in future :p
            - Added arcanine
            - Decided to add any pokemon with no evolutions, but use only one of the types... (maybe the scanner won't notice)
+2020-03-27 - Updated pokemon base stats
 */
 var outPut = document.getElementsByTagName("canvas")[0];
 var c = outPut.getContext('2d');
@@ -46,7 +47,7 @@ const PokemonDB = {
             type: "full",
             t: "fighting"
         }],
-        base: [100,224,211]
+        base: [137,224,181]
     },
     "arcanine": {
         type: "fire",
@@ -75,7 +76,7 @@ const PokemonDB = {
             type: "third",
             t: "dark"
         }],
-        base: [180,227,166]
+        base: [207,227,166]
     },
     "hitmonchan": {
         type: "fighting",
@@ -94,7 +95,7 @@ const PokemonDB = {
             type: "third",
             t: "electric"
         }],
-        base: [100,193,212]
+        base: [137,193,197]
     },
     "raikou": {
         type: "electric",
@@ -123,7 +124,7 @@ const PokemonDB = {
             type: "half",
             t: "electric"
         }],
-        base: [180,241,210]
+        base: [207,241,195]
     },
     "tentacruel": {
         type: "water",
@@ -152,7 +153,7 @@ const PokemonDB = {
             type: "full",
             t: "ice"
         }],
-        base: [160,166,237]
+        base: [190,166,209]
     },
     "sunflora": {
         type: "grass",
@@ -181,7 +182,7 @@ const PokemonDB = {
             type: "full",
             t: "poison"
         }],
-        base: [150,185,148]
+        base: [181,185,135]
     },
     "suicune": {
         type: "water",
@@ -210,7 +211,7 @@ const PokemonDB = {
             type: "half",
             t: "water"
         }],
-        base: [200,180,235]
+        base: [225,180,235]
     }
 };
 
@@ -904,7 +905,7 @@ function renderPokemonStats(){
         var url = URL.createObjectURL(blob);
         var link = document.getElementById("d");
         if(link == null){
-            link = document.createElement("a");    
+            link = document.createElement("a");
             link.id = "d";
             link.href = url;
             link.innerHTML = "Download Image";
