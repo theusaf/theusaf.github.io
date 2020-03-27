@@ -223,7 +223,7 @@ const PokemonDB = {
     },{
       name: "Confusion",
       damage: 20,
-      t: "phychic"
+      t: "psychic"
     }],
     charge_moves: [{
       name: "Psyshock",
