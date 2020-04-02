@@ -42,6 +42,14 @@ function Deg2Rad(deg){
   return Number(deg) * (Math.PI / 180);
 }
 
+function FelciusThis(degree,fahrenheit){
+  if(fahrenheit){
+    return (7*degree-80)/9;
+  }else{
+    return (7*degree)/5+16;
+  }
+}
+
 async function GetWeatherInformation(Location) {
   const URL = "http://weather.service.msn.com/find.aspx?src=outlook&weadegreetype=DEGREE&culture=en-US&weasearchstr=SEARCH";
   const Degree = (Math.random() > 0.5 && 'C') || 'F';
