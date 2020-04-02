@@ -1,0 +1,63 @@
+html {
+  height: 100vh;
+}
+body {
+  height: 100%;
+  font: 1.5rem Helvetica, sans-serif;
+}
+#cont {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#output {
+  flex: 2;
+  border: 0.375rem solid black;
+  display: flex;
+  flex-direction: column-reverse;
+  padding-left: 2rem;
+}
+#form {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  border: 0.375rem solid black;
+  border-top: 0;
+  padding: 0.25rem;
+  font: 1.5rem Helvetica, sans-serif;
+}
+input {
+  background: #eee;
+  border: 0px;
+  font: 1.5rem Helvetica, sans-serif;
+}
+.sub {
+  background: #eee;
+  font: 1.5rem Helvetica, sans-serif;
+  border-radius: 1rem;
+  margin-bottom: 0.25rem;
+}
+.thing {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.flex {
+  flex: 1;
+  width: 60%;
+}
+#left {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+#left * {
+  flex: 1;
+}
+.nope {
+  pointer-events: none;
+}
