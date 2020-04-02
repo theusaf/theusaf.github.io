@@ -111,7 +111,7 @@ function ParseXML(XML){
       direction: NW.getAttribute("winddisplay").split("h ")[1],
       humidity: NW.getAttribute("humidity"),
       day: NW.getAttribute("day"),
-      date: new Date(`${NW.getAttribute("date")}T${NW.getAttribute("observationtime")}${(Number(NW.getAttribute("timezone")) >= 0 && "+") || ""}${(String(Math.abs(Number(NW.getAttribute("timezone")))).length >= 2 && "") || "0"}${NW.getAttribute("timezone")}:00`)
+      date: new Date(`${NW.getAttribute("date")}T${NW.getAttribute("observationtime")}${(Number(WR.getAttribute("timezone")) >= 0 && "+") || ""}${(String(Math.abs(Number(NW.getAttribute("timezone")))).length >= 2 && "") || "0"}${NW.getAttribute("timezone")}:00`)
     }
   };
 }
