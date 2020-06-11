@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" as="style" onload="this.rel = 'stylesheet'">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Kahoot Winner is down.</title>
+  </head>
+  <body>
+    <style media="screen">
+      body{
+        font-family: 'Montserrat', sans-serif;
+      }
+    </style>
+    <h1>What is this?</h1>
+    <p>If you are seeing this page, that means that Kahoot Winner is down. This is most likely an issue with the server being overloaded and running out of memory, but it could be another issues.</p>
+    <p>In the meantime, just wait and when the server goes up, you should be redirected back to Kahoot Winner.</p>
+    <noscript>
+      On second thought, you might have to do that yourself because you aren't allowing javascript on this page.
+    </noscript>
+    <p>Current state: <span id="status">DOWN</span></p>
+    <marquee really="yes, really, I know this tag is deprecated but who cares, text go brrrrrrrrr">Checking status of kahoot-win</marquee>
+    <script type="text/javascript">
+      let url = location.hostname === "kahoot-win.herokuapp.com" ? "/up" : "https://kahoot-win.herokuapp.com/up";
+      function check(t){
+        const x = new XMLHttpRequest();
+        x.open("GET",url);
+        x.send();
+        x.onerror = x.ontimeout = function(){
+          t *= 2;
+          if(t > 30){
+            t = 30;
+          }
+          setTimeout(function(){
+            check(t);
+          },t * 1000);
+        };
+        x.onload = function(){
+          if(x.status != 200 || !/^-?\d+ (hours|minutes) until expected reset.$/.test(x.response)){
+            return x.onerror(t);
+          }
+          document.getElementById("status").innerHTML = "UP! Redirecting...";
+          setTimeout(()=>{
+            if(url == "/up"){
+              location.reload();
+            }else{
+              location.href = "https://kahoot-win.herokuapp.com";
+            }
+          },2000);
+        }
+      }
+      check(0.5);
+    </script>
+  </body>
+</html>
