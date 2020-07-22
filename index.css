@@ -1,10 +1,39 @@
 #top > a {
-    text-decoration: none;
+  text-decoration: none;
+}
+#top div{
+  width: 95%;
+  margin: auto;
+  background: grey;
+  font-size: 2rem;
 }
 #top > a > span{
-    font-size: 25px;
-    font-family: 'Spectral SC', serif;
+  font-size: 25px;
+  font-family: 'Spectral SC', serif;
 }
 #test {
-    display: none;
+  display: none;
+}
+body{
+  background: black;
+  color: white;
+}
+.links div{
+  width: 90%;
+  margin: auto;
+  background: #222;
+  padding: 2rem;
+}
+.links a{
+  display: list-item;
+  color: #eee;
+  font-size: 1.25rem;
+}
+footer{
+  margin-left: 2.5%;
+  margin-right: 2.5%;
+  padding: 2.5%;
+  padding-top: 5%;
+  padding-bottom: 5%;
+  background: #111;
 }
