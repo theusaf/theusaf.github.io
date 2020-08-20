@@ -40,7 +40,7 @@
           },t * 1000);
         };
         x.onload = function(){
-          if(x.status != 200 || !/^-?\d+ (hours|minutes) until expected reset.$/.test(x.response)){
+          if(x.status != 200 || !/^-?\d+ (hours|minutes) until expected reset.*/.test(x.response)){
             return x.onerror(t);
           }
           document.getElementById("status").innerHTML = "UP! Redirecting...";
