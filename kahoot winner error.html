@@ -480,6 +480,9 @@
               button.style.background = "";
             },100);
           }catch(e){}
+          if(!ignore && typeof gameInfo.steps[n] != "string"){
+            break;
+          }
           await wait(li[i][2] && 0.125 || 0.25);
         }
         if(!ignore && gameInfo.steps.length && gameInfo.steps.length > n){
