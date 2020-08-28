@@ -5,28 +5,63 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Kahoot Winner is down.</title>
   </head>
-  <body>
+  <body class="red">
     <style media="screen">
       body{
         font-family: 'Montserrat', sans-serif;
+        text-align: center;
+        color: white;
+        margin: 0;
+      }
+      h1{
+        color: white;
       }
       marquee{
         height: 5rem;
+        text-align: center;
+      }
+      .red{
+        background: #c60929;
+      }
+      .green{
+        background: #106b03;
+      }
+      .play{
+        background: #ffdd33;
+        color: #333333;
+      }
+      .container{
+        background: rgba(0,0,0,0.3);
+      }
+      a{
+        color: white;
+      }
+      footer{
+        margin-top: 0.5rem;
+        background: rgba(0,0,0,0.7);
+        padding: 0.5rem;
       }
     </style>
-    <h1>What is this?</h1>
-    <p>If you are seeing this page, that means that Kahoot Winner is down. This is most likely an issue with the server being overloaded and running out of memory, but it could be another issue.</p>
-    <p>In the meantime, just wait and when the server goes up, you should be redirected back to Kahoot Winner.</p>
-    <p>You may also download the application from here: <a href="https://archive.org/details/kahoot-win">https://archive.org/details/kahoot-win</a></p>
-    <noscript>
-      On second thought, you might have to do that yourself because you aren't allowing javascript on this page.
-    </noscript>
-    <p>Current state: <span id="status">DOWN</span></p>
-    <marquee direction="down" really="yes, really, I know this tag is deprecated but who cares, text go brrrrrrrrr">Checking status of kahoot-win</marquee>
-    <h3>Feel free to join the <a href="https://discord.gg/58SHzC2" target="_blank">Discord server</a> to discuss issues as well.</h3>
+    <div class="container">
+      <h1>Kawhoops! Something went wrong!</h1>
+      <p>If you are seeing this page, that means that Kahoot Winner is down or is under maintenance. This is most likely an issue with the server being overloaded and running out of memory, but it could be another issue. The server should come back online in a few minutes.</p>
+      <p>In the meantime, just wait or play the small minigame below and when the server goes up, you should be redirected back to Kahoot Winner.</p>
+      <p>You may also download the application from here: <a href="https://archive.org/details/kahoot-win">https://archive.org/details/kahoot-win</a>.</p>
+      <noscript>
+        On second thought, you might have to do that yourself because you aren't allowing javascript on this page.
+      </noscript>
+      <p>Current state: <span id="status" class="red">DOWN</span></p>
+      <marquee direction="down" really="yes, really, I know this tag is deprecated but who cares, text go brrrrrrrrr">Checking status of kahoot-win</marquee>
+      <h3>Feel free to join the <a href="https://discord.gg/58SHzC2" target="_blank">Discord server</a> to discuss issues as well.</h3>
+    </div>
     <script type="text/javascript">
       let url = location.hostname === "kahoot-win.herokuapp.com" ? "/up" : "https://kahoot-win.herokuapp.com/up";
       function check(t){
+        if(location.href.includes("?play") || location.href.includes("&play")){
+          document.getElementById("status").className = "play";
+          document.getElementById("status").innerHTML = "Schrödinger's Status (Playing)";
+          return;
+        }
         const x = new XMLHttpRequest();
         x.open("GET",url);
         x.send();
@@ -40,9 +75,11 @@
           },t * 1000);
         };
         x.onload = function(){
-          if(x.status != 200 || !/^-?\d+ (hours|minutes) until expected reset.*/.test(x.response)){
+          if(x.status != 200 || !/^-?\d+ (hours|minutes) until expected reset.*/m.test(x.response)){
             return x.onerror(t);
           }
+          document.getElementById("status").className = "green";
+          document.body.className = "green";
           document.getElementById("status").innerHTML = "UP! Redirecting...";
           setTimeout(()=>{
             if(url == "/up"){
@@ -55,5 +92,441 @@
       }
       check(0.5);
     </script>
+    <script src="Misc/audiosynth.js"></script>
+    <!-- Simon Says Game. -->
+    <div>
+      <div class="simon">
+        <button id="r"></button>
+        <button id="b"></button>
+        <button id="y"></button>
+        <button id="g"></button>
+      </div>
+      <button id="start">Start</button>
+    </div>
+    <style>
+      .simon{
+        margin: auto;
+        display: flex;
+        width: 15rem;
+        height: 15rem;
+        -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+      }
+      .simon > button{
+        flex: 50%;
+        border: 0.25rem solid black;
+        appearance: none;
+      }
+      .simon > button:active{
+        opacity: 0.8;
+      }
+      #r{
+        background: #e21b3c;
+      }
+      #b{
+        background: #1368ce;
+      }
+      #y{
+        background: #ffa602;
+      }
+      #g{
+        background: #26890c;
+      }
+    </style>
+    <script>
+      const startButton = document.getElementById("start");
+      const piano = Synth.createInstrument(0);
+      piano._parent.setSampleRate(22500);
+      piano._parent.setVolume(0.75);
+      const gameInfo = {
+        started: false,
+        steps: [],
+        score: 0,
+        song: 0,
+        answerStep: 0,
+        waitingAnswer: false
+      };
+      const IDS = ["r","b","y","g"];
+      for(let i in IDS){
+        const b = document.getElementById(IDS[i]);
+        const j = IDS[i];
+        b.addEventListener("click",()=>{
+          pressGame(j);
+        });
+      }
+      const KEYS = [
+        ["C",2],
+        ["D",2],
+        ["E",2],
+        ["F",2],
+        ["G",2],
+        ["A",2],
+        ["B",2],
+        ["C",3],
+        ["D",3],
+        ["E",3],
+        ["F",3],
+        ["G",3],
+        ["A",3],
+        ["B",3],
+        ["C",4],
+        ["D",4],
+        ["E",4],
+        ["F",4],
+        ["G",4],
+        ["A",4],
+        ["B",4],
+        ["C",5],
+        ["D",5],
+        ["E",5],
+        ["F",5],
+        ["G",5],
+        ["A",5],
+        ["B",5]
+      ];
+      const REST = ["C",0];
+      let i = 0;
+      const songs = [
+        Array.from({length: 100}, () => {
+          return KEYS[Math.floor(Math.random() * KEYS.length)];
+        }),
+        Array.from({length:15},()=>{
+          return KEYS[i++];
+        }),
+        [
+          // start 1
+          ["C",2],
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          ["C",3],
+          REST,
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          ["G",2,1],
+          ["B",2],
+          ["C",3,1],
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          REST,
+          REST,
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          ["D",2],
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          ["D",2],
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          REST,
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4],["G",2]],
+          ["D#",2,1],
+          ["D",2,1],
+          ["C",2],
+          [["D#",4],["C",4]],
+          [["D#",4],["C",4]],
+          REST,
+          // end 1, start 2
+          ["C",2],
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          ["C",3],
+          REST,
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          ["G",2,1],
+          ["B",2],
+          ["C",3,1],
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          REST,
+          REST,
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          ["D",2],
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          ["D",2],
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          REST,
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4],["G",2]],
+          ["D#",2,1],
+          ["D",2,1],
+          ["C",2],
+          [["D#",4],["C",4]],
+          [["D#",4],["C",4]],
+          // end 2, start 3 [new]
+          ["E",3],
+          ["E",3],
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          ["C",3],
+          ["C",3],
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          REST,
+          REST,
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          REST,
+          REST,
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          ["F",2],
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          ["F",2],
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          REST,
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          ["G",2,1],
+          ["D#",2],
+          ["D",2],
+          [["C",2],["D#",4],["C",4]],
+          ["C",0,1],
+          [["D#",4],["C",4]],
+          // end 3, start 4
+          ["E",3],
+          ["E",3],
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          ["C",3],
+          ["C",3],
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          REST,
+          REST,
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          REST,
+          REST,
+          [["D#",4],["G",4]],
+          [["D#",4],["G",4]],
+          ["F",2],
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          ["F",2],
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          REST,
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          ["G",2,1],
+          ["D#",2],
+          ["D",2],
+          [["C",2],["D#",4],["C",4]],
+          ["C",0,1],
+          [["D#",4],["C",4]],
+          // end 4, start 5 [new 2]
+          ["C",4],
+          ["C",4],
+          ["F",4],
+          ["F",4],
+          ["G#",4],
+          ["G#",4],
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          REST,
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          REST,
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          ["G",4],
+          ["G",4],
+          ["D",4],
+          ["D",4],
+          ["D#",4],
+          ["D#",4],
+          [["C",4],["D#",4]],
+          [["C",4],["D#",4]],
+          REST,REST,
+          [["C",4],["D#",4]],
+          [["C",4],["D#",4]],
+          REST,REST,
+          [["C",4],["D#",4]],
+          [["C",4],["D#",4]],
+          // end 5, start 6
+          ["C",4],
+          ["C",4],
+          ["F",4],
+          ["F",4],
+          ["G#",4],
+          ["G#",4],
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          REST,
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          REST,
+          REST,
+          [["C",4],["F",4]],
+          [["C",4],["F",4]],
+          ["G",4],
+          ["G",4],
+          ["D",4],
+          ["D",4],
+          ["D#",4],
+          ["D#",4],
+          [["C",4],["D#",4]],
+          [["C",4],["D#",4]],
+          REST,REST,
+          [["C",4],["D#",4]],
+          [["C",4],["D#",4]],
+          REST,REST,
+          [["C",4],["D#",4]],
+          [["C",4],["D#",4]],
+          // end 6, start 7 [end]
+          ["C",5],
+          ["C",5],
+          ["A#",4],
+          ["A#",4],
+          ["G#",4],
+          ["G#",4],
+          [["G#",3],["D#",4]],
+          [["G#",3],["D#",4]],
+          REST,REST,
+          [["G#",3],["D#",4]],
+          [["G#",3],["D#",4]],
+          REST,REST,
+          [["G#",3],["D#",4]],
+          [["G#",3],["D#",4]],
+          ["G",4],
+          ["G",4],
+          ["F",4],
+          ["F",4],
+          ["D#",4],
+          ["D#",4],
+          [["G",3],["C",4]],
+          [["G",3],["C",4]],
+          REST,REST,
+          [["G",3],["C",4]],
+          [["G",3],["C",4]],
+          REST,REST,
+          [["G",3],["C",4]],
+          [["G",3],["C",4]],
+          // end 7 start 8 (finale!)
+          ["C",5],
+          ["C",5],
+          ["A#",4],
+          ["A#",4],
+          ["G#",4],
+          ["G#",4],
+          [["G#",3],["D#",4]],
+          [["G#",3],["D#",4]],
+          REST,REST,
+          [["G#",3],["D#",4]],
+          [["G#",3],["D#",4]],
+          REST,REST,
+          [["G#",3],["D#",4]],
+          [["G#",3],["D#",4]],
+          ["G",4],
+          ["G",4],
+          ["F",4],
+          ["F",4],
+          ["D#",4],
+          ["D#",4],
+          [["G",3],["C",4]],
+          [["G",3],["C",4]],
+          REST,REST,
+          [["G",3],["C",4]],
+          [["G",3],["C",4]],
+          REST,REST,
+          [["G",3],["C",4]],
+          [["G",3],["C",4]]
+          // done!
+        ]
+      ];
+      function wait(n){return new Promise((res)=>{setTimeout(res,n * 1000)});};
+      async function playList(li,n,ignore){
+        ignore && console.log(li)
+        for(let i = 0;i<li.length;i++){
+          if(typeof li[i][0] === "string"){
+            piano.play(...li[i]);
+          }else{
+            for(let j in li[i]){
+              piano.play(...li[i][j]);
+            }
+          }
+          try{
+            if(ignore){throw "no need";}
+            const button = document.getElementById(gameInfo.steps[n++]);
+            button.style.background = "black";
+            setTimeout(()=>{
+              button.style.background = "";
+            },100);
+          }catch(e){}
+          await wait(li[i][2] && 0.125 || 0.25);
+        }
+        if(!ignore && gameInfo.steps.length && gameInfo.steps.length > n){
+          await playList(li,n);
+        }
+        if(gameInfo.started && !ignore){
+          gameInfo.waitingAnswer = true;
+        }
+      };
+      async function pressGame(id){
+        if(!gameInfo.waitingAnswer){
+          return;
+        }
+        const f = gameInfo.answerStep % songs[gameInfo.song].length;
+        playList(songs[gameInfo.song].slice(f,f + 1),0,true);
+        if(gameInfo.steps[gameInfo.answerStep++] === id){
+          // continue!
+          if(gameInfo.answerStep === gameInfo.steps.length){
+            gameInfo.score++;
+            gameInfo.answerStep = 0;
+            gameInfo.waitingAnswer = false;
+            setTimeout(()=>{
+              addGame();
+            },1000);
+          }
+        }else{
+          // fail. game over.
+          alert("Game over! Score: " + gameInfo.score);
+          resetGame();
+        }
+      }
+      function addGame(){
+        gameInfo.steps.push(IDS[Math.floor(Math.random() * 4)]);
+        playList(songs[gameInfo.song].slice(0,gameInfo.steps.length),0);
+      }
+      function resetGame(){
+        gameInfo.steps = [];
+        gameInfo.started = false;
+        gameInfo.waitingAnswer = false;
+        gameInfo.score = 0;
+        gameInfo.answerStep = 0;
+      }
+      startButton.addEventListener("click",()=>{
+        if(gameInfo.started){
+          return;
+        }
+        gameInfo.started = true;
+        gameInfo.song = Math.floor(Math.random() * songs.length);
+        addGame();
+      });
+    </script>
+    <footer>&copy; 2020 theusaf</footer>
   </body>
 </html>
