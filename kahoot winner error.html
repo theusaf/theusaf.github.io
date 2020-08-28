@@ -486,7 +486,7 @@
           await wait(li[i][2] && 0.125 || 0.25);
         }
         if(!ignore && gameInfo.steps.length && gameInfo.steps.length > n){
-          await playList(li,n + gameInfo.steps.length);
+          await playList(li,n);
         }
         if(gameInfo.started && !ignore){
           gameInfo.waitingAnswer = true;
