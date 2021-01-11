@@ -56,7 +56,8 @@
       <h3>Feel free to join the <a href="https://discord.gg/58SHzC2" target="_blank">Discord server</a> to discuss issues as well.</h3>
     </div>
     <script type="text/javascript">
-      let url = location.hostname !== "kahoot-win.herokuapp.com" ? "/up" : "https://kahoot-win.herokuapp.com/up";
+      const ref = new URL(document.referrer || location.href);
+      let url = ref.protocol + "//" + ref.hostname + "/up";
       function check(t){
         if(location.href.includes("?play") || location.href.includes("&play")){
           document.getElementById("status").className = "play";
