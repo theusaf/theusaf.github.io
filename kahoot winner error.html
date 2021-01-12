@@ -84,11 +84,7 @@
           document.body.className = "green";
           document.getElementById("status").innerHTML = "UP! Redirecting...";
           setTimeout(()=>{
-            if(url == "/up"){
-              location.reload();
-            }else{
-              location.href = "https://kahoot-win.herokuapp.com";
-            }
+            location.href = document.referer;
           },2000);
         }
       }
